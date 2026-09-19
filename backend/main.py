@@ -75,28 +75,35 @@ def predict_future(days: int = Query(7, description="تعداد روزهای آ�
     if len(numeric_cols) == 0:
         return {"error": "هیچ ستون عددی برای پیش‌بینی وجود ندارد"}
     
-    # انتخاب اولین ستون عددی
+    # انتخاب اولین ستون به عنوان هدف
     target_col = numeric_cols[0]
     
-    # آماده‌سازی داده‌ها
-    values = df[target_col].dropna().values
-    X = np.arange(len(values)).reshape(-1, 1)
-    y = values
+    # استفاده از سایر ستون‌های عددی به عنوان ویژگی
+    feature_cols = numeric_cols[1:4]  # حداکثر ۳ ویژگی
+    
+    if len(feature_cols) == 0:
+        # اگر ستون دیگری نیست، از ایندکس استفاده کن
+        X = np.arange(len(df)).reshape(-1, 1)
+    else:
+        X = df[feature_cols].fillna(0).values
+    
+    y = df[target_col].fillna(0).values
     
     # ساخت مدل
     model = LinearRegression()
     model.fit(X, y)
     
-    # پیش‌بینی
-    future_X = np.arange(len(values), len(values) + days).reshape(-1, 1)
-    predictions = model.predict(future_X)
+    # پیش‌بینی با استفاده از آخرین مقادیر
+    last_values = X[-1].reshape(1, -1)
+    predictions_list = []
     
-    # تبدیل به لیست
-    predictions_list = [{"day": i+1, "value": float(pred)} for i, pred in enumerate(predictions)]
+    for i in range(days):
+        pred = model.predict(last_values)[0]
+        predictions_list.append({"day": i+1, "value": float(pred)})
     
     return {
         "target_column": target_col,
+        "feature_columns": feature_cols,
         "days": days,
-        "trend": float(model.coef_[0]),
         "predictions": predictions_list
     }
