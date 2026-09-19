@@ -28,6 +28,10 @@
             border-radius: 10px;
             margin-bottom: 30px;
         }
+        .prediction-container {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            border: 2px solid #e74c3c;
+        }
         .search-box {
             display: flex; gap: 10px; margin-bottom: 30px;
             padding: 20px; background: #f8f9fa; border-radius: 10px;
@@ -77,6 +81,10 @@
         
         <div class="chart-container">
             <canvas id="trendChart"></canvas>
+        </div>
+        
+        <div class="chart-container prediction-container">
+            <canvas id="predictionChart"></canvas>
         </div>
         
         <div class="search-box">
@@ -150,19 +158,57 @@
                                 text: '📊 مقایسه شاخص‌ها (۳۰ روز اخیر)',
                                 font: { size: 16 }
                             },
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            }
+                            legend: { display: true, position: 'top' }
                         },
-                        interaction: {
-                            mode: 'index',
-                            intersect: false
-                        }
+                        interaction: { mode: 'index', intersect: false }
                     }
                 });
             } catch (err) {
                 console.error('خطا در بارگذاری نمودار:', err);
+            }
+        }
+        
+        async function loadPrediction() {
+            try {
+                const response = await fetch(`${API_URL}/api/predict?days=7`);
+                const data = await response.json();
+                
+                if (data.error) {
+                    console.error(data.error);
+                    return;
+                }
+                
+                const labels = data.predictions.map(p => `روز +${p.day}`);
+                const values = data.predictions.map(p => p.value);
+                
+                const ctx = document.getElementById('predictionChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: `پیش‌بینی ${data.target_column}`,
+                            data: values,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.1)',
+                            fill: true,
+                            tension: 0.3,
+                            borderWidth: 3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: `🔮 پیش‌بینی ${data.days} روز آینده - ${data.target_column}`,
+                                font: { size: 16 }
+                            }
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error('خطا در بارگذاری پیش‌بینی:', err);
             }
         }
         
@@ -219,6 +265,7 @@
         }
         
         loadChart();
+        loadPrediction();
         loadData();
     </script>
 </body>

@@ -1,6 +1,9 @@
 from fastapi import FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
+import pandas as pd
+import numpy as np
+from sklearn.linear_model import LinearRegression
 
 app = FastAPI(title="Gas Intelligence Platform")
 
@@ -59,3 +62,41 @@ def get_trend(limit: int = 30):
     rows = cursor.fetchall()
     conn.close()
     return {"count": len(rows), "data": [dict(r) for r in rows]}
+
+@app.get("/api/predict")
+def predict_future(days: int = Query(7, description="تعداد روزهای آینده برای پیش‌بینی")):
+    conn = sqlite3.connect("gas_data.db")
+    df = pd.read_sql_query("SELECT * FROM GasOperationDailyReport", conn)
+    conn.close()
+    
+    # پیدا کردن ستون‌های عددی
+    numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
+    
+    if len(numeric_cols) == 0:
+        return {"error": "هیچ ستون عددی برای پیش‌بینی وجود ندارد"}
+    
+    # انتخاب اولین ستون عددی
+    target_col = numeric_cols[0]
+    
+    # آماده‌سازی داده‌ها
+    values = df[target_col].dropna().values
+    X = np.arange(len(values)).reshape(-1, 1)
+    y = values
+    
+    # ساخت مدل
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    # پیش‌بینی
+    future_X = np.arange(len(values), len(values) + days).reshape(-1, 1)
+    predictions = model.predict(future_X)
+    
+    # تبدیل به لیست
+    predictions_list = [{"day": i+1, "value": float(pred)} for i, pred in enumerate(predictions)]
+    
+    return {
+        "target_column": target_col,
+        "days": days,
+        "trend": float(model.coef_[0]),
+        "predictions": predictions_list
+    }
