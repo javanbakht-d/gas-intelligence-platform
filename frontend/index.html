@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پلتفرم هوشمند گاز</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -21,6 +22,12 @@
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
         h1 { color: #333; text-align: center; margin-bottom: 30px; font-size: 28px; }
+        .chart-container {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
         .search-box {
             display: flex; gap: 10px; margin-bottom: 30px;
             padding: 20px; background: #f8f9fa; border-radius: 10px;
@@ -56,11 +63,21 @@
             display: inline-block; padding: 5px 15px; border-radius: 20px;
             background: #4CAF50; color: white; font-size: 14px;
         }
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 10px;
+            border: 1px solid #eee;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🔥 پلتفرم هوشمند گاز</h1>
+        
+        <div class="chart-container">
+            <canvas id="trendChart"></canvas>
+        </div>
         
         <div class="search-box">
             <input type="text" id="dateInput" placeholder="تاریخ شمسی را وارد کنید (مثلاً 1405/06/10)">
@@ -68,7 +85,7 @@
             <button class="secondary" onclick="loadAll()">📋 همه داده‌ها</button>
         </div>
         
-        <div class="stats" id="stats">
+        <div class="stats">
             <div class="stat-card">
                 <h3>تعداد رکوردها</h3>
                 <div class="value" id="recordCount">-</div>
@@ -83,16 +100,75 @@
             </div>
         </div>
         
-        <div id="results" class="loading">⏳ در حال بارگذاری داده‌ها...</div>
+        <div class="table-container" id="results">
+            <p class="loading">⏳ در حال بارگذاری داده‌ها...</p>
+        </div>
     </div>
 
     <script>
         const API_URL = "http://127.0.0.1:8000";
         
+        async function loadChart() {
+            try {
+                const response = await fetch(`${API_URL}/api/trend?limit=30`);
+                const data = await response.json();
+                
+                if (data.count === 0) return;
+                
+                const columns = Object.keys(data.data[0]);
+                const dateCol = columns.find(c => c.includes('تاریخ') || c.toLowerCase().includes('date'));
+                
+                const numericCols = columns.filter(c => {
+                    const val = data.data[0][c];
+                    return typeof val === 'number' && !c.includes('ردیف');
+                }).slice(0, 3);
+                
+                if (!dateCol || numericCols.length === 0) return;
+                
+                const labels = data.data.map(r => r[dateCol]).reverse();
+                const colors = ['#667eea', '#e74c3c', '#2ecc71'];
+                
+                const datasets = numericCols.map((col, i) => ({
+                    label: col,
+                    data: data.data.map(r => r[col]).reverse(),
+                    borderColor: colors[i],
+                    backgroundColor: colors[i] + '20',
+                    fill: false,
+                    tension: 0.3,
+                    borderWidth: 2
+                }));
+                
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: { labels: labels, datasets: datasets },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: '📊 مقایسه شاخص‌ها (۳۰ روز اخیر)',
+                                font: { size: 16 }
+                            },
+                            legend: {
+                                display: true,
+                                position: 'top'
+                            }
+                        },
+                        interaction: {
+                            mode: 'index',
+                            intersect: false
+                        }
+                    }
+                });
+            } catch (err) {
+                console.error('خطا در بارگذاری نمودار:', err);
+            }
+        }
+        
         async function loadData(date = null) {
             const resultsDiv = document.getElementById("results");
-            resultsDiv.className = "loading";
-            resultsDiv.innerHTML = "⏳ در حال بارگذاری...";
+            resultsDiv.innerHTML = "<p class='loading'>⏳ در حال بارگذاری...</p>";
             
             try {
                 let url = date 
@@ -122,7 +198,6 @@
                 });
                 
                 html += "</tbody></table>";
-                resultsDiv.className = "";
                 resultsDiv.innerHTML = html;
             } catch (err) {
                 resultsDiv.innerHTML = `<p style='color:red; text-align:center;'>❌ خطا: ${err.message}</p>`;
@@ -143,6 +218,7 @@
             loadData();
         }
         
+        loadChart();
         loadData();
     </script>
 </body>
