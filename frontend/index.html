@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>پلتفرم هوشمند گاز</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Tahoma', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+        h1 { color: #333; text-align: center; margin-bottom: 30px; font-size: 28px; }
+        .search-box {
+            display: flex; gap: 10px; margin-bottom: 30px;
+            padding: 20px; background: #f8f9fa; border-radius: 10px;
+        }
+        .search-box input {
+            flex: 1; padding: 12px; border: 2px solid #ddd;
+            border-radius: 8px; font-size: 16px; font-family: inherit;
+        }
+        .search-box button {
+            padding: 12px 30px; background: #667eea; color: white;
+            border: none; border-radius: 8px; cursor: pointer;
+            font-size: 16px; font-family: inherit;
+        }
+        .search-box button:hover { background: #5568d3; }
+        .search-box button.secondary { background: #4CAF50; }
+        .search-box button.secondary:hover { background: #45a049; }
+        .stats {
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            gap: 20px; margin-bottom: 30px;
+        }
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; padding: 25px; border-radius: 10px; text-align: center;
+        }
+        .stat-card h3 { font-size: 14px; margin-bottom: 10px; opacity: 0.9; }
+        .stat-card .value { font-size: 32px; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid #eee; }
+        th { background: #f8f9fa; font-weight: bold; color: #333; }
+        tr:hover { background: #f8f9fa; }
+        .loading { text-align: center; padding: 40px; color: #666; font-size: 18px; }
+        .status-badge {
+            display: inline-block; padding: 5px 15px; border-radius: 20px;
+            background: #4CAF50; color: white; font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 پلتفرم هوشمند گاز</h1>
+        
+        <div class="search-box">
+            <input type="text" id="dateInput" placeholder="تاریخ شمسی را وارد کنید (مثلاً 1405/06/10)">
+            <button onclick="searchByDate()">🔍 جستجو</button>
+            <button class="secondary" onclick="loadAll()">📋 همه داده‌ها</button>
+        </div>
+        
+        <div class="stats" id="stats">
+            <div class="stat-card">
+                <h3>تعداد رکوردها</h3>
+                <div class="value" id="recordCount">-</div>
+            </div>
+            <div class="stat-card">
+                <h3>تاریخ</h3>
+                <div class="value" id="dateLabel">همه</div>
+            </div>
+            <div class="stat-card">
+                <h3>وضعیت</h3>
+                <div class="value"><span class="status-badge">فعال ✅</span></div>
+            </div>
+        </div>
+        
+        <div id="results" class="loading">⏳ در حال بارگذاری داده‌ها...</div>
+    </div>
+
+    <script>
+        const API_URL = "http://127.0.0.1:8000";
+        
+        async function loadData(date = null) {
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.className = "loading";
+            resultsDiv.innerHTML = "⏳ در حال بارگذاری...";
+            
+            try {
+                let url = date 
+                    ? `${API_URL}/api/by-date?date=${date}`
+                    : `${API_URL}/api/daily-report`;
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                document.getElementById("recordCount").textContent = data.count;
+                document.getElementById("dateLabel").textContent = date || "همه";
+                
+                if (data.count === 0) {
+                    resultsDiv.innerHTML = "<p style='text-align:center; padding:40px;'>داده‌ای یافت نشد</p>";
+                    return;
+                }
+                
+                const columns = Object.keys(data.data[0]);
+                let html = "<table><thead><tr>";
+                columns.forEach(col => html += `<th>${col}</th>`);
+                html += "</tr></thead><tbody>";
+                
+                data.data.forEach(row => {
+                    html += "<tr>";
+                    columns.forEach(col => html += `<td>${row[col] ?? "-"}</td>`);
+                    html += "</tr>";
+                });
+                
+                html += "</tbody></table>";
+                resultsDiv.className = "";
+                resultsDiv.innerHTML = html;
+            } catch (err) {
+                resultsDiv.innerHTML = `<p style='color:red; text-align:center;'>❌ خطا: ${err.message}</p>`;
+            }
+        }
+        
+        function searchByDate() {
+            const date = document.getElementById("dateInput").value.trim();
+            if (date) {
+                loadData(date);
+            } else {
+                alert("لطفاً یک تاریخ وارد کنید");
+            }
+        }
+        
+        function loadAll() {
+            document.getElementById("dateInput").value = "";
+            loadData();
+        }
+        
+        loadData();
+    </script>
+</body>
+</html>
