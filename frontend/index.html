@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پلتفرم هوشمند گاز</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -48,6 +49,8 @@
         .search-box button:hover { background: #5568d3; }
         .search-box button.secondary { background: #4CAF50; }
         .search-box button.secondary:hover { background: #45a049; }
+        .search-box button.export { background: #e67e22; }
+        .search-box button.export:hover { background: #d35400; }
         .stats {
             display: grid; grid-template-columns: repeat(3, 1fr);
             gap: 20px; margin-bottom: 30px;
@@ -73,14 +76,8 @@
             border-radius: 10px;
             border: 1px solid #eee;
         }
-        .summary-section {
-            margin-bottom: 30px;
-        }
-        .summary-section h2 {
-            color: #333;
-            margin-bottom: 15px;
-            font-size: 20px;
-        }
+        .summary-section { margin-bottom: 30px; }
+        .summary-section h2 { color: #333; margin-bottom: 15px; font-size: 20px; }
         .summary-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -92,24 +89,13 @@
             border-radius: 10px;
             border-right: 4px solid #667eea;
         }
-        .summary-card h4 {
-            color: #333;
-            margin-bottom: 10px;
-            font-size: 14px;
-        }
+        .summary-card h4 { color: #333; margin-bottom: 10px; font-size: 14px; }
         .summary-card .stats-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 13px;
+            display: flex; justify-content: space-between;
+            margin-bottom: 5px; font-size: 13px;
         }
-        .summary-card .stats-row span:first-child {
-            color: #666;
-        }
-        .summary-card .stats-row span:last-child {
-            font-weight: bold;
-            color: #333;
-        }
+        .summary-card .stats-row span:first-child { color: #666; }
+        .summary-card .stats-row span:last-child { font-weight: bold; color: #333; }
     </style>
 </head>
 <body>
@@ -135,6 +121,7 @@
             <input type="text" id="dateInput" placeholder="تاریخ شمسی را وارد کنید (مثلاً 1405/06/10)">
             <button onclick="searchByDate()">🔍 جستجو</button>
             <button class="secondary" onclick="loadAll()">📋 همه داده‌ها</button>
+            <button class="export" onclick="exportToExcel()">📥 خروجی اکسل</button>
         </div>
         
         <div class="stats">
@@ -281,18 +268,9 @@
                     html += `
                         <div class="summary-card">
                             <h4>${col}</h4>
-                            <div class="stats-row">
-                                <span>میانگین:</span>
-                                <span>${avg.toFixed(2)}</span>
-                            </div>
-                            <div class="stats-row">
-                                <span>کمینه:</span>
-                                <span>${min.toFixed(2)}</span>
-                            </div>
-                            <div class="stats-row">
-                                <span>بیشینه:</span>
-                                <span>${max.toFixed(2)}</span>
-                            </div>
+                            <div class="stats-row"><span>میانگین:</span><span>${avg.toFixed(2)}</span></div>
+                            <div class="stats-row"><span>کمینه:</span><span>${min.toFixed(2)}</span></div>
+                            <div class="stats-row"><span>بیشینه:</span><span>${max.toFixed(2)}</span></div>
                         </div>
                     `;
                 });
@@ -353,6 +331,16 @@
         function loadAll() {
             document.getElementById("dateInput").value = "";
             loadData();
+        }
+        
+        function exportToExcel() {
+            const table = document.querySelector('#results table');
+            if (!table) {
+                alert('داده‌ای برای خروجی وجود ندارد');
+                return;
+            }
+            const wb = XLSX.utils.table_to_book(table);
+            XLSX.writeFile(wb, 'gas_data_export.xlsx');
         }
         
         loadChart();
