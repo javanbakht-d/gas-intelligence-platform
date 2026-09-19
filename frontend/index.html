@@ -73,6 +73,43 @@
             border-radius: 10px;
             border: 1px solid #eee;
         }
+        .summary-section {
+            margin-bottom: 30px;
+        }
+        .summary-section h2 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+        .summary-card {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-right: 4px solid #667eea;
+        }
+        .summary-card h4 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        .summary-card .stats-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 13px;
+        }
+        .summary-card .stats-row span:first-child {
+            color: #666;
+        }
+        .summary-card .stats-row span:last-child {
+            font-weight: bold;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -85,6 +122,13 @@
         
         <div class="chart-container prediction-container">
             <canvas id="predictionChart"></canvas>
+        </div>
+        
+        <div class="summary-section">
+            <h2>📈 خلاصه آمار</h2>
+            <div class="summary-grid" id="summaryGrid">
+                <p class="loading">⏳ در حال بارگذاری...</p>
+            </div>
         </div>
         
         <div class="search-box">
@@ -212,6 +256,53 @@
             }
         }
         
+        async function loadSummary() {
+            try {
+                const response = await fetch(`${API_URL}/api/trend?limit=100`);
+                const data = await response.json();
+                
+                if (data.count === 0) return;
+                
+                const columns = Object.keys(data.data[0]);
+                const numericCols = columns.filter(c => {
+                    const val = data.data[0][c];
+                    return typeof val === 'number' && !c.includes('ردیف');
+                });
+                
+                const summaryGrid = document.getElementById('summaryGrid');
+                let html = '';
+                
+                numericCols.forEach(col => {
+                    const values = data.data.map(r => r[col]).filter(v => v !== null && v !== undefined);
+                    const avg = values.reduce((a, b) => a + b, 0) / values.length;
+                    const min = Math.min(...values);
+                    const max = Math.max(...values);
+                    
+                    html += `
+                        <div class="summary-card">
+                            <h4>${col}</h4>
+                            <div class="stats-row">
+                                <span>میانگین:</span>
+                                <span>${avg.toFixed(2)}</span>
+                            </div>
+                            <div class="stats-row">
+                                <span>کمینه:</span>
+                                <span>${min.toFixed(2)}</span>
+                            </div>
+                            <div class="stats-row">
+                                <span>بیشینه:</span>
+                                <span>${max.toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                summaryGrid.innerHTML = html;
+            } catch (err) {
+                console.error('خطا در بارگذاری خلاصه:', err);
+            }
+        }
+        
         async function loadData(date = null) {
             const resultsDiv = document.getElementById("results");
             resultsDiv.innerHTML = "<p class='loading'>⏳ در حال بارگذاری...</p>";
@@ -266,6 +357,7 @@
         
         loadChart();
         loadPrediction();
+        loadSummary();
         loadData();
     </script>
 </body>
