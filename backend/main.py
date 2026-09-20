@@ -1,6 +1,6 @@
 """
-Gas Intelligence Platform - Backend API نسخه 3.0
-با اندپوینت‌های پیش‌بینی و بنچمارک مدل‌ها
+Gas Intelligence Platform - Backend API نسخه 4.0
+با اندپوینت‌های Temperature Impact Analysis
 """
 
 from fastapi import FastAPI, Query, HTTPException
@@ -9,11 +9,10 @@ from typing import Optional
 import sqlite3
 from datetime import datetime
 
-# === App Setup ===
 app = FastAPI(
     title="Gas Intelligence Platform API",
     description="سامانه هوشمند پایش و تحلیل گاز",
-    version="3.0.0"
+    version="4.0.0"
 )
 
 app.add_middleware(
@@ -28,14 +27,12 @@ DB_FILE = "gas_data.db"
 
 
 def get_db_connection():
-    """ایجاد اتصال به دیتابیس"""
     conn = sqlite3.connect(DB_FILE)
     conn.row_factory = sqlite3.Row
     return conn
 
 
 def safe_float(val):
-    """تبدیل امن به float"""
     if val is None:
         return None
     try:
@@ -49,18 +46,15 @@ def safe_float(val):
 def root():
     return {
         "message": "به پلتفرم هوشمند گاز خوش آمدید!",
-        "version": "3.0.0",
+        "version": "4.0.0",
         "status": "active",
         "features": {
             "analytics": "/api/summary",
-            "stations": "/api/stations/list",
-            "consumption": "/api/consumption/by-province",
-            "trend": "/api/consumption/trend",
-            "anomalies": "/api/anomalies",
-            "production": "/api/production/summary",
             "forecast": "/api/forecast/results",
-            "model_benchmarks": "/api/forecast/benchmarks",
-            "filters": "/api/filters"
+            "temperature_impact": "/api/temperature/summary",
+            "temperature_bins": "/api/temperature/bins",
+            "temperature_by_province": "/api/temperature/by-province",
+            "anomalies": "/api/anomalies"
         }
     }
 
@@ -68,9 +62,7 @@ def root():
 # === Summary KPI ===
 @app.get("/api/summary")
 def get_summary():
-    """KPIهای اصلی سامانه"""
     conn = get_db_connection()
-    
     try:
         cursor = conn.cursor()
         stats = {}
@@ -91,17 +83,10 @@ def get_summary():
         cursor.execute("SELECT COUNT(DISTINCT استان) FROM station_consumption_daily")
         unique_provinces = cursor.fetchone()[0]
         
-        # اطلاعات بهترین مدل
         try:
             cursor.execute("SELECT best_model, best_score FROM model_registry LIMIT 1")
             row = cursor.fetchone()
-            if row:
-                best_model_info = {
-                    "model": row[0],
-                    "mae": safe_float(row[1])
-                }
-            else:
-                best_model_info = None
+            best_model_info = {"model": row[0], "mae": safe_float(row[1])} if row else None
         except:
             best_model_info = None
         
@@ -121,34 +106,23 @@ def get_summary():
 # === Forecast Results ===
 @app.get("/api/forecast/results")
 def get_forecast_results(limit: int = Query(30, le=90)):
-    """نتایج پیش‌بینی ذخیره شده"""
     conn = get_db_connection()
-    
     try:
         cursor = conn.cursor()
         
-        # بررسی وجود جدول
         cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='forecast_results'")
         if not cursor.fetchone():
-            raise HTTPException(status_code=404, detail="پیش‌بینی هنوز اجرا نشده است. لطفاً ابتدا 'python forecasting_engine.py' را اجرا کنید.")
+            raise HTTPException(status_code=404, detail="پیش‌بینی هنوز اجرا نشده است.")
         
-        cursor.execute(f"""
-            SELECT 
-                day,
-                date,
-                point_forecast,
-                lower_80,
-                upper_80,
-                lower_95,
-                upper_95
+        cursor.execute("""
+            SELECT day, date, point_forecast, lower_80, upper_80, lower_95, upper_95
             FROM forecast_results
             ORDER BY day
             LIMIT ?
         """, (limit,))
         
-        rows = cursor.fetchall()
         forecasts = []
-        for row in rows:
+        for row in cursor.fetchall():
             forecasts.append({
                 "day": row[0],
                 "date": row[1],
@@ -159,11 +133,7 @@ def get_forecast_results(limit: int = Query(30, le=90)):
                 "upper_95": safe_float(row[6])
             })
         
-        return {
-            "count": len(forecasts),
-            "horizon": len(forecasts),
-            "data": forecasts
-        }
+        return {"count": len(forecasts), "horizon": len(forecasts), "data": forecasts}
     finally:
         conn.close()
 
@@ -171,9 +141,7 @@ def get_forecast_results(limit: int = Query(30, le=90)):
 # === Model Benchmarks ===
 @app.get("/api/forecast/benchmarks")
 def get_model_benchmarks():
-    """مقایسه عملکرد مدل‌ها"""
     conn = get_db_connection()
-    
     try:
         cursor = conn.cursor()
         
@@ -182,21 +150,13 @@ def get_model_benchmarks():
             raise HTTPException(status_code=404, detail="بنچمارک مدل‌ها هنوز اجرا نشده است.")
         
         cursor.execute("""
-            SELECT 
-                model_name,
-                MAE,
-                RMSE,
-                sMAPE,
-                WAPE,
-                validation_windows,
-                is_best
+            SELECT model_name, MAE, RMSE, sMAPE, WAPE, validation_windows, is_best
             FROM model_benchmarks
             ORDER BY MAE
         """)
         
-        rows = cursor.fetchall()
         benchmarks = []
-        for row in rows:
+        for row in cursor.fetchall():
             benchmarks.append({
                 "model_name": row[0],
                 "MAE": safe_float(row[1]),
@@ -207,7 +167,6 @@ def get_model_benchmarks():
                 "is_best": bool(row[6])
             })
         
-        # اطلاعات مدل برنده
         cursor.execute("SELECT best_model, best_score, metric, training_date FROM model_registry LIMIT 1")
         registry = cursor.fetchone()
         best_model = {
@@ -217,36 +176,155 @@ def get_model_benchmarks():
             "training_date": registry[3] if registry else None,
         }
         
+        return {"count": len(benchmarks), "best_model": best_model, "data": benchmarks}
+    finally:
+        conn.close()
+
+
+# === Temperature Impact Summary ===
+@app.get("/api/temperature/summary")
+def get_temperature_summary():
+    """خلاصه تحلیل اثر دما"""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='temperature_impact_summary'")
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="تحلیل اثر دما هنوز اجرا نشده است.")
+        
+        cursor.execute("""
+            SELECT overall_correlation, interpretation, direction, total_records, generated_at
+            FROM temperature_impact_summary
+        """)
+        row = cursor.fetchone()
+        
+        # کشش دمایی
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='temperature_elasticity'")
+        elasticity = None
+        if cursor.fetchone():
+            cursor.execute("SELECT overall_elasticity, interpretation FROM temperature_elasticity")
+            e_row = cursor.fetchone()
+            if e_row:
+                elasticity = {
+                    "value": safe_float(e_row[0]),
+                    "interpretation": e_row[1]
+                }
+        
+        # آمار Outlier
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='temperature_outlier_stats'")
+        outlier_stats = None
+        if cursor.fetchone():
+            cursor.execute("""
+                SELECT total_with_temp, outliers_count, outliers_pct, temp_min_valid, temp_max_valid
+                FROM temperature_outlier_stats
+            """)
+            o_row = cursor.fetchone()
+            if o_row:
+                outlier_stats = {
+                    "total_with_temp": o_row[0],
+                    "outliers_count": o_row[1],
+                    "outliers_pct": safe_float(o_row[2]),
+                    "temp_min_valid": safe_float(o_row[3]),
+                    "temp_max_valid": safe_float(o_row[4])
+                }
+        
         return {
-            "count": len(benchmarks),
-            "best_model": best_model,
-            "data": benchmarks
+            "correlation": {
+                "overall": safe_float(row[0]),
+                "interpretation": row[1],
+                "direction": row[2],
+                "total_records": row[3]
+            },
+            "elasticity": elasticity,
+            "outlier_stats": outlier_stats,
+            "generated_at": row[4]
         }
+    finally:
+        conn.close()
+
+
+# === Temperature Bins ===
+@app.get("/api/temperature/bins")
+def get_temperature_bins():
+    """بازه‌های دمایی و مصرف متوسط"""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='temperature_bins'")
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="بازه‌های دمایی محاسبه نشده‌اند.")
+        
+        cursor.execute("""
+            SELECT temp_range, temp_start, temp_end, temp_mid, record_count,
+                   avg_consumption, min_consumption, max_consumption, std_consumption
+            FROM temperature_bins
+            ORDER BY temp_mid
+        """)
+        
+        bins = []
+        for row in cursor.fetchall():
+            bins.append({
+                "temp_range": row[0],
+                "temp_start": row[1],
+                "temp_end": row[2],
+                "temp_mid": safe_float(row[3]),
+                "record_count": row[4],
+                "avg_consumption": safe_float(row[5]),
+                "min_consumption": safe_float(row[6]),
+                "max_consumption": safe_float(row[7]),
+                "std_consumption": safe_float(row[8])
+            })
+        
+        return {"count": len(bins), "data": bins}
+    finally:
+        conn.close()
+
+
+# === Temperature by Province ===
+@app.get("/api/temperature/by-province")
+def get_temperature_by_province():
+    """همبستگی دما-مصرف به تفکیک استان"""
+    conn = get_db_connection()
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='temperature_by_province'")
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="تحلیل استانی انجام نشده است.")
+        
+        cursor.execute("""
+            SELECT province, correlation, record_count, avg_temperature, avg_consumption
+            FROM temperature_by_province
+            ORDER BY ABS(correlation) DESC
+        """)
+        
+        provinces = []
+        for row in cursor.fetchall():
+            provinces.append({
+                "province": row[0],
+                "correlation": safe_float(row[1]),
+                "record_count": row[2],
+                "avg_temperature": safe_float(row[3]),
+                "avg_consumption": safe_float(row[4])
+            })
+        
+        return {"count": len(provinces), "data": provinces}
     finally:
         conn.close()
 
 
 # === Stations List ===
 @app.get("/api/stations/list")
-def get_stations_list(
-    province: Optional[str] = None,
-    limit: int = Query(100, le=1000)
-):
-    """لیست ایستگاه‌ها با آمار مصرف"""
+def get_stations_list(province: Optional[str] = None, limit: int = Query(100, le=1000)):
     conn = get_db_connection()
-    
     try:
         query = """
-            SELECT 
-                نام_ایستگاه,
-                استان,
-                شهر,
-                COUNT(*) as record_count,
-                AVG(میزان_مصرف) as avg_consumption,
-                SUM(میزان_مصرف) as total_consumption,
-                MIN(میزان_مصرف) as min_consumption,
-                MAX(میزان_مصرف) as max_consumption,
-                COUNT(DISTINCT نوع_مصرف) as consumption_types
+            SELECT نام_ایستگاه, استان, شهر, COUNT(*) as record_count,
+                   AVG(میزان_مصرف) as avg_consumption, SUM(میزان_مصرف) as total_consumption,
+                   MIN(میزان_مصرف) as min_consumption, MAX(میزان_مصرف) as max_consumption,
+                   COUNT(DISTINCT نوع_مصرف) as consumption_types
             FROM station_consumption_daily
         """
         
@@ -260,27 +338,17 @@ def get_stations_list(
         
         cursor = conn.cursor()
         cursor.execute(query, params)
-        rows = cursor.fetchall()
         
         stations = []
-        for row in rows:
+        for row in cursor.fetchall():
             stations.append({
-                "station": row[0],
-                "province": row[1],
-                "city": row[2],
-                "record_count": row[3],
-                "avg_consumption": safe_float(row[4]),
-                "total_consumption": safe_float(row[5]),
-                "min_consumption": safe_float(row[6]),
-                "max_consumption": safe_float(row[7]),
-                "consumption_types": row[8]
+                "station": row[0], "province": row[1], "city": row[2],
+                "record_count": row[3], "avg_consumption": safe_float(row[4]),
+                "total_consumption": safe_float(row[5]), "min_consumption": safe_float(row[6]),
+                "max_consumption": safe_float(row[7]), "consumption_types": row[8]
             })
         
-        return {
-            "count": len(stations),
-            "filter": {"province": province},
-            "data": stations
-        }
+        return {"count": len(stations), "filter": {"province": province}, "data": stations}
     finally:
         conn.close()
 
@@ -288,33 +356,23 @@ def get_stations_list(
 # === Consumption by Province ===
 @app.get("/api/consumption/by-province")
 def get_consumption_by_province():
-    """مصرف به تفکیک استان"""
     conn = get_db_connection()
-    
     try:
         cursor = conn.cursor()
         cursor.execute("""
-            SELECT 
-                استان,
-                COUNT(*) as record_count,
-                COUNT(DISTINCT نام_ایستگاه) as station_count,
-                AVG(میزان_مصرف) as avg_consumption,
-                SUM(میزان_مصرف) as total_consumption
+            SELECT استان, COUNT(*) as record_count, COUNT(DISTINCT نام_ایستگاه) as station_count,
+                   AVG(میزان_مصرف) as avg_consumption, SUM(میزان_مصرف) as total_consumption
             FROM station_consumption_daily
             WHERE استان IS NOT NULL
             GROUP BY استان
             ORDER BY total_consumption DESC
         """)
         
-        rows = cursor.fetchall()
         provinces = []
-        for row in rows:
+        for row in cursor.fetchall():
             provinces.append({
-                "province": row[0],
-                "record_count": row[1],
-                "station_count": row[2],
-                "avg_consumption": safe_float(row[3]),
-                "total_consumption": safe_float(row[4])
+                "province": row[0], "record_count": row[1], "station_count": row[2],
+                "avg_consumption": safe_float(row[3]), "total_consumption": safe_float(row[4])
             })
         
         return {"count": len(provinces), "data": provinces}
@@ -324,23 +382,12 @@ def get_consumption_by_province():
 
 # === Consumption Trend ===
 @app.get("/api/consumption/trend")
-def get_consumption_trend(
-    days: int = Query(30, le=365),
-    province: Optional[str] = None,
-    station: Optional[str] = None
-):
-    """روند مصرف روزانه"""
+def get_consumption_trend(days: int = Query(30, le=365), province: Optional[str] = None, station: Optional[str] = None):
     conn = get_db_connection()
-    
     try:
         query = """
-            SELECT 
-                gregorian_date,
-                shamsi_year,
-                shamsi_month,
-                shamsi_day,
-                SUM(میزان_مصرف) as daily_consumption,
-                COUNT(*) as record_count
+            SELECT gregorian_date, shamsi_year, shamsi_month, shamsi_day,
+                   SUM(میزان_مصرف) as daily_consumption, COUNT(*) as record_count
             FROM station_consumption_daily
             WHERE gregorian_date IS NOT NULL
         """
@@ -353,19 +400,14 @@ def get_consumption_trend(
             query += " AND نام_ایستگاه = ?"
             params.append(station)
         
-        query += """
-            GROUP BY gregorian_date, shamsi_year, shamsi_month, shamsi_day
-            ORDER BY gregorian_date DESC
-            LIMIT ?
-        """
+        query += " GROUP BY gregorian_date, shamsi_year, shamsi_month, shamsi_day ORDER BY gregorian_date DESC LIMIT ?"
         params.append(days)
         
         cursor = conn.cursor()
         cursor.execute(query, params)
-        rows = cursor.fetchall()
         
         trend = []
-        for row in rows:
+        for row in cursor.fetchall():
             trend.append({
                 "gregorian_date": row[0],
                 "shamsi_date": f"{row[1]}/{row[2]:02d}/{row[3]:02d}",
@@ -374,73 +416,41 @@ def get_consumption_trend(
             })
         
         trend.reverse()
-        
-        return {
-            "days": days,
-            "filter": {"province": province, "station": station},
-            "data": trend
-        }
+        return {"days": days, "filter": {"province": province, "station": station}, "data": trend}
     finally:
         conn.close()
 
 
 # === Anomaly Detection ===
 @app.get("/api/anomalies")
-def get_anomalies(
-    threshold: float = Query(100.0, description="آستانه اختلاف دما"),
-    limit: int = Query(100, le=1000)
-):
-    """تشخیص ناهنجاری در اختلاف دمای دو نقطه"""
+def get_anomalies(threshold: float = Query(100.0), limit: int = Query(100, le=1000)):
     conn = get_db_connection()
-    
     try:
         cursor = conn.cursor()
-        
         cursor.execute("""
-            SELECT 
-                gregorian_date,
-                shamsi_year,
-                shamsi_month,
-                shamsi_day,
-                نام_ایستگاه,
-                استان,
-                دمای_گاز_ساعت_6_صبح___نقطه_1,
-                دمای_گاز_ساعت_6_صبح___نقطه_2,
-                اختلاف_دمای_ساعت_6_صبح,
-                میزان_مصرف
+            SELECT gregorian_date, shamsi_year, shamsi_month, shamsi_day, نام_ایستگاه, استان,
+                   دمای_گاز_ساعت_6_صبح___نقطه_1, دمای_گاز_ساعت_6_صبح___نقطه_2,
+                   اختلاف_دمای_ساعت_6_صبح, میزان_مصرف
             FROM station_consumption_daily
-            WHERE اختلاف_دمای_ساعت_6_صبح IS NOT NULL
-              AND ABS(اختلاف_دمای_ساعت_6_صبح) > ?
+            WHERE اختلاف_دمای_ساعت_6_صبح IS NOT NULL AND ABS(اختلاف_دمای_ساعت_6_صبح) > ?
             ORDER BY ABS(اختلاف_دمای_ساعت_6_صبح) DESC
             LIMIT ?
         """, (threshold, limit))
         
-        rows = cursor.fetchall()
         anomalies = []
-        for row in rows:
+        for row in cursor.fetchall():
             diff = safe_float(row[8])
             severity = "Critical" if abs(diff) > 500 else "High" if abs(diff) > 200 else "Medium"
-            
             anomalies.append({
-                "type": "temperature_discrepancy",
-                "severity": severity,
-                "gregorian_date": row[0],
-                "shamsi_date": f"{row[1]}/{row[2]:02d}/{row[3]:02d}",
-                "station": row[4],
-                "province": row[5],
-                "temp_point_1": safe_float(row[6]),
-                "temp_point_2": safe_float(row[7]),
-                "temperature_diff": diff,
-                "consumption": safe_float(row[9]),
-                "description": f"اختلاف دمای {diff:.1f} درجه بین دو نقطه اندازه‌گیری - غیرعادی"
+                "type": "temperature_discrepancy", "severity": severity,
+                "gregorian_date": row[0], "shamsi_date": f"{row[1]}/{row[2]:02d}/{row[3]:02d}",
+                "station": row[4], "province": row[5],
+                "temp_point_1": safe_float(row[6]), "temp_point_2": safe_float(row[7]),
+                "temperature_diff": diff, "consumption": safe_float(row[9]),
+                "description": f"اختلاف دمای {diff:.1f} درجه بین دو نقطه اندازه‌گیری"
             })
         
-        return {
-            "count": len(anomalies),
-            "threshold": threshold,
-            "total_anomalies_detected": len(anomalies),
-            "data": anomalies
-        }
+        return {"count": len(anomalies), "threshold": threshold, "data": anomalies}
     finally:
         conn.close()
 
@@ -448,79 +458,34 @@ def get_anomalies(
 # === Production Summary ===
 @app.get("/api/production/summary")
 def get_production_summary():
-    """خلاصه تولید پالایشگاه‌ها"""
     conn = get_db_connection()
-    
     try:
         cursor = conn.cursor()
         
         cursor.execute("""
-            SELECT 
-                نام_پالایشگاه,
-                COUNT(*) as record_count,
-                SUM(میزان_تولید) as total_production,
-                AVG(میزان_تولید) as avg_production
-            FROM production_daily
-            WHERE نام_پالایشگاه IS NOT NULL
-            GROUP BY نام_پالایشگاه
-            ORDER BY total_production DESC
+            SELECT نام_پالایشگاه, COUNT(*), SUM(میزان_تولید), AVG(میزان_تولید)
+            FROM production_daily WHERE نام_پالایشگاه IS NOT NULL
+            GROUP BY نام_پالایشگاه ORDER BY SUM(میزان_تولید) DESC
         """)
         
         refineries = []
         for row in cursor.fetchall():
             refineries.append({
-                "refinery": row[0],
-                "record_count": row[1],
-                "total_production": safe_float(row[2]),
-                "avg_production": safe_float(row[3])
+                "refinery": row[0], "record_count": row[1],
+                "total_production": safe_float(row[2]), "avg_production": safe_float(row[3])
             })
         
         cursor.execute("""
-            SELECT 
-                نام_محصول,
-                COUNT(*) as record_count,
-                SUM(میزان_تولید) as total_production
-            FROM production_daily
-            WHERE نام_محصول IS NOT NULL
-            GROUP BY نام_محصول
-            ORDER BY total_production DESC
+            SELECT نام_محصول, COUNT(*), SUM(میزان_تولید)
+            FROM production_daily WHERE نام_محصول IS NOT NULL
+            GROUP BY نام_محصول ORDER BY SUM(میزان_تولید) DESC
         """)
         
         products = []
         for row in cursor.fetchall():
-            products.append({
-                "product": row[0],
-                "record_count": row[1],
-                "total_production": safe_float(row[2])
-            })
+            products.append({"product": row[0], "record_count": row[1], "total_production": safe_float(row[2])})
         
-        return {
-            "by_refinery": refineries,
-            "by_product": products
-        }
-    finally:
-        conn.close()
-
-
-# === Metadata ===
-@app.get("/api/metadata")
-def get_metadata():
-    """اطلاعات متادیتای سامانه"""
-    conn = get_db_connection()
-    
-    try:
-        cursor = conn.cursor()
-        cursor.execute("SELECT key, value FROM metadata")
-        
-        metadata = {}
-        for row in cursor.fetchall():
-            metadata[row[0]] = row[1]
-        
-        return {
-            "metadata": metadata,
-            "api_version": "3.0.0",
-            "database_file": DB_FILE
-        }
+        return {"by_refinery": refineries, "by_product": products}
     finally:
         conn.close()
 
@@ -528,9 +493,7 @@ def get_metadata():
 # === Global Filters ===
 @app.get("/api/filters")
 def get_filters():
-    """لیست فیلترهای موجود برای داشبورد"""
     conn = get_db_connection()
-    
     try:
         cursor = conn.cursor()
         
@@ -546,12 +509,7 @@ def get_filters():
         cursor.execute("SELECT DISTINCT shamsi_year FROM station_consumption_daily WHERE shamsi_year IS NOT NULL ORDER BY shamsi_year")
         years = [row[0] for row in cursor.fetchall()]
         
-        return {
-            "provinces": provinces,
-            "consumption_types": consumption_types,
-            "sources": sources,
-            "years": years
-        }
+        return {"provinces": provinces, "consumption_types": consumption_types, "sources": sources, "years": years}
     finally:
         conn.close()
 

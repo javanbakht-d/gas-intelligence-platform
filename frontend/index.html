@@ -5,9 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پلتفرم هوشمند گاز | Energy Intelligence Platform</title>
     
-    <!-- Vazirmatn Font -->
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
-    
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root {
@@ -69,18 +67,8 @@
             gap: 15px;
         }
 
-        .header-title {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .header-title h1 {
-            font-size: 24px;
-            color: var(--text-primary);
-            font-weight: 700;
-        }
-
+        .header-title { display: flex; align-items: center; gap: 15px; }
+        .header-title h1 { font-size: 24px; color: var(--text-primary); font-weight: 700; }
         .header-title .logo { font-size: 32px; }
 
         .header-meta {
@@ -151,6 +139,18 @@
         .btn-primary:hover { background: var(--accent-hover); }
         .btn-secondary { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); }
 
+        .section-title {
+            font-size: 20px;
+            color: var(--text-primary);
+            margin: 30px 0 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--accent);
+        }
+
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -168,29 +168,14 @@
         }
 
         .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
-
-        .kpi-card .kpi-label {
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
-
-        .kpi-card .kpi-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-        }
-
-        .kpi-card .kpi-sub {
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
+        .kpi-card .kpi-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; }
+        .kpi-card .kpi-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .kpi-card .kpi-sub { font-size: 12px; color: var(--text-secondary); }
 
         .kpi-card.success { border-right-color: var(--success); }
         .kpi-card.warning { border-right-color: var(--warning); }
         .kpi-card.danger { border-right-color: var(--danger); }
+        .kpi-card.info { border-right-color: #8b5cf6; }
 
         .charts-grid {
             display: grid;
@@ -208,9 +193,7 @@
             box-shadow: var(--shadow);
         }
 
-        .chart-card.full-width {
-            grid-column: 1 / -1;
-        }
+        .chart-card.full-width { grid-column: 1 / -1; }
 
         .chart-card h3 {
             font-size: 16px;
@@ -220,6 +203,14 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .chart-card h3 .subtitle {
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 400;
+            margin-right: auto;
         }
 
         .chart-container { position: relative; height: 300px; }
@@ -281,11 +272,7 @@
         [data-theme="dark"] .badge-medium { background: #1e3a8a; color: #93c5fd; }
         [data-theme="dark"] .badge-success { background: #064e3b; color: #6ee7b7; }
 
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-        }
+        .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
 
         .spinner {
             display: inline-block;
@@ -299,29 +286,8 @@
 
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .empty-state {
-            text-align: center;
-            padding: 40px;
-            color: var(--text-secondary);
-        }
-
-        .empty-state .icon {
-            font-size: 48px;
-            margin-bottom: 10px;
-            opacity: 0.5;
-        }
-
-        .section-title {
-            font-size: 20px;
-            color: var(--text-primary);
-            margin: 30px 0 15px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--accent);
-        }
+        .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); }
+        .empty-state .icon { font-size: 48px; margin-bottom: 10px; opacity: 0.5; }
 
         @media (max-width: 768px) {
             .header { flex-direction: column; align-items: flex-start; }
@@ -338,7 +304,7 @@
                 <div>
                     <h1>پلتفرم هوشمند گاز</h1>
                     <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
-                        Energy Intelligence Platform | نسخه ۳.۰
+                        Energy Intelligence Platform | نسخه ۴.۰
                     </div>
                 </div>
             </div>
@@ -382,28 +348,22 @@
         <div class="charts-grid">
             <div class="chart-card">
                 <h3>📈 روند مصرف روزانه (۶۰ روز اخیر)</h3>
-                <div class="chart-container">
-                    <canvas id="trendChart"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="trendChart"></canvas></div>
             </div>
             <div class="chart-card">
                 <h3>🏛️ مصرف به تفکیک استان (Top 10)</h3>
-                <div class="chart-container">
-                    <canvas id="provinceChart"></canvas>
-                </div>
+                <div class="chart-container"><canvas id="provinceChart"></canvas></div>
             </div>
         </div>
 
         <!-- Forecast Section -->
-        <div class="section-title">🔮 پیش‌بینی مصرف (Autoregressive)</div>
+        <div class="section-title">🔮 پیش‌بینی مصرف</div>
         <div class="chart-card full-width" style="margin-bottom: 20px;">
             <h3>
                 🔮 پیش‌بینی ۳۰ روز آینده با بازه اطمینان
-                <span id="forecastModelInfo" style="font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-right: auto;"></span>
+                <span id="forecastModelInfo" class="subtitle"></span>
             </h3>
-            <div class="chart-container large">
-                <canvas id="forecastChart"></canvas>
-            </div>
+            <div class="chart-container large"><canvas id="forecastChart"></canvas></div>
         </div>
 
         <!-- Model Benchmarks -->
@@ -414,6 +374,31 @@
             </h3>
             <div id="benchmarkTable">
                 <div class="loading"><div class="spinner"></div></div>
+            </div>
+        </div>
+
+        <!-- Temperature Impact Section -->
+        <div class="section-title">🌡️ تحلیل اثر دما بر مصرف</div>
+        
+        <!-- Temperature KPIs -->
+        <div class="kpi-grid" id="tempKpiGrid">
+            <div class="loading"><div class="spinner"></div></div>
+        </div>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>
+                    📊 مصرف متوسط در بازه‌های دمایی
+                    <span class="subtitle">هر نقطه = میانگین مصرف در آن بازه دما</span>
+                </h3>
+                <div class="chart-container"><canvas id="tempBinsChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <h3>
+                    🏛️ حساسیت استان‌ها به دما
+                    <span class="subtitle">Correlation دما-مصرف</span>
+                </h3>
+                <div class="chart-container"><canvas id="tempProvinceChart"></canvas></div>
             </div>
         </div>
 
@@ -435,9 +420,10 @@
         let trendChart = null;
         let provinceChart = null;
         let forecastChart = null;
+        let tempBinsChart = null;
+        let tempProvinceChart = null;
         let globalFilters = { year: '', province: '', type: '' };
 
-        // Theme Toggle
         function toggleTheme() {
             const current = document.body.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
@@ -449,7 +435,6 @@
         const savedTheme = localStorage.getItem('theme') || 'light';
         document.body.setAttribute('data-theme', savedTheme);
 
-        // Number formatting
         function formatNumber(num, decimals = 0) {
             if (num === null || num === undefined) return '-';
             return new Intl.NumberFormat('fa-IR', {
@@ -458,7 +443,6 @@
             }).format(num);
         }
 
-        // Load Filters
         async function loadFilters() {
             try {
                 const response = await fetch(`${API_URL}/api/filters`);
@@ -489,7 +473,6 @@
             }
         }
 
-        // Load KPIs
         async function loadKPIs() {
             try {
                 const response = await fetch(`${API_URL}/api/summary`);
@@ -501,7 +484,7 @@
                 document.getElementById('lastUpdate').textContent = `آخرین داده: ${lastDate}`;
                 
                 const bestModelHtml = data.best_model 
-                    ? `${data.best_model.model} (MAE: ${formatNumber(data.best_model.mae, 0)})`
+                    ? `${data.best_model.model}`
                     : 'در حال آموزش...';
                 
                 kpiGrid.innerHTML = `
@@ -525,15 +508,15 @@
                         <div class="kpi-value">${formatNumber(data.data_counts.station_consumption_daily)}</div>
                         <div class="kpi-sub">مصرف روزانه</div>
                     </div>
-                    <div class="kpi-card">
-                        <div class="kpi-label">رکوردهای عملیاتی</div>
-                        <div class="kpi-value">${formatNumber(data.data_counts.operation_daily_report)}</div>
-                        <div class="kpi-sub">گزارش کلان</div>
+                    <div class="kpi-card info">
+                        <div class="kpi-label">بهترین مدل پیش‌بینی</div>
+                        <div class="kpi-value" style="font-size: 18px;">${bestModelHtml}</div>
+                        <div class="kpi-sub">${data.best_model ? 'MAE: ' + formatNumber(data.best_model.mae, 0) : ''}</div>
                     </div>
                     <div class="kpi-card danger">
-                        <div class="kpi-label">بهترین مدل</div>
-                        <div class="kpi-value" style="font-size: 16px;">${bestModelHtml}</div>
-                        <div class="kpi-sub">مدل انتخاب شده</div>
+                        <div class="kpi-label">رکوردهای تولید</div>
+                        <div class="kpi-value">${formatNumber(data.data_counts.production_daily)}</div>
+                        <div class="kpi-sub">پالایشگاه‌ها</div>
                     </div>
                 `;
             } catch (err) {
@@ -541,7 +524,6 @@
             }
         }
 
-        // Load Trend Chart
         async function loadTrendChart() {
             try {
                 let url = `${API_URL}/api/consumption/trend?days=60`;
@@ -600,7 +582,6 @@
             }
         }
 
-        // Load Province Chart
         async function loadProvinceChart() {
             try {
                 const response = await fetch(`${API_URL}/api/consumption/by-province`);
@@ -653,7 +634,6 @@
             }
         }
 
-        // Load Forecast Chart
         async function loadForecastChart() {
             try {
                 const [forecastRes, benchmarkRes] = await Promise.all([
@@ -666,16 +646,14 @@
                 
                 if (forecastChart) forecastChart.destroy();
                 
-                // نمایش اطلاعات بهترین مدل
                 if (benchmarkData.best_model) {
                     document.getElementById('forecastModelInfo').textContent = 
-                        `مدل: ${benchmarkData.best_model.name} | خطا (MAE): ${formatNumber(benchmarkData.best_model.score, 0)}`;
+                        `مدل: ${benchmarkData.best_model.name} | MAE: ${formatNumber(benchmarkData.best_model.score, 0)}`;
                 }
                 
                 const ctx = document.getElementById('forecastChart').getContext('2d');
                 const isDark = document.body.getAttribute('data-theme') === 'dark';
                 
-                // نمایش روزهای آینده
                 const labels = forecastData.data.map(d => `روز ${d.day}`);
                 const points = forecastData.data.map(d => d.point_forecast);
                 const upper95 = forecastData.data.map(d => d.upper_95);
@@ -773,20 +751,16 @@
                 });
             } catch (err) {
                 console.error('خطا در نمودار پیش‌بینی:', err);
-                document.getElementById('forecastChart').parentElement.innerHTML = 
-                    '<div class="empty-state"><div class="icon">⚠️</div><p>خطا در بارگذاری پیش‌بینی</p></div>';
             }
         }
 
-        // Load Model Benchmarks
         async function loadBenchmarks() {
             try {
                 const response = await fetch(`${API_URL}/api/forecast/benchmarks`);
                 const data = await response.json();
                 
                 const container = document.getElementById('benchmarkTable');
-                document.getElementById('benchmarkInfo').textContent = 
-                    `${data.count} مدل مقایسه شده`;
+                document.getElementById('benchmarkInfo').textContent = `${data.count} مدل مقایسه شده`;
                 
                 let html = `
                     <table>
@@ -797,8 +771,7 @@
                                 <th>MAE</th>
                                 <th>RMSE</th>
                                 <th>sMAPE %</th>
-                                <th>WAPE %</th>
-                                <th>پنجره‌های اعتبارسنجی</th>
+                                <th>پنجره‌ها</th>
                                 <th>وضعیت</th>
                             </tr>
                         </thead>
@@ -818,9 +791,8 @@
                             <td>${formatNumber(m.MAE, 0)}</td>
                             <td>${formatNumber(m.RMSE, 0)}</td>
                             <td>${formatNumber(m.sMAPE, 2)}</td>
-                            <td>${m.WAPE ? formatNumber(m.WAPE, 2) : '-'}</td>
                             <td>${m.validation_windows}</td>
-                            <td>${isBest ? '✅ انتخاب شده' : '-'}</td>
+                            <td>${isBest ? '✅' : '-'}</td>
                         </tr>
                     `;
                 });
@@ -832,7 +804,158 @@
             }
         }
 
-        // Load Anomalies
+        async function loadTemperatureAnalysis() {
+            try {
+                const [summaryRes, binsRes, provinceRes] = await Promise.all([
+                    fetch(`${API_URL}/api/temperature/summary`),
+                    fetch(`${API_URL}/api/temperature/bins`),
+                    fetch(`${API_URL}/api/temperature/by-province`)
+                ]);
+                
+                const summary = await summaryRes.json();
+                const bins = await binsRes.json();
+                const provinces = await provinceRes.json();
+                
+                // === Temperature KPIs ===
+                const tempKpiGrid = document.getElementById('tempKpiGrid');
+                
+                const corrDirection = summary.correlation.overall < 0 ? '↓ معکوس' : '↑ مستقیم';
+                const elasticityText = summary.elasticity 
+                    ? summary.elasticity.interpretation 
+                    : 'محاسبه نشده';
+                
+                tempKpiGrid.innerHTML = `
+                    <div class="kpi-card info">
+                        <div class="kpi-label">همبستگی دما-مصرف</div>
+                        <div class="kpi-value">${formatNumber(summary.correlation.overall, 3)}</div>
+                        <div class="kpi-sub">${summary.correlation.interpretation} - ${corrDirection}</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">کشش دمایی</div>
+                        <div class="kpi-value">${summary.elasticity ? formatNumber(summary.elasticity.value, 3) : '-'}</div>
+                        <div class="kpi-sub" style="font-size: 11px;">${elasticityText}</div>
+                    </div>
+                    <div class="kpi-card warning">
+                        <div class="kpi-label">Outlierهای حذف‌شده</div>
+                        <div class="kpi-value">${summary.outlier_stats ? formatNumber(summary.outlier_stats.outliers_count) : '-'}</div>
+                        <div class="kpi-sub">${summary.outlier_stats ? formatNumber(summary.outlier_stats.outliers_pct, 2) + '% از داده‌ها' : ''}</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <div class="kpi-label">رکوردهای معتبر</div>
+                        <div class="kpi-value">${formatNumber(summary.correlation.total_records)}</div>
+                        <div class="kpi-sub">پس از فیلتر کیفیت</div>
+                    </div>
+                `;
+                
+                // === Temperature Bins Chart ===
+                if (tempBinsChart) tempBinsChart.destroy();
+                
+                const ctxBins = document.getElementById('tempBinsChart').getContext('2d');
+                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                
+                tempBinsChart = new Chart(ctxBins, {
+                    type: 'bar',
+                    data: {
+                        labels: bins.data.map(b => b.temp_range),
+                        datasets: [{
+                            label: 'مصرف متوسط',
+                            data: bins.data.map(b => b.avg_consumption),
+                            backgroundColor: bins.data.map(b => {
+                                if (b.avg_consumption > bins.data.reduce((max, x) => Math.max(max, x.avg_consumption), 0) * 0.8) {
+                                    return isDark ? '#ef4444' : '#dc2626';
+                                } else if (b.avg_consumption < bins.data.reduce((min, x) => Math.min(min, x.avg_consumption), Infinity) * 1.2) {
+                                    return isDark ? '#3b82f6' : '#2563eb';
+                                }
+                                return isDark ? '#8b5cf6' : '#7c3aed';
+                            }),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                rtl: true,
+                                titleFont: { family: 'Vazirmatn' },
+                                bodyFont: { family: 'Vazirmatn' },
+                                callbacks: {
+                                    title: ctx => `بازه دما: ${ctx[0].label}°C`,
+                                    label: ctx => `مصرف متوسط: ${formatNumber(ctx.parsed.y, 0)}`,
+                                    afterLabel: ctx => `تعداد رکورد: ${formatNumber(bins.data[ctx[0].dataIndex].record_count)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, callback: v => formatNumber(v, 0) },
+                                grid: { color: isDark ? '#334155' : '#e2e8f0' }
+                            },
+                            x: {
+                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, maxRotation: 45 },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+                
+                // === Province Correlation Chart ===
+                if (tempProvinceChart) tempProvinceChart.destroy();
+                
+                const ctxProv = document.getElementById('tempProvinceChart').getContext('2d');
+                const top15 = provinces.data.slice(0, 15);
+                
+                tempProvinceChart = new Chart(ctxProv, {
+                    type: 'bar',
+                    data: {
+                        labels: top15.map(p => p.province),
+                        datasets: [{
+                            label: 'Correlation',
+                            data: top15.map(p => p.correlation),
+                            backgroundColor: top15.map(p => {
+                                if (p.correlation > 0) return isDark ? '#ef4444' : '#dc2626';
+                                return isDark ? '#3b82f6' : '#2563eb';
+                            }),
+                            borderRadius: 4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                rtl: true,
+                                titleFont: { family: 'Vazirmatn' },
+                                bodyFont: { family: 'Vazirmatn' },
+                                callbacks: {
+                                    label: ctx => `همبستگی: ${formatNumber(ctx.parsed.x, 3)}`,
+                                    afterLabel: ctx => `رکوردها: ${formatNumber(top15[ctx.dataIndex].record_count)}`
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' } },
+                                grid: { color: isDark ? '#334155' : '#e2e8f0' }
+                            },
+                            y: {
+                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn', size: 11 } },
+                                grid: { display: false }
+                            }
+                        }
+                    }
+                });
+                
+            } catch (err) {
+                console.error('خطا در تحلیل دما:', err);
+                document.getElementById('tempKpiGrid').innerHTML = 
+                    '<div class="empty-state"><div class="icon">⚠️</div><p>خطا در بارگذاری تحلیل دما</p></div>';
+            }
+        }
+
         async function loadAnomalies() {
             try {
                 const response = await fetch(`${API_URL}/api/anomalies?threshold=100&limit=20`);
@@ -857,7 +980,6 @@
                                 <th>دمای نقطه ۱</th>
                                 <th>دمای نقطه ۲</th>
                                 <th>اختلاف</th>
-                                <th>مصرف</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -875,7 +997,6 @@
                             <td>${formatNumber(a.temp_point_1, 1)}</td>
                             <td>${formatNumber(a.temp_point_2, 1)}</td>
                             <td><strong>${formatNumber(a.temperature_diff, 1)}</strong></td>
-                            <td>${formatNumber(a.consumption, 0)}</td>
                         </tr>
                     `;
                 });
@@ -891,6 +1012,7 @@
             loadTrendChart();
             loadProvinceChart();
             loadForecastChart();
+            loadTemperatureAnalysis();
         }
 
         function applyFilters() {
@@ -915,6 +1037,7 @@
             await loadProvinceChart();
             await loadForecastChart();
             await loadBenchmarks();
+            await loadTemperatureAnalysis();
             await loadAnomalies();
         }
 
