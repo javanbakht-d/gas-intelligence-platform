@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>گزارش کیفیت داده‌ها</title>
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Vazirmatn', Tahoma, sans-serif;
+            background: #f5f7fa;
+            color: #1a202c;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+        
+        .page {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .report-header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 4px solid #2563eb;
+            margin-bottom: 40px;
+        }
+        
+        .report-header .logo {
+            font-size: 60px;
+            margin-bottom: 10px;
+        }
+        
+        .report-header h1 {
+            font-size: 28px;
+            color: #1e3a8a;
+            margin-bottom: 10px;
+        }
+        
+        .report-header .subtitle {
+            color: #6b7280;
+            font-size: 15px;
+        }
+        
+        .report-meta {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 25px;
+            padding: 15px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .report-meta .meta-item {
+            text-align: center;
+        }
+        
+        .report-meta .meta-label {
+            font-size: 11px;
+            color: #6b7280;
+        }
+        
+        .report-meta .meta-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        
+        /* Sections */
+        .section {
+            margin-bottom: 40px;
+            page-break-inside: avoid;
+        }
+        
+        .section-title {
+            font-size: 20px;
+            color: #1e3a8a;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-title .icon {
+            font-size: 24px;
+        }
+        
+        /* Score Cards */
+        .score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+        
+        .score-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .score-card .score-value {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .score-card .score-label {
+            font-size: 13px;
+            color: #6b7280;
+        }
+        
+        .score-card .score-status {
+            display: inline-block;
+            padding: 3px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 700;
+            margin-top: 10px;
+            color: white;
+        }
+        
+        /* Score Bar */
+        .score-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        
+        .score-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.5s;
+        }
+        
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 13px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            padding: 12px 15px;
+            text-align: right;
+            font-weight: 700;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: right;
+        }
+        
+        tbody tr:nth-child(even) {
+            background: #f9fafb;
+        }
+        
+        tbody tr:hover {
+            background: #eff6ff;
+        }
+        
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        
+        .badge-critical { background: #fee2e2; color: #991b1b; }
+        .badge-high { background: #fef3c7; color: #92400e; }
+        .badge-medium { background: #dbeafe; color: #1e40af; }
+        .badge-good { background: #d1fae5; color: #065f46; }
+        
+        /* Info Box */
+        .info-box {
+            background: #f0f9ff;
+            border-right: 4px solid #2563eb;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .warning-box {
+            background: #fef3c7;
+            border-right: 4px solid #f59e0b;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .critical-box {
+            background: #fee2e2;
+            border-right: 4px solid #ef4444;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        
+        .box-title {
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* List */
+        .checklist {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .checklist li {
+            padding: 10px 15px;
+            margin-bottom: 8px;
+            background: #f9fafb;
+            border-radius: 8px;
+            border-right: 3px solid #2563eb;
+        }
+        
+        .checklist li.priority-critical { border-right-color: #ef4444; }
+        .checklist li.priority-high { border-right-color: #f59e0b; }
+        .checklist li.priority-medium { border-right-color: #10b981; }
+        
+        .checklist .item-title {
+            font-weight: 700;
+            color: #1e3a8a;
+        }
+        
+        .checklist .item-desc {
+            color: #6b7280;
+            font-size: 13px;
+        }
+        
+        /* Footer */
+        .report-footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            text-align: center;
+            color: #6b7280;
+            font-size: 12px;
+        }
+        
+        /* Print Button */
+        .print-controls {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 14px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+        
+        /* Print Styles */
+        @media print {
+            body { background: white; }
+            .page { 
+                max-width: 100%; 
+                padding: 30px;
+                box-shadow: none;
+            }
+            .print-controls { display: none; }
+            .section { page-break-inside: avoid; }
+            table { font-size: 11px; }
+            th, td { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="print-controls">
+        <button class="btn btn-primary" onclick="window.print()">🖨️ ذخیره به صورت PDF</button>
+    </div>
+    
+    <div class="page">
+        <!-- Header -->
+        <div class="report-header">
+            <div class="logo">🔥</div>
+            <h1>گزارش جامع تحلیل کیفیت داده‌ها</h1>
+            <div class="subtitle">سامانه هوشمند پایش و تحلیل گاز</div>
+            
+            <div class="report-meta">
+                <div class="meta-item">
+                    <div class="meta-label">تاریخ تولید</div>
+                    <div class="meta-value">1405/06/29</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">تعداد کل رکوردها</div>
+                    <div class="meta-value">711,805</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">تعداد شیت‌ها</div>
+                    <div class="meta-value">3</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">امتیاز کیفیت کلی</div>
+                    <div class="meta-value">86.1 از ۱۰۰</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Executive Summary -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">📊</span>
+                <span>۱. خلاصه اجرایی</span>
+            </div>
+            
+            <div class="score-grid">
+
+                <div class="score-card">
+                    <div class="score-value" style="color: #10b981;">87.4</div>
+                    <div class="score-label">GasOperationDailyReport</div>
+                    <div class="score-status" style="background: #10b981;">عالی</div>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" style="width: 87.4%; background: #10b981;"></div>
+                    </div>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-value" style="color: #f59e0b;">75.0</div>
+                    <div class="score-label">GasOperationDailyStationReport</div>
+                    <div class="score-status" style="background: #f59e0b;">خوب</div>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" style="width: 75.0%; background: #f59e0b;"></div>
+                    </div>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-value" style="color: #10b981;">95.8</div>
+                    <div class="score-label">ViewProdDailyForNaft</div>
+                    <div class="score-status" style="background: #10b981;">عالی</div>
+                    <div class="score-bar">
+                        <div class="score-bar-fill" style="width: 95.8%; background: #10b981;"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="info-box">
+                <div class="box-title">🟢 وضعیت کلی</div>
+                <div>کیفیت داده‌ها خوب است اما نیاز به بهبود دارد.</div>
+            </div>
+        </div>
+        
+        <!-- Data Quantity -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">📈</span>
+                <span>۲. کمیت داده‌ها</span>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>شیت</th>
+                        <th>تعداد رکورد</th>
+                        <th>تعداد ستون</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>GasOperationDailyReport</strong></td>
+                        <td>209,010</td>
+                        <td>15</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>GasOperationDailyStationReport</strong></td>
+                        <td>471,764</td>
+                        <td>15</td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ViewProdDailyForNaft</strong></td>
+                        <td>31,031</td>
+                        <td>6</td>
+                    </tr>
+
+                </tbody>
+            </table>
+            
+            <div class="info-box">
+                <div class="box-title">📅 پوشش زمانی</div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong>GasOperationDailyReport</strong><br>
+                    بازه: 1399 تا 1405 | 
+                    تعداد ماه‌ها: 75 | 
+                    میانگین رکورد در ماه: 2,787
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong>GasOperationDailyStationReport</strong><br>
+                    بازه: 1404 تا 1405 | 
+                    تعداد ماه‌ها: 7 | 
+                    میانگین رکورد در ماه: 67,395
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong>ViewProdDailyForNaft</strong><br>
+                    بازه: 1401 تا 1405 | 
+                    تعداد ماه‌ها: 54 | 
+                    میانگین رکورد در ماه: 575
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Geographic Coverage -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">🗺️</span>
+                <span>۳. پوشش جغرافیایی</span>
+            </div>
+            
+            <div class="score-grid">
+
+                <div class="score-card">
+                    <div class="score-value" style="color: #2563eb;">31</div>
+                    <div class="score-label">استان</div>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-value" style="color: #10b981;">2842</div>
+                    <div class="score-label">ایستگاه</div>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-value" style="color: #f59e0b;">19</div>
+                    <div class="score-label">پالایشگاه</div>
+                </div>
+
+                <div class="score-card">
+                    <div class="score-value" style="color: #8b5cf6;">127</div>
+                    <div class="score-label">منبع</div>
+                </div>
+
+            </div>
+        </div>
+        
+        <!-- Column Quality -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">🔍</span>
+                <span>۴. کیفیت ستون‌ها</span>
+            </div>
+
+            <h3 style="margin: 20px 0 10px; color: #1e3a8a;">GasOperationDailyReport</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ستون</th>
+                        <th>مفقود٪</th>
+                        <th>صفر٪</th>
+                        <th>پرت٪</th>
+                        <th>امتیاز</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>سال</strong></td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>ماه</strong></td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>تاریخ</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>منبع</strong></td>
+                        <td>0.15%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">94.9</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>نوع منبع</strong></td>
+                        <td>0.15%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">99.9</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>مقدار</strong></td>
+                        <td>0.01%</td>
+                        <td>22.87%</td>
+                        <td>5.33%</td>
+                        <td style="color: #10b981; font-weight: 700;">89.3</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>انحراف</strong></td>
+                        <td>64.08%</td>
+                        <td>6.27%</td>
+                        <td>3.22%</td>
+                        <td style="color: #f59e0b; font-weight: 700;">61.5</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>مقدار برنامه</strong></td>
+                        <td>64.16%</td>
+                        <td>8.22%</td>
+                        <td>0.0%</td>
+                        <td style="color: #f59e0b; font-weight: 700;">67.9</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>میانگین</strong></td>
+                        <td>1.77%</td>
+                        <td>11.29%</td>
+                        <td>5.79%</td>
+                        <td style="color: #10b981; font-weight: 700;">87.5</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>جمع سال</strong></td>
+                        <td>0.15%</td>
+                        <td>12.91%</td>
+                        <td>8.56%</td>
+                        <td style="color: #10b981; font-weight: 700;">82.8</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>میانگین ماه</strong></td>
+                        <td>1.83%</td>
+                        <td>17.72%</td>
+                        <td>5.58%</td>
+                        <td style="color: #10b981; font-weight: 700;">87.9</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>میانگین سال قبل</strong></td>
+                        <td>6.54%</td>
+                        <td>7.9%</td>
+                        <td>16.15%</td>
+                        <td style="color: #f59e0b; font-weight: 700;">76.7</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>جمع سال قبل</strong></td>
+                        <td>4.88%</td>
+                        <td>9.56%</td>
+                        <td>7.95%</td>
+                        <td style="color: #10b981; font-weight: 700;">81.7</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>میانگین ماه سال قبل</strong></td>
+                        <td>17.71%</td>
+                        <td>13.14%</td>
+                        <td>4.57%</td>
+                        <td style="color: #10b981; font-weight: 700;">82.0</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>دسته بندی</strong></td>
+                        <td>3.65%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">98.2</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <h3 style="margin: 20px 0 10px; color: #1e3a8a;">GasOperationDailyStationReport</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ستون</th>
+                        <th>مفقود٪</th>
+                        <th>صفر٪</th>
+                        <th>پرت٪</th>
+                        <th>امتیاز</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>میزان مصرف</strong></td>
+                        <td>0.01%</td>
+                        <td>13.24%</td>
+                        <td>10.53%</td>
+                        <td style="color: #10b981; font-weight: 700;">80.0</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>فشار ساعت 6</strong></td>
+                        <td>2.24%</td>
+                        <td>4.69%</td>
+                        <td>0.02%</td>
+                        <td style="color: #f59e0b; font-weight: 700;">78.8</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>دمای ساعت6</strong></td>
+                        <td>40.38%</td>
+                        <td>5.77%</td>
+                        <td>0.03%</td>
+                        <td style="color: #ef4444; font-weight: 700;">59.8</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>دمای محیط ساعت18</strong></td>
+                        <td>41.07%</td>
+                        <td>4.66%</td>
+                        <td>0.04%</td>
+                        <td style="color: #ef4444; font-weight: 700;">59.4</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>فشار ساعت 18</strong></td>
+                        <td>100.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #ef4444; font-weight: 700;">50</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>دمای محیط ساعت15</strong></td>
+                        <td>100.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #ef4444; font-weight: 700;">50</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>فشار ساعت18</strong></td>
+                        <td>2.28%</td>
+                        <td>4.19%</td>
+                        <td>0.02%</td>
+                        <td style="color: #ef4444; font-weight: 700;">58.8</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>نام ایستگاه</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">95.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>دمای ساعت6.1</strong></td>
+                        <td>31.73%</td>
+                        <td>8.83%</td>
+                        <td>0.28%</td>
+                        <td style="color: #f59e0b; font-weight: 700;">63.6</td>
+                        <td><span class="badge badge-medium">متوسط 🟡</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>دمای ساعت18</strong></td>
+                        <td>32.66%</td>
+                        <td>8.53%</td>
+                        <td>6.95%</td>
+                        <td style="color: #ef4444; font-weight: 700;">49.8</td>
+                        <td><span class="badge badge-critical">نیازمند اصلاح 🔴</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>نوع مصرف</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>کد نوع مصرف</strong></td>
+                        <td>0.08%</td>
+                        <td>0.0%</td>
+                        <td>25.21%</td>
+                        <td style="color: #10b981; font-weight: 700;">80.0</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>استان</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>شهر</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>تاریخ</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <h3 style="margin: 20px 0 10px; color: #1e3a8a;">ViewProdDailyForNaft</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ستون</th>
+                        <th>مفقود٪</th>
+                        <th>صفر٪</th>
+                        <th>پرت٪</th>
+                        <th>امتیاز</th>
+                        <th>وضعیت</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>تاریخ شمسی</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>کد پالایشگاه</strong></td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>31.61%</td>
+                        <td style="color: #10b981; font-weight: 700;">80.0</td>
+                        <td><span class="badge badge-good">خوب 🟢</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>نام پالایشگاه</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">95.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>کد محصول</strong></td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td>0.0%</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>نام محصول</strong></td>
+                        <td>0.0%</td>
+                        <td>-</td>
+                        <td>-</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>میزان تولید</strong></td>
+                        <td>0.0%</td>
+                        <td>8.74%</td>
+                        <td>0.0%</td>
+                        <td style="color: #10b981; font-weight: 700;">100.0</td>
+                        <td><span class="badge badge-good">عالی ✅</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+        
+        <!-- Missing Data Domains -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">📋</span>
+                <span>۵. حوزه‌های داده‌ای موجود نیست</span>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>حوزه داده‌ای</th>
+                        <th>توضیح</th>
+                        <th>اثرگذاری</th>
+                        <th>اولویت</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    <tr>
+                        <td><strong>اطلاعات هواشناسی محیطی</strong></td>
+                        <td>دمای محیط، رطوبت، سرعت باد، بارندگی</td>
+                        <td>افزایش دقت پیش‌بینی مصرف تا ۳۰٪</td>
+                        <td><span class="badge badge-critical">بحرانی</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>شناسه‌های یکتا</strong></td>
+                        <td>کد ملی ایستگاه، کد پستی، مختصات جغرافیایی (GPS)</td>
+                        <td>امکان تحلیل مکانی و نقشه‌سازی</td>
+                        <td><span class="badge badge-high">بالا</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>داده‌های ساعتی</strong></td>
+                        <td>مصرف ساعتی به جای روزانه</td>
+                        <td>پیش‌بینی دقیق‌تر در زمان پیک مصرف</td>
+                        <td><span class="badge badge-high">بالا</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>داده‌های اقتصادی</strong></td>
+                        <td>قیمت گاز، تعرفه‌ها، هزینه‌های انتقال</td>
+                        <td>تحلیل هزینه-فایده و پیش‌بینی درآمد</td>
+                        <td><span class="badge badge-medium">متوسط</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>داده‌های تعمیر و نگهداری</strong></td>
+                        <td>تاریخ تعمیرات، قطعی‌ها، ظرفیت ایستگاه</td>
+                        <td>تشخیص علل ناهنجاری و برنامه‌ریزی</td>
+                        <td><span class="badge badge-high">بالا</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>اطلاعات مشترکین</strong></td>
+                        <td>تعداد مشترکین به تفکیک خانگی/تجاری/صنعتی</td>
+                        <td>تحلیل دقیق‌تر رفتار مصرف</td>
+                        <td><span class="badge badge-medium">متوسط</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>داده‌های تولید کامل</strong></td>
+                        <td>تولید همه محصولات (نه فقط میعانات گازی)</td>
+                        <td>تحلیل کامل تراز تولید-مصرف</td>
+                        <td><span class="badge badge-critical">بحرانی</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>داده‌های واردات/صادرات</strong></td>
+                        <td>حجم واردات و صادرات روزانه</td>
+                        <td>تحلیل دقیق تراز ملی گاز</td>
+                        <td><span class="badge badge-high">بالا</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>داده‌های ذخیره‌سازی</strong></td>
+                        <td>موجودی مخازن ذخیره‌سازی</td>
+                        <td>مدیریت بهینه منابع در زمان پیک</td>
+                        <td><span class="badge badge-high">بالا</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>تاریخچه بلندمدت</strong></td>
+                        <td>حداقل ۳-۵ سال داده (فعلی ۶ ماه)</td>
+                        <td>پیش‌بینی فصلی و سالانه دقیق</td>
+                        <td><span class="badge badge-critical">بحرانی</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>اطلاعات واحد اندازه‌گیری</strong></td>
+                        <td>واحد دقیق هر ستون (متر مکعب، لیتر، تن و ...)</td>
+                        <td>جلوگیری از اشتباهات محاسباتی</td>
+                        <td><span class="badge badge-critical">بحرانی</span></td>
+                    </tr>
+
+                    <tr>
+                        <td><strong>متادیتای منبع داده</strong></td>
+                        <td>منبع استخراج، زمان استخراج، نسخه داده</td>
+                        <td>قابلیت ردیابی و ممیزی داده</td>
+                        <td><span class="badge badge-medium">متوسط</span></td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Recommendations -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">💡</span>
+                <span>۶. پیشنهادات عملی (اولویت‌بندی شده)</span>
+            </div>
+            
+            <ul class="checklist">
+
+                <li class="priority-critical">
+                    <div class="item-title">1. بحرانی 🔴 - 1 ستون با کیفیت بحرانی</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> کیفیت داده<br>
+                        <strong>اقدام:</strong> بررسی و اصلاح فوری ستون‌های با امتیاز زیر ۵۰
+                    </div>
+                </li>
+
+                <li class="priority-critical">
+                    <div class="item-title">2. بحرانی 🔴 - وجود مقادیر پرت شدید (مثلاً دمای ۱۲۷,۷۳۷ درجه)</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> داده‌های پرت<br>
+                        <strong>اقدام:</strong> اعمال اعتبارسنجی در زمان ثبت داده و حذف مقادیر خارج از دامنه منطقی
+                    </div>
+                </li>
+
+                <li class="priority-critical">
+                    <div class="item-title">3. بحرانی 🔴 - شیت GasOperationDailyStationReport فقط 7 ماه داده دارد</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> پوشش زمانی<br>
+                        <strong>اقدام:</strong> افزودن داده‌های تاریخی (حداقل ۳ سال) برای پیش‌بینی فصلی دقیق
+                    </div>
+                </li>
+
+                <li class="priority-critical">
+                    <div class="item-title">4. بحرانی 🔴 - واحد اندازه‌گیری هیچ ستونی در داده‌ها مشخص نیست</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> متادیتا<br>
+                        <strong>اقدام:</strong> افزودن یک فایل متادیتا با واحد هر ستون (متر مکعب، لیتر، درجه و ...)
+                    </div>
+                </li>
+
+                <li class="priority-critical">
+                    <div class="item-title">5. بحرانی 🔴 - نبود داده‌های هواشناسی محیطی (دمای هوا، رطوبت، باد)</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> حوزه داده‌ای جدید<br>
+                        <strong>اقدام:</strong> اتصال به سامانه هواشناسی یا افزودن سنسورهای محیطی
+                    </div>
+                </li>
+
+                <li class="priority-high">
+                    <div class="item-title">6. بالا 🟡 - 8 ستون با بیش از ۳۰٪ داده مفقود</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> داده‌های مفقود<br>
+                        <strong>اقدام:</strong> بررسی فرآیند ثبت داده و الزامی کردن فیلدهای کلیدی
+                    </div>
+                </li>
+
+                <li class="priority-high">
+                    <div class="item-title">7. بالا 🟡 - 2 ستون کاملاً خالی (احتمالاً خطا در استخراج)</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> ستون‌های خالی<br>
+                        <strong>اقدام:</strong> حذف ستون‌های خالی یا اصلاح فرآیند استخراج
+                    </div>
+                </li>
+
+                <li class="priority-high">
+                    <div class="item-title">8. بالا 🟡 - داده‌ها فقط در سطح روزانه هستند</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> دانه زمانی<br>
+                        <strong>اقدام:</strong> افزودن داده‌های ساعتی برای تحلیل پیک مصرف
+                    </div>
+                </li>
+
+                <li class="priority-medium">
+                    <div class="item-title">9. متوسط 🟢 - 201 ایستگاه با کمتر از ۱۰ رکورد</div>
+                    <div class="item-desc">
+                        <strong>دسته:</strong> پوشش ایستگاه‌ها<br>
+                        <strong>اقدام:</strong> بررسی فعال بودن این ایستگاه‌ها و تکمیل داده‌ها
+                    </div>
+                </li>
+
+            </ul>
+        </div>
+        
+        <!-- Roadmap -->
+        <div class="section">
+            <div class="section-title">
+                <span class="icon">🚀</span>
+                <span>۷. نقشه راه بهبود</span>
+            </div>
+            
+            <div class="critical-box">
+                <div class="box-title">🔴 اولویت‌های فوری (۱ ماه آینده)</div>
+                <ol>
+                    <li>اصلاح داده‌های پرت شدید (دمای ۱۲۷,۷۳۷ درجه)</li>
+                    <li>حذف ستون‌های ۱۰۰٪ خالی</li>
+                    <li>مستندسازی واحد اندازه‌گیری هر ستون</li>
+                    <li>افزودن داده‌های هواشناسی محیطی</li>
+                </ol>
+            </div>
+            
+            <div class="warning-box">
+                <div class="box-title">🟡 اولویت‌های میان‌مدت (۳ ماه آینده)</div>
+                <ol>
+                    <li>افزایش پوشش زمانی به حداقل ۲ سال</li>
+                    <li>افزودن داده‌های ساعتی</li>
+                    <li>افزودن شناسه‌های یکتا و مختصات جغرافیایی</li>
+                </ol>
+            </div>
+            
+            <div class="info-box">
+                <div class="box-title">🟢 اولویت‌های بلندمدت (۶ ماه آینده)</div>
+                <ol>
+                    <li>اتصال به سامانه‌های بلادرنگ (SCADA)</li>
+                    <li>پیاده‌سازی اعتبارسنجی خودکار در زمان ثبت</li>
+                    <li>افزودن متادیتای کامل و استاندارد</li>
+                </ol>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="report-footer">
+            <p><strong>این گزارش به صورت خودکار توسط سامانه تحلیل کیفیت داده تولید شده است.</strong></p>
+            <p>برای ذخیره به صورت PDF: دکمه بالا را بزنید یا از مرورگر با کلیدهای <kbd>Ctrl + P</kbd> چاپ کنید</p>
+            <p style="margin-top: 10px;">سامانه هوشمند پایش و تحلیل گاز | {jalali_date}</p>
+        </div>
+    </div>
+</body>
+</html>
