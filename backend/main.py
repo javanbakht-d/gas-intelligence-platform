@@ -1,11 +1,20 @@
-from fastapi import FastAPI, Query
-from fastapi.middleware.cors import CORSMiddleware
-import sqlite3
-import pandas as pd
-import numpy as np
-from sklearn.linear_model import LinearRegression
+"""
+Gas Intelligence Platform - Backend API نسخه 3.0
+با اندپوینت‌های پیش‌بینی و بنچمارک مدل‌ها
+"""
 
-app = FastAPI(title="Gas Intelligence Platform")
+from fastapi import FastAPI, Query, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
+from typing import Optional
+import sqlite3
+from datetime import datetime
+
+# === App Setup ===
+app = FastAPI(
+    title="Gas Intelligence Platform API",
+    description="سامانه هوشمند پایش و تحلیل گاز",
+    version="3.0.0"
+)
 
 app.add_middleware(
     CORSMiddleware,
@@ -15,95 +24,538 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+DB_FILE = "gas_data.db"
+
+
+def get_db_connection():
+    """ایجاد اتصال به دیتابیس"""
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def safe_float(val):
+    """تبدیل امن به float"""
+    if val is None:
+        return None
+    try:
+        return float(val)
+    except:
+        return None
+
+
+# === Health Check ===
 @app.get("/")
-def read_root():
-    return {"message": "به پلتفرم هوشمند گاز خوش آمدید!"}
-
-@app.get("/api/daily-report")
-def get_daily_report(limit: int = 10):
-    conn = sqlite3.connect("gas_data.db")
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM GasOperationDailyReport LIMIT ?", (limit,))
-    rows = cursor.fetchall()
-    conn.close()
-    return {"count": len(rows), "data": [dict(r) for r in rows]}
-
-@app.get("/api/by-date")
-def get_by_date(date: str = Query(..., description="تاریخ شمسی مثل 1405/06/10")):
-    conn = sqlite3.connect("gas_data.db")
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    
-    cursor.execute("PRAGMA table_info(GasOperationDailyReport)")
-    columns = [col[1] for col in cursor.fetchall()]
-    
-    date_col = None
-    for col in columns:
-        if "date" in col.lower() or "تاریخ" in col:
-            date_col = col
-            break
-    
-    if not date_col:
-        conn.close()
-        return {"error": "ستون تاریخ پیدا نشد", "columns": columns}
-    
-    cursor.execute(f"SELECT * FROM GasOperationDailyReport WHERE [{date_col}] LIKE ?", (f"%{date}%",))
-    rows = cursor.fetchall()
-    conn.close()
-    return {"date": date, "count": len(rows), "data": [dict(r) for r in rows]}
-
-@app.get("/api/trend")
-def get_trend(limit: int = 30):
-    conn = sqlite3.connect("gas_data.db")
-    conn.row_factory = sqlite3.Row
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM GasOperationDailyReport ORDER BY rowid DESC LIMIT ?", (limit,))
-    rows = cursor.fetchall()
-    conn.close()
-    return {"count": len(rows), "data": [dict(r) for r in rows]}
-
-@app.get("/api/predict")
-def predict_future(days: int = Query(7, description="تعداد روزهای آینده برای پیش‌بینی")):
-    conn = sqlite3.connect("gas_data.db")
-    df = pd.read_sql_query("SELECT * FROM GasOperationDailyReport", conn)
-    conn.close()
-    
-    # پیدا کردن ستون‌های عددی
-    numeric_cols = df.select_dtypes(include=['number']).columns.tolist()
-    
-    if len(numeric_cols) == 0:
-        return {"error": "هیچ ستون عددی برای پیش‌بینی وجود ندارد"}
-    
-    # انتخاب اولین ستون به عنوان هدف
-    target_col = numeric_cols[0]
-    
-    # استفاده از سایر ستون‌های عددی به عنوان ویژگی
-    feature_cols = numeric_cols[1:4]  # حداکثر ۳ ویژگی
-    
-    if len(feature_cols) == 0:
-        # اگر ستون دیگری نیست، از ایندکس استفاده کن
-        X = np.arange(len(df)).reshape(-1, 1)
-    else:
-        X = df[feature_cols].fillna(0).values
-    
-    y = df[target_col].fillna(0).values
-    
-    # ساخت مدل
-    model = LinearRegression()
-    model.fit(X, y)
-    
-    # پیش‌بینی با استفاده از آخرین مقادیر
-    last_values = X[-1].reshape(1, -1)
-    predictions_list = []
-    
-    for i in range(days):
-        pred = model.predict(last_values)[0]
-        predictions_list.append({"day": i+1, "value": float(pred)})
-    
+def root():
     return {
-        "target_column": target_col,
-        "feature_columns": feature_cols,
-        "days": days,
-        "predictions": predictions_list
+        "message": "به پلتفرم هوشمند گاز خوش آمدید!",
+        "version": "3.0.0",
+        "status": "active",
+        "features": {
+            "analytics": "/api/summary",
+            "stations": "/api/stations/list",
+            "consumption": "/api/consumption/by-province",
+            "trend": "/api/consumption/trend",
+            "anomalies": "/api/anomalies",
+            "production": "/api/production/summary",
+            "forecast": "/api/forecast/results",
+            "model_benchmarks": "/api/forecast/benchmarks",
+            "filters": "/api/filters"
+        }
     }
+
+
+# === Summary KPI ===
+@app.get("/api/summary")
+def get_summary():
+    """KPIهای اصلی سامانه"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        stats = {}
+        
+        for table in ['operation_daily_report', 'station_consumption_daily', 'production_daily']:
+            cursor.execute(f"SELECT COUNT(*) as count FROM {table}")
+            stats[table] = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT MAX(gregorian_date) FROM station_consumption_daily")
+        last_date = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT SUM(میزان_مصرف) FROM station_consumption_daily")
+        total_consumption = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT COUNT(DISTINCT نام_ایستگاه) FROM station_consumption_daily")
+        unique_stations = cursor.fetchone()[0]
+        
+        cursor.execute("SELECT COUNT(DISTINCT استان) FROM station_consumption_daily")
+        unique_provinces = cursor.fetchone()[0]
+        
+        # اطلاعات بهترین مدل
+        try:
+            cursor.execute("SELECT best_model, best_score FROM model_registry LIMIT 1")
+            row = cursor.fetchone()
+            if row:
+                best_model_info = {
+                    "model": row[0],
+                    "mae": safe_float(row[1])
+                }
+            else:
+                best_model_info = None
+        except:
+            best_model_info = None
+        
+        return {
+            "data_counts": stats,
+            "last_date": last_date,
+            "total_consumption": safe_float(total_consumption),
+            "unique_stations": unique_stations,
+            "unique_provinces": unique_provinces,
+            "best_model": best_model_info,
+            "generated_at": datetime.now().isoformat()
+        }
+    finally:
+        conn.close()
+
+
+# === Forecast Results ===
+@app.get("/api/forecast/results")
+def get_forecast_results(limit: int = Query(30, le=90)):
+    """نتایج پیش‌بینی ذخیره شده"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        
+        # بررسی وجود جدول
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='forecast_results'")
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="پیش‌بینی هنوز اجرا نشده است. لطفاً ابتدا 'python forecasting_engine.py' را اجرا کنید.")
+        
+        cursor.execute(f"""
+            SELECT 
+                day,
+                date,
+                point_forecast,
+                lower_80,
+                upper_80,
+                lower_95,
+                upper_95
+            FROM forecast_results
+            ORDER BY day
+            LIMIT ?
+        """, (limit,))
+        
+        rows = cursor.fetchall()
+        forecasts = []
+        for row in rows:
+            forecasts.append({
+                "day": row[0],
+                "date": row[1],
+                "point_forecast": safe_float(row[2]),
+                "lower_80": safe_float(row[3]),
+                "upper_80": safe_float(row[4]),
+                "lower_95": safe_float(row[5]),
+                "upper_95": safe_float(row[6])
+            })
+        
+        return {
+            "count": len(forecasts),
+            "horizon": len(forecasts),
+            "data": forecasts
+        }
+    finally:
+        conn.close()
+
+
+# === Model Benchmarks ===
+@app.get("/api/forecast/benchmarks")
+def get_model_benchmarks():
+    """مقایسه عملکرد مدل‌ها"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='model_benchmarks'")
+        if not cursor.fetchone():
+            raise HTTPException(status_code=404, detail="بنچمارک مدل‌ها هنوز اجرا نشده است.")
+        
+        cursor.execute("""
+            SELECT 
+                model_name,
+                MAE,
+                RMSE,
+                sMAPE,
+                WAPE,
+                validation_windows,
+                is_best
+            FROM model_benchmarks
+            ORDER BY MAE
+        """)
+        
+        rows = cursor.fetchall()
+        benchmarks = []
+        for row in rows:
+            benchmarks.append({
+                "model_name": row[0],
+                "MAE": safe_float(row[1]),
+                "RMSE": safe_float(row[2]),
+                "sMAPE": safe_float(row[3]),
+                "WAPE": safe_float(row[4]),
+                "validation_windows": row[5],
+                "is_best": bool(row[6])
+            })
+        
+        # اطلاعات مدل برنده
+        cursor.execute("SELECT best_model, best_score, metric, training_date FROM model_registry LIMIT 1")
+        registry = cursor.fetchone()
+        best_model = {
+            "name": registry[0] if registry else None,
+            "score": safe_float(registry[1]) if registry else None,
+            "metric": registry[2] if registry else None,
+            "training_date": registry[3] if registry else None,
+        }
+        
+        return {
+            "count": len(benchmarks),
+            "best_model": best_model,
+            "data": benchmarks
+        }
+    finally:
+        conn.close()
+
+
+# === Stations List ===
+@app.get("/api/stations/list")
+def get_stations_list(
+    province: Optional[str] = None,
+    limit: int = Query(100, le=1000)
+):
+    """لیست ایستگاه‌ها با آمار مصرف"""
+    conn = get_db_connection()
+    
+    try:
+        query = """
+            SELECT 
+                نام_ایستگاه,
+                استان,
+                شهر,
+                COUNT(*) as record_count,
+                AVG(میزان_مصرف) as avg_consumption,
+                SUM(میزان_مصرف) as total_consumption,
+                MIN(میزان_مصرف) as min_consumption,
+                MAX(میزان_مصرف) as max_consumption,
+                COUNT(DISTINCT نوع_مصرف) as consumption_types
+            FROM station_consumption_daily
+        """
+        
+        params = []
+        if province:
+            query += " WHERE استان = ?"
+            params.append(province)
+        
+        query += " GROUP BY نام_ایستگاه, استان, شهر ORDER BY total_consumption DESC LIMIT ?"
+        params.append(limit)
+        
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+        
+        stations = []
+        for row in rows:
+            stations.append({
+                "station": row[0],
+                "province": row[1],
+                "city": row[2],
+                "record_count": row[3],
+                "avg_consumption": safe_float(row[4]),
+                "total_consumption": safe_float(row[5]),
+                "min_consumption": safe_float(row[6]),
+                "max_consumption": safe_float(row[7]),
+                "consumption_types": row[8]
+            })
+        
+        return {
+            "count": len(stations),
+            "filter": {"province": province},
+            "data": stations
+        }
+    finally:
+        conn.close()
+
+
+# === Consumption by Province ===
+@app.get("/api/consumption/by-province")
+def get_consumption_by_province():
+    """مصرف به تفکیک استان"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("""
+            SELECT 
+                استان,
+                COUNT(*) as record_count,
+                COUNT(DISTINCT نام_ایستگاه) as station_count,
+                AVG(میزان_مصرف) as avg_consumption,
+                SUM(میزان_مصرف) as total_consumption
+            FROM station_consumption_daily
+            WHERE استان IS NOT NULL
+            GROUP BY استان
+            ORDER BY total_consumption DESC
+        """)
+        
+        rows = cursor.fetchall()
+        provinces = []
+        for row in rows:
+            provinces.append({
+                "province": row[0],
+                "record_count": row[1],
+                "station_count": row[2],
+                "avg_consumption": safe_float(row[3]),
+                "total_consumption": safe_float(row[4])
+            })
+        
+        return {"count": len(provinces), "data": provinces}
+    finally:
+        conn.close()
+
+
+# === Consumption Trend ===
+@app.get("/api/consumption/trend")
+def get_consumption_trend(
+    days: int = Query(30, le=365),
+    province: Optional[str] = None,
+    station: Optional[str] = None
+):
+    """روند مصرف روزانه"""
+    conn = get_db_connection()
+    
+    try:
+        query = """
+            SELECT 
+                gregorian_date,
+                shamsi_year,
+                shamsi_month,
+                shamsi_day,
+                SUM(میزان_مصرف) as daily_consumption,
+                COUNT(*) as record_count
+            FROM station_consumption_daily
+            WHERE gregorian_date IS NOT NULL
+        """
+        
+        params = []
+        if province:
+            query += " AND استان = ?"
+            params.append(province)
+        if station:
+            query += " AND نام_ایستگاه = ?"
+            params.append(station)
+        
+        query += """
+            GROUP BY gregorian_date, shamsi_year, shamsi_month, shamsi_day
+            ORDER BY gregorian_date DESC
+            LIMIT ?
+        """
+        params.append(days)
+        
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        rows = cursor.fetchall()
+        
+        trend = []
+        for row in rows:
+            trend.append({
+                "gregorian_date": row[0],
+                "shamsi_date": f"{row[1]}/{row[2]:02d}/{row[3]:02d}",
+                "consumption": safe_float(row[4]),
+                "record_count": row[5]
+            })
+        
+        trend.reverse()
+        
+        return {
+            "days": days,
+            "filter": {"province": province, "station": station},
+            "data": trend
+        }
+    finally:
+        conn.close()
+
+
+# === Anomaly Detection ===
+@app.get("/api/anomalies")
+def get_anomalies(
+    threshold: float = Query(100.0, description="آستانه اختلاف دما"),
+    limit: int = Query(100, le=1000)
+):
+    """تشخیص ناهنجاری در اختلاف دمای دو نقطه"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT 
+                gregorian_date,
+                shamsi_year,
+                shamsi_month,
+                shamsi_day,
+                نام_ایستگاه,
+                استان,
+                دمای_گاز_ساعت_6_صبح___نقطه_1,
+                دمای_گاز_ساعت_6_صبح___نقطه_2,
+                اختلاف_دمای_ساعت_6_صبح,
+                میزان_مصرف
+            FROM station_consumption_daily
+            WHERE اختلاف_دمای_ساعت_6_صبح IS NOT NULL
+              AND ABS(اختلاف_دمای_ساعت_6_صبح) > ?
+            ORDER BY ABS(اختلاف_دمای_ساعت_6_صبح) DESC
+            LIMIT ?
+        """, (threshold, limit))
+        
+        rows = cursor.fetchall()
+        anomalies = []
+        for row in rows:
+            diff = safe_float(row[8])
+            severity = "Critical" if abs(diff) > 500 else "High" if abs(diff) > 200 else "Medium"
+            
+            anomalies.append({
+                "type": "temperature_discrepancy",
+                "severity": severity,
+                "gregorian_date": row[0],
+                "shamsi_date": f"{row[1]}/{row[2]:02d}/{row[3]:02d}",
+                "station": row[4],
+                "province": row[5],
+                "temp_point_1": safe_float(row[6]),
+                "temp_point_2": safe_float(row[7]),
+                "temperature_diff": diff,
+                "consumption": safe_float(row[9]),
+                "description": f"اختلاف دمای {diff:.1f} درجه بین دو نقطه اندازه‌گیری - غیرعادی"
+            })
+        
+        return {
+            "count": len(anomalies),
+            "threshold": threshold,
+            "total_anomalies_detected": len(anomalies),
+            "data": anomalies
+        }
+    finally:
+        conn.close()
+
+
+# === Production Summary ===
+@app.get("/api/production/summary")
+def get_production_summary():
+    """خلاصه تولید پالایشگاه‌ها"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("""
+            SELECT 
+                نام_پالایشگاه,
+                COUNT(*) as record_count,
+                SUM(میزان_تولید) as total_production,
+                AVG(میزان_تولید) as avg_production
+            FROM production_daily
+            WHERE نام_پالایشگاه IS NOT NULL
+            GROUP BY نام_پالایشگاه
+            ORDER BY total_production DESC
+        """)
+        
+        refineries = []
+        for row in cursor.fetchall():
+            refineries.append({
+                "refinery": row[0],
+                "record_count": row[1],
+                "total_production": safe_float(row[2]),
+                "avg_production": safe_float(row[3])
+            })
+        
+        cursor.execute("""
+            SELECT 
+                نام_محصول,
+                COUNT(*) as record_count,
+                SUM(میزان_تولید) as total_production
+            FROM production_daily
+            WHERE نام_محصول IS NOT NULL
+            GROUP BY نام_محصول
+            ORDER BY total_production DESC
+        """)
+        
+        products = []
+        for row in cursor.fetchall():
+            products.append({
+                "product": row[0],
+                "record_count": row[1],
+                "total_production": safe_float(row[2])
+            })
+        
+        return {
+            "by_refinery": refineries,
+            "by_product": products
+        }
+    finally:
+        conn.close()
+
+
+# === Metadata ===
+@app.get("/api/metadata")
+def get_metadata():
+    """اطلاعات متادیتای سامانه"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        cursor.execute("SELECT key, value FROM metadata")
+        
+        metadata = {}
+        for row in cursor.fetchall():
+            metadata[row[0]] = row[1]
+        
+        return {
+            "metadata": metadata,
+            "api_version": "3.0.0",
+            "database_file": DB_FILE
+        }
+    finally:
+        conn.close()
+
+
+# === Global Filters ===
+@app.get("/api/filters")
+def get_filters():
+    """لیست فیلترهای موجود برای داشبورد"""
+    conn = get_db_connection()
+    
+    try:
+        cursor = conn.cursor()
+        
+        cursor.execute("SELECT DISTINCT استان FROM station_consumption_daily WHERE استان IS NOT NULL ORDER BY استان")
+        provinces = [row[0] for row in cursor.fetchall()]
+        
+        cursor.execute("SELECT DISTINCT نوع_مصرف FROM station_consumption_daily WHERE نوع_مصرف IS NOT NULL ORDER BY نوع_مصرف")
+        consumption_types = [row[0] for row in cursor.fetchall()]
+        
+        cursor.execute("SELECT DISTINCT منبع FROM operation_daily_report WHERE منبع IS NOT NULL ORDER BY منبع")
+        sources = [row[0] for row in cursor.fetchall()]
+        
+        cursor.execute("SELECT DISTINCT shamsi_year FROM station_consumption_daily WHERE shamsi_year IS NOT NULL ORDER BY shamsi_year")
+        years = [row[0] for row in cursor.fetchall()]
+        
+        return {
+            "provinces": provinces,
+            "consumption_types": consumption_types,
+            "sources": sources,
+            "years": years
+        }
+    finally:
+        conn.close()
+
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=8000)

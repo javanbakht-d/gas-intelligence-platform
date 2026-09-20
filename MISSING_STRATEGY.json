@@ -1,0 +1,440 @@
+{
+  "GasOperationDailyReport": {
+    "سال": {
+      "column_type": "identifier",
+      "missing_strategy": "forward_fill_by_context",
+      "missing_strategy_description": "پر کردن با آخرین مقدار معتبر (با در نظر گرفتن ماه/سال)",
+      "zero_strategy": "valid",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "ماه": {
+      "column_type": "identifier",
+      "missing_strategy": "forward_fill_by_context",
+      "missing_strategy_description": "پر کردن با آخرین مقدار معتبر (با در نظر گرفتن ماه/سال)",
+      "zero_strategy": "invalid",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "تاریخ": {
+      "column_type": "date",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "invalid",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "منبع": {
+      "column_type": "dimension",
+      "missing_strategy": "unknown_category",
+      "missing_strategy_description": "مقدار 'نامشخص' جایگزین می‌شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.14831826228410125,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "نوع منبع": {
+      "column_type": "dimension",
+      "missing_strategy": "unknown_category",
+      "missing_strategy_description": "مقدار 'نامشخص' جایگزین می‌شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.14831826228410125,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "مقدار": {
+      "column_type": "measure",
+      "missing_strategy": "flag_only",
+      "missing_strategy_description": "پرچم‌گذاری به عنوان Missing بدون جایگزینی (برای مدل‌های ML)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.01004736615472944,
+        "zero_count": 47804,
+        "negative_count": 874
+      }
+    },
+    "انحراف": {
+      "column_type": "derived",
+      "missing_strategy": "compute_from_actual_and_plan",
+      "missing_strategy_description": "محاسبه مجدد از روی مقدار واقعی و برنامه (اگر موجود باشند)",
+      "zero_strategy": "valid_exact_match",
+      "negative_strategy": "valid_actual_below_plan",
+      "quality_issues": {
+        "missing_pct": 64.08066599684226,
+        "zero_count": 13113,
+        "negative_count": 32818
+      }
+    },
+    "مقدار برنامه": {
+      "column_type": "plan",
+      "missing_strategy": "no_plan_available",
+      "missing_strategy_description": "برنامه برای این دوره ثبت نشده است",
+      "zero_strategy": "valid_no_planned",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 64.15721735802114,
+        "zero_count": 17171,
+        "negative_count": 0
+      }
+    },
+    "میانگین": {
+      "column_type": "derived",
+      "missing_strategy": "compute_from_available",
+      "missing_strategy_description": "محاسبه از روی داده‌های موجود در بازه",
+      "zero_strategy": "valid_no_consumption",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 1.7716855652839578,
+        "zero_count": 23595,
+        "negative_count": 1421
+      }
+    },
+    "جمع سال": {
+      "column_type": "aggregate",
+      "missing_strategy": "compute_partial",
+      "missing_strategy_description": "محاسبه جمع جزئی تا تاریخ موجود",
+      "zero_strategy": "valid_no_consumption",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.14831826228410125,
+        "zero_count": 26988,
+        "negative_count": 1421
+      }
+    },
+    "میانگین ماه": {
+      "column_type": "derived",
+      "missing_strategy": "compute_from_available",
+      "missing_strategy_description": "محاسبه از روی داده‌های موجود در بازه",
+      "zero_strategy": "valid_no_consumption",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 1.8343619922491747,
+        "zero_count": 37037,
+        "negative_count": 987
+      }
+    },
+    "میانگین سال قبل": {
+      "column_type": "historical",
+      "missing_strategy": "no_historical_data",
+      "missing_strategy_description": "داده سال قبل موجود نیست (شروع سری زمانی)",
+      "zero_strategy": "valid_no_consumption",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 6.539878474714128,
+        "zero_count": 16516,
+        "negative_count": 1272
+      }
+    },
+    "جمع سال قبل": {
+      "column_type": "historical",
+      "missing_strategy": "no_historical_data",
+      "missing_strategy_description": "داده سال قبل موجود نیست (شروع سری زمانی)",
+      "zero_strategy": "valid_no_consumption",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 4.880627721161667,
+        "zero_count": 19984,
+        "negative_count": 1272
+      }
+    },
+    "میانگین ماه سال قبل": {
+      "column_type": "historical",
+      "missing_strategy": "no_historical_data",
+      "missing_strategy_description": "داده سال قبل موجود نیست (شروع سری زمانی)",
+      "zero_strategy": "valid_no_consumption",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 17.70585139467011,
+        "zero_count": 27455,
+        "negative_count": 814
+      }
+    },
+    "دسته بندی": {
+      "column_type": "dimension",
+      "missing_strategy": "unknown_category",
+      "missing_strategy_description": "مقدار 'نامشخص' جایگزین می‌شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 3.6548490502846755,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    }
+  },
+  "GasOperationDailyStationReport": {
+    "میزان مصرف": {
+      "column_type": "measure",
+      "missing_strategy": "flag_only",
+      "missing_strategy_description": "پرچم‌گذاری به عنوان Missing بدون جایگزینی (برای مدل‌های ML)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.006995022935196412,
+        "zero_count": 62444,
+        "negative_count": 0
+      }
+    },
+    "فشار ساعت 6": {
+      "column_type": "pressure",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "investigate_by_station",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 2.2384073392628516,
+        "zero_count": 22122,
+        "negative_count": 0
+      }
+    },
+    "دمای ساعت6": {
+      "column_type": "temperature",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 40.38332725684876,
+        "zero_count": 27240,
+        "negative_count": 564
+      }
+    },
+    "دمای محیط ساعت18": {
+      "column_type": "temperature",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 41.065659948618375,
+        "zero_count": 21972,
+        "negative_count": 70
+      }
+    },
+    "فشار ساعت 18": {
+      "column_type": "pressure",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "investigate_by_station",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 100.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "دمای محیط ساعت15": {
+      "column_type": "temperature",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 100.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "فشار ساعت18": {
+      "column_type": "pressure",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "investigate_by_station",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 2.275078217074639,
+        "zero_count": 19756,
+        "negative_count": 1
+      }
+    },
+    "نام ایستگاه": {
+      "column_type": "dimension",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "دمای ساعت6.1": {
+      "column_type": "temperature",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 31.733239501106485,
+        "zero_count": 41674,
+        "negative_count": 48
+      }
+    },
+    "دمای ساعت18": {
+      "column_type": "temperature",
+      "missing_strategy": "interpolate_temporal",
+      "missing_strategy_description": "پر کردن با میانگین مقادیر قبل و بعد (به صورت temporal)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 32.65743041012031,
+        "zero_count": 40261,
+        "negative_count": 23
+      }
+    },
+    "نوع مصرف": {
+      "column_type": "dimension",
+      "missing_strategy": "unknown_category",
+      "missing_strategy_description": "مقدار 'نامشخص' جایگزین می‌شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "کد نوع مصرف": {
+      "column_type": "code",
+      "missing_strategy": "unknown_category",
+      "missing_strategy_description": "مقدار 'نامشخص' جایگزین می‌شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.07588540032728229,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "استان": {
+      "column_type": "dimension",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "شهر": {
+      "column_type": "dimension",
+      "missing_strategy": "unknown_from_province",
+      "missing_strategy_description": "اگر استان موجود است، از شهرهای آن استان حدس زده می‌شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "تاریخ": {
+      "column_type": "date",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "invalid",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    }
+  },
+  "ViewProdDailyForNaft": {
+    "تاریخ شمسی": {
+      "column_type": "date",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "invalid",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "کد پالایشگاه": {
+      "column_type": "code",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "نام پالایشگاه": {
+      "column_type": "dimension",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "کد محصول": {
+      "column_type": "code",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "نام محصول": {
+      "column_type": "dimension",
+      "missing_strategy": "critical_error",
+      "missing_strategy_description": "خطای بحرانی - رکورد قابل استفاده نیست یا باید از منبع اصلی بازیابی شود",
+      "zero_strategy": "not_applicable",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 0,
+        "negative_count": 0
+      }
+    },
+    "میزان تولید": {
+      "column_type": "measure",
+      "missing_strategy": "flag_only",
+      "missing_strategy_description": "پرچم‌گذاری به عنوان Missing بدون جایگزینی (برای مدل‌های ML)",
+      "zero_strategy": "valid_real_value",
+      "negative_strategy": "investigate",
+      "quality_issues": {
+        "missing_pct": 0.0,
+        "zero_count": 2711,
+        "negative_count": 0
+      }
+    }
+  }
+}
