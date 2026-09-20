@@ -4,291 +4,207 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>پلتفرم هوشمند گاز | Energy Intelligence Platform</title>
-    
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font@v33.003/Vazirmatn-font-face.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font@v33.003/Vazirmatn-font-face.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
         :root {
-            --bg-primary: #f5f7fa;
-            --bg-secondary: #ffffff;
-            --bg-card: #ffffff;
-            --text-primary: #1a202c;
-            --text-secondary: #4a5568;
-            --border-color: #e2e8f0;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
-            --shadow: 0 1px 3px rgba(0,0,0,0.1);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
+            --bg-primary: #f5f7fa; --bg-secondary: #ffffff; --bg-card: #ffffff;
+            --text-primary: #1a202c; --text-secondary: #4a5568;
+            --border-color: #e2e8f0; --accent: #2563eb; --accent-hover: #1d4ed8;
+            --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
+            --shadow: 0 1px 3px rgba(0,0,0,0.1); --shadow-lg: 0 10px 25px rgba(0,0,0,0.1);
         }
-
         [data-theme="dark"] {
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --text-primary: #f1f5f9;
-            --text-secondary: #cbd5e1;
-            --border-color: #334155;
-            --accent: #3b82f6;
-            --accent-hover: #2563eb;
-            --shadow: 0 1px 3px rgba(0,0,0,0.3);
-            --shadow-lg: 0 10px 25px rgba(0,0,0,0.5);
+            --bg-primary: #0f172a; --bg-secondary: #1e293b; --bg-card: #1e293b;
+            --text-primary: #f1f5f9; --text-secondary: #cbd5e1;
+            --border-color: #334155; --accent: #3b82f6; --accent-hover: #2563eb;
         }
-
         * { box-sizing: border-box; margin: 0; padding: 0; }
-
         body {
             font-family: 'Vazirmatn', 'Segoe UI', Tahoma, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            min-height: 100vh;
-            transition: background 0.3s, color 0.3s;
-            line-height: 1.6;
+            background: var(--bg-primary); color: var(--text-primary);
+            min-height: 100vh; transition: all 0.3s; line-height: 1.6;
         }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
         .header {
-            background: var(--bg-secondary);
-            padding: 20px 30px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
+            background: var(--bg-secondary); padding: 20px 30px; border-radius: 12px;
+            margin-bottom: 20px; box-shadow: var(--shadow);
+            display: flex; justify-content: space-between; align-items: center;
+            flex-wrap: wrap; gap: 15px;
         }
-
         .header-title { display: flex; align-items: center; gap: 15px; }
-        .header-title h1 { font-size: 24px; color: var(--text-primary); font-weight: 700; }
+        .header-title h1 { font-size: 24px; font-weight: 700; }
         .header-title .logo { font-size: 32px; }
-
-        .header-meta {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
+        .header-meta { display: flex; align-items: center; gap: 15px; font-size: 13px; color: var(--text-secondary); }
         .theme-toggle {
-            background: var(--bg-primary);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-family: inherit;
-            transition: all 0.2s;
+            background: var(--bg-primary); border: 1px solid var(--border-color);
+            color: var(--text-primary); padding: 8px 16px; border-radius: 8px;
+            cursor: pointer; font-family: inherit; transition: all 0.2s;
         }
-
         .theme-toggle:hover { background: var(--accent); color: white; }
-
         .filters-bar {
-            background: var(--bg-secondary);
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            box-shadow: var(--shadow);
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
-            align-items: end;
+            background: var(--bg-secondary); padding: 20px; border-radius: 12px;
+            margin-bottom: 20px; box-shadow: var(--shadow);
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px; align-items: end;
         }
-
-        .filter-group label {
-            display: block;
-            font-size: 12px;
-            color: var(--text-secondary);
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-
-        .filter-group select, .filter-group input {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            font-size: 14px;
+        .filter-group label { display: block; font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
+        .filter-group select {
+            width: 100%; padding: 10px 12px; border: 1px solid var(--border-color);
+            border-radius: 8px; background: var(--bg-primary); color: var(--text-primary);
             font-family: inherit;
         }
-
         .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-family: inherit;
-            font-weight: 600;
-            transition: all 0.2s;
+            padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer;
+            font-family: inherit; font-weight: 600; transition: all 0.2s;
         }
-
         .btn-primary { background: var(--accent); color: white; }
         .btn-primary:hover { background: var(--accent-hover); }
         .btn-secondary { background: var(--bg-primary); color: var(--text-primary); border: 1px solid var(--border-color); }
-
         .section-title {
-            font-size: 20px;
-            color: var(--text-primary);
-            margin: 30px 0 15px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid var(--accent);
+            font-size: 20px; margin: 30px 0 15px; font-weight: 700;
+            display: flex; align-items: center; gap: 10px;
+            padding-bottom: 10px; border-bottom: 2px solid var(--accent);
         }
-
         .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px; margin-bottom: 20px;
         }
-
         .kpi-card {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            border-right: 4px solid var(--accent);
+            background: var(--bg-card); padding: 20px; border-radius: 12px;
+            box-shadow: var(--shadow); border-right: 4px solid var(--accent);
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
         .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
         .kpi-card .kpi-label { font-size: 12px; color: var(--text-secondary); margin-bottom: 8px; font-weight: 600; }
-        .kpi-card .kpi-value { font-size: 28px; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+        .kpi-card .kpi-value { font-size: 28px; font-weight: 700; margin-bottom: 4px; }
         .kpi-card .kpi-sub { font-size: 12px; color: var(--text-secondary); }
-
         .kpi-card.success { border-right-color: var(--success); }
         .kpi-card.warning { border-right-color: var(--warning); }
         .kpi-card.danger { border-right-color: var(--danger); }
         .kpi-card.info { border-right-color: #8b5cf6; }
-
         .charts-grid {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
+            display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px;
         }
-
         @media (max-width: 968px) { .charts-grid { grid-template-columns: 1fr; } }
-
         .chart-card {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 12px;
+            background: var(--bg-card); padding: 20px; border-radius: 12px;
             box-shadow: var(--shadow);
         }
-
         .chart-card.full-width { grid-column: 1 / -1; }
-
         .chart-card h3 {
-            font-size: 16px;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-wrap: wrap;
+            font-size: 16px; margin-bottom: 15px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
         }
-
         .chart-card h3 .subtitle {
-            font-size: 13px;
-            color: var(--text-secondary);
-            font-weight: 400;
-            margin-right: auto;
+            font-size: 13px; color: var(--text-secondary); font-weight: 400; margin-right: auto;
         }
-
         .chart-container { position: relative; height: 300px; }
         .chart-container.large { height: 400px; }
-
         .table-card {
-            background: var(--bg-card);
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
+            background: var(--bg-card); padding: 20px; border-radius: 12px;
+            box-shadow: var(--shadow); margin-bottom: 20px;
         }
-
         .table-card h3 {
-            font-size: 16px;
-            color: var(--text-primary);
-            margin-bottom: 15px;
-            font-weight: 700;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+            font-size: 16px; margin-bottom: 15px; font-weight: 700;
+            display: flex; justify-content: space-between; align-items: center;
         }
-
         table { width: 100%; border-collapse: collapse; }
-
-        th, td {
-            padding: 12px;
-            text-align: right;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 14px;
-        }
-
-        th {
-            background: var(--bg-primary);
-            color: var(--text-secondary);
-            font-weight: 700;
-            font-size: 12px;
-        }
-
+        th, td { padding: 12px; text-align: right; border-bottom: 1px solid var(--border-color); font-size: 14px; }
+        th { background: var(--bg-primary); color: var(--text-secondary); font-weight: 700; font-size: 12px; }
         tr:hover { background: var(--bg-primary); }
-
         .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 700;
+            display: inline-block; padding: 4px 10px; border-radius: 12px;
+            font-size: 11px; font-weight: 700;
         }
-
         .badge-critical { background: #fee2e2; color: #991b1b; }
         .badge-high { background: #fef3c7; color: #92400e; }
         .badge-medium { background: #dbeafe; color: #1e40af; }
         .badge-success { background: #d1fae5; color: #065f46; }
-
-        [data-theme="dark"] .badge-critical { background: #7f1d1d; color: #fca5a5; }
-        [data-theme="dark"] .badge-high { background: #78350f; color: #fcd34d; }
-        [data-theme="dark"] .badge-medium { background: #1e3a8a; color: #93c5fd; }
-        [data-theme="dark"] .badge-success { background: #064e3b; color: #6ee7b7; }
-
         .loading { text-align: center; padding: 40px; color: var(--text-secondary); }
-
         .spinner {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            border: 3px solid var(--border-color);
-            border-top-color: var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            display: inline-block; width: 30px; height: 30px;
+            border: 3px solid var(--border-color); border-top-color: var(--accent);
+            border-radius: 50%; animation: spin 1s linear infinite;
         }
-
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .empty-state { text-align: center; padding: 40px; color: var(--text-secondary); }
-        .empty-state .icon { font-size: 48px; margin-bottom: 10px; opacity: 0.5; }
-
+        
+        /* Scenario Section Special Styles */
+        .scenario-controls {
+            background: var(--bg-secondary); padding: 25px; border-radius: 12px;
+            margin-bottom: 20px; box-shadow: var(--shadow);
+        }
+        .slider-container {
+            display: flex; flex-direction: column; gap: 15px;
+        }
+        .slider-header {
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .slider-label {
+            font-size: 14px; color: var(--text-secondary); font-weight: 600;
+        }
+        .slider-value {
+            font-size: 24px; font-weight: 700; color: var(--accent);
+        }
+        .slider-value.cold { color: var(--accent); }
+        .slider-value.hot { color: var(--danger); }
+        .slider-value.neutral { color: var(--text-primary); }
+        input[type="range"] {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 8px; border-radius: 4px;
+            background: linear-gradient(to left, #ef4444, #e2e8f0 50%, #2563eb);
+            outline: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 24px; height: 24px; border-radius: 50%;
+            background: white; border: 3px solid var(--accent);
+            cursor: pointer; box-shadow: var(--shadow);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 24px; height: 24px; border-radius: 50%;
+            background: white; border: 3px solid var(--accent);
+            cursor: pointer;
+        }
+        .scenario-result {
+            background: var(--bg-primary); padding: 20px; border-radius: 10px;
+            margin-top: 15px;
+        }
+        .scenario-result-title {
+            font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;
+        }
+        .scenario-result-value {
+            font-size: 32px; font-weight: 700;
+        }
+        .scenario-result-value.positive { color: var(--danger); }
+        .scenario-result-value.negative { color: var(--success); }
+        .scenario-result-value.neutral { color: var(--text-primary); }
+        .quick-scenarios {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px; margin-top: 15px;
+        }
+        .quick-scenario-btn {
+            padding: 8px 12px; border: 1px solid var(--border-color);
+            border-radius: 6px; background: var(--bg-card); color: var(--text-primary);
+            cursor: pointer; font-family: inherit; font-size: 12px; font-weight: 600;
+            transition: all 0.2s;
+        }
+        .quick-scenario-btn:hover {
+            background: var(--accent); color: white; border-color: var(--accent);
+        }
+        .insight-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border-right: 4px solid var(--accent);
+            padding: 15px; border-radius: 8px; margin-bottom: 10px;
+            color: #0c4a6e;
+        }
+        [data-theme="dark"] .insight-card {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+            color: #bae6fd;
+        }
+        .insight-card.high { border-right-color: var(--danger); }
+        .insight-card.medium { border-right-color: var(--warning); }
+        
         @media (max-width: 768px) {
             .header { flex-direction: column; align-items: flex-start; }
             .kpi-card .kpi-value { font-size: 22px; }
@@ -303,37 +219,14 @@
                 <span class="logo">🔥</span>
                 <div>
                     <h1>پلتفرم هوشمند گاز</h1>
-                    <div style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">
-                        Energy Intelligence Platform | نسخه ۴.۰
+                    <div style="font-size: 12px; color: var(--text-secondary);">
+                        Energy Intelligence Platform | نسخه ۵.۰
                     </div>
                 </div>
             </div>
             <div class="header-meta">
                 <span id="lastUpdate">آخرین به‌روزرسانی: ...</span>
                 <button class="theme-toggle" onclick="toggleTheme()">🌓 تم</button>
-            </div>
-        </div>
-
-        <!-- Filters -->
-        <div class="filters-bar">
-            <div class="filter-group">
-                <label>سال شمسی</label>
-                <select id="yearFilter"><option value="">همه سال‌ها</option></select>
-            </div>
-            <div class="filter-group">
-                <label>استان</label>
-                <select id="provinceFilter"><option value="">همه استان‌ها</option></select>
-            </div>
-            <div class="filter-group">
-                <label>نوع مصرف</label>
-                <select id="consumptionTypeFilter"><option value="">همه انواع</option></select>
-            </div>
-            <div class="filter-group">
-                <label>&nbsp;</label>
-                <div style="display: flex; gap: 10px;">
-                    <button class="btn btn-primary" onclick="applyFilters()">🔍 اعمال فیلتر</button>
-                    <button class="btn btn-secondary" onclick="resetFilters()">↻ بازنشانی</button>
-                </div>
             </div>
         </div>
 
@@ -351,16 +244,16 @@
                 <div class="chart-container"><canvas id="trendChart"></canvas></div>
             </div>
             <div class="chart-card">
-                <h3>🏛️ مصرف به تفکیک استان (Top 10)</h3>
+                <h3>🏛️ مصرف به تفکیک استان</h3>
                 <div class="chart-container"><canvas id="provinceChart"></canvas></div>
             </div>
         </div>
 
-        <!-- Forecast Section -->
+        <!-- Forecast -->
         <div class="section-title">🔮 پیش‌بینی مصرف</div>
         <div class="chart-card full-width" style="margin-bottom: 20px;">
             <h3>
-                🔮 پیش‌بینی ۳۰ روز آینده با بازه اطمینان
+                🔮 پیش‌بینی ۳۰ روز آینده
                 <span id="forecastModelInfo" class="subtitle"></span>
             </h3>
             <div class="chart-container large"><canvas id="forecastChart"></canvas></div>
@@ -369,36 +262,75 @@
         <!-- Model Benchmarks -->
         <div class="table-card">
             <h3>
-                <span>🏆 مقایسه عملکرد مدل‌های پیش‌بینی</span>
+                <span>🏆 مقایسه عملکرد مدل‌ها</span>
                 <span id="benchmarkInfo" style="font-size: 13px; color: var(--text-secondary); font-weight: 400;"></span>
             </h3>
-            <div id="benchmarkTable">
-                <div class="loading"><div class="spinner"></div></div>
-            </div>
+            <div id="benchmarkTable"><div class="loading"><div class="spinner"></div></div></div>
         </div>
 
-        <!-- Temperature Impact Section -->
-        <div class="section-title">🌡️ تحلیل اثر دما بر مصرف</div>
-        
-        <!-- Temperature KPIs -->
+        <!-- Temperature Impact -->
+        <div class="section-title">🌡️ تحلیل اثر دما</div>
         <div class="kpi-grid" id="tempKpiGrid">
             <div class="loading"><div class="spinner"></div></div>
         </div>
-
         <div class="charts-grid">
             <div class="chart-card">
-                <h3>
-                    📊 مصرف متوسط در بازه‌های دمایی
-                    <span class="subtitle">هر نقطه = میانگین مصرف در آن بازه دما</span>
-                </h3>
+                <h3>📊 مصرف در بازه‌های دمایی</h3>
                 <div class="chart-container"><canvas id="tempBinsChart"></canvas></div>
             </div>
             <div class="chart-card">
-                <h3>
-                    🏛️ حساسیت استان‌ها به دما
-                    <span class="subtitle">Correlation دما-مصرف</span>
-                </h3>
+                <h3>🏛️ حساسیت استان‌ها به دما</h3>
                 <div class="chart-container"><canvas id="tempProvinceChart"></canvas></div>
+            </div>
+        </div>
+
+        <!-- ⭐ NEW: Scenario Analysis -->
+        <div class="section-title">🎯 تحلیل سناریو (What-If)</div>
+        
+        <!-- Interactive Slider -->
+        <div class="scenario-controls">
+            <div class="slider-container">
+                <div class="slider-header">
+                    <span class="slider-label">🌡️ تغییر دما نسبت به معمول:</span>
+                    <span id="sliderValue" class="slider-value neutral">۰°C</span>
+                </div>
+                <input type="range" id="tempSlider" min="-15" max="15" value="0" step="1">
+                <div style="display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary);">
+                    <span>-۱۵ درجه (بسیار سرد)</span>
+                    <span>۰ درجه</span>
+                    <span>+۱۵ درجه (بسیار گرم)</span>
+                </div>
+                
+                <div class="quick-scenarios">
+                    <button class="quick-scenario-btn" onclick="setTemp(-10)">❄️ -۱۰ (بحرانی)</button>
+                    <button class="quick-scenario-btn" onclick="setTemp(-5)">❄️ -۵ (سرد)</button>
+                    <button class="quick-scenario-btn" onclick="setTemp(-2)">❄️ -۲ (کمی سرد)</button>
+                    <button class="quick-scenario-btn" onclick="setTemp(0)">🌡️ ۰ (عادی)</button>
+                    <button class="quick-scenario-btn" onclick="setTemp(2)">🔥 +۲ (کمی گرم)</button>
+                    <button class="quick-scenario-btn" onclick="setTemp(5)">🔥 +۵ (گرم)</button>
+                    <button class="quick-scenario-btn" onclick="setTemp(10)">🔥 +۱۰ (بحرانی)</button>
+                </div>
+            </div>
+            
+            <!-- Real-time Result -->
+            <div class="scenario-result" id="scenarioResult">
+                <div class="scenario-result-title">تغییر مصرف کل کشور:</div>
+                <div class="scenario-result-value neutral" id="scenarioTotalChange">۰٪</div>
+                <div style="font-size: 14px; color: var(--text-secondary); margin-top: 5px;" id="scenarioAbsoluteChange"></div>
+            </div>
+        </div>
+
+        <!-- Scenario Chart -->
+        <div class="chart-card full-width" style="margin-bottom: 20px;">
+            <h3>📊 مقایسه ۷ سناریو اصلی</h3>
+            <div class="chart-container large"><canvas id="scenarioChart"></canvas></div>
+        </div>
+
+        <!-- Scenario Insights -->
+        <div class="table-card">
+            <h3>💡 بینش‌های کلیدی سناریوها</h3>
+            <div id="insightsContainer">
+                <div class="loading"><div class="spinner"></div></div>
             </div>
         </div>
 
@@ -406,30 +338,27 @@
         <div class="section-title">⚠️ تشخیص ناهنجاری</div>
         <div class="table-card">
             <h3>
-                <span>ناهنجاری‌های کشف شده (اختلاف دما)</span>
+                <span>ناهنجاری‌های دمایی</span>
                 <span id="anomalyCount" style="font-size: 13px; color: var(--text-secondary); font-weight: 400;"></span>
             </h3>
-            <div id="anomaliesTable">
-                <div class="loading"><div class="spinner"></div></div>
-            </div>
+            <div id="anomaliesTable"><div class="loading"><div class="spinner"></div></div></div>
         </div>
     </div>
 
     <script>
         const API_URL = "http://127.0.0.1:8000";
-        let trendChart = null;
-        let provinceChart = null;
-        let forecastChart = null;
-        let tempBinsChart = null;
-        let tempProvinceChart = null;
+        let charts = {};
         let globalFilters = { year: '', province: '', type: '' };
+        let debounceTimer = null;
 
         function toggleTheme() {
             const current = document.body.getAttribute('data-theme');
             const next = current === 'dark' ? 'light' : 'dark';
             document.body.setAttribute('data-theme', next);
             localStorage.setItem('theme', next);
-            updateChartsTheme();
+            Object.values(charts).forEach(c => c && c.destroy());
+            charts = {};
+            init();
         }
 
         const savedTheme = localStorage.getItem('theme') || 'light';
@@ -443,80 +372,45 @@
             }).format(num);
         }
 
-        async function loadFilters() {
-            try {
-                const response = await fetch(`${API_URL}/api/filters`);
-                const data = await response.json();
-                
-                const yearSelect = document.getElementById('yearFilter');
-                data.years.forEach(y => {
-                    const opt = document.createElement('option');
-                    opt.value = y; opt.textContent = y;
-                    yearSelect.appendChild(opt);
-                });
-                
-                const provinceSelect = document.getElementById('provinceFilter');
-                data.provinces.forEach(p => {
-                    const opt = document.createElement('option');
-                    opt.value = p; opt.textContent = p;
-                    provinceSelect.appendChild(opt);
-                });
-                
-                const typeSelect = document.getElementById('consumptionTypeFilter');
-                data.consumption_types.forEach(t => {
-                    const opt = document.createElement('option');
-                    opt.value = t; opt.textContent = t;
-                    typeSelect.appendChild(opt);
-                });
-            } catch (err) {
-                console.error('خطا در بارگذاری فیلترها:', err);
-            }
+        function getIsDark() {
+            return document.body.getAttribute('data-theme') === 'dark';
         }
 
+        // === Load KPIs ===
         async function loadKPIs() {
             try {
                 const response = await fetch(`${API_URL}/api/summary`);
                 const data = await response.json();
                 
-                const kpiGrid = document.getElementById('kpiGrid');
                 const lastDate = data.last_date ? new Date(data.last_date).toLocaleDateString('fa-IR') : '-';
-                
                 document.getElementById('lastUpdate').textContent = `آخرین داده: ${lastDate}`;
                 
-                const bestModelHtml = data.best_model 
-                    ? `${data.best_model.model}`
-                    : 'در حال آموزش...';
-                
-                kpiGrid.innerHTML = `
+                document.getElementById('kpiGrid').innerHTML = `
                     <div class="kpi-card">
                         <div class="kpi-label">کل مصرف</div>
                         <div class="kpi-value">${formatNumber(data.total_consumption, 0)}</div>
                         <div class="kpi-sub">مجموع تاریخی</div>
                     </div>
                     <div class="kpi-card success">
-                        <div class="kpi-label">تعداد ایستگاه</div>
+                        <div class="kpi-label">ایستگاه‌های فعال</div>
                         <div class="kpi-value">${formatNumber(data.unique_stations)}</div>
-                        <div class="kpi-sub">ایستگاه فعال</div>
                     </div>
                     <div class="kpi-card">
-                        <div class="kpi-label">تعداد استان</div>
+                        <div class="kpi-label">استان‌ها</div>
                         <div class="kpi-value">${formatNumber(data.unique_provinces)}</div>
-                        <div class="kpi-sub">پوشش جغرافیایی</div>
                     </div>
                     <div class="kpi-card warning">
-                        <div class="kpi-label">رکوردهای ایستگاه</div>
+                        <div class="kpi-label">رکوردهای مصرف</div>
                         <div class="kpi-value">${formatNumber(data.data_counts.station_consumption_daily)}</div>
-                        <div class="kpi-sub">مصرف روزانه</div>
                     </div>
                     <div class="kpi-card info">
-                        <div class="kpi-label">بهترین مدل پیش‌بینی</div>
-                        <div class="kpi-value" style="font-size: 18px;">${bestModelHtml}</div>
+                        <div class="kpi-label">بهترین مدل</div>
+                        <div class="kpi-value" style="font-size: 16px;">${data.best_model?.model || '-'}</div>
                         <div class="kpi-sub">${data.best_model ? 'MAE: ' + formatNumber(data.best_model.mae, 0) : ''}</div>
                     </div>
                     <div class="kpi-card danger">
                         <div class="kpi-label">رکوردهای تولید</div>
                         <div class="kpi-value">${formatNumber(data.data_counts.production_daily)}</div>
-                        <div class="kpi-sub">پالایشگاه‌ها</div>
                     </div>
                 `;
             } catch (err) {
@@ -524,286 +418,143 @@
             }
         }
 
+        // === Load Trend Chart ===
         async function loadTrendChart() {
             try {
-                let url = `${API_URL}/api/consumption/trend?days=60`;
-                if (globalFilters.province) url += `&province=${encodeURIComponent(globalFilters.province)}`;
-                
-                const response = await fetch(url);
+                const response = await fetch(`${API_URL}/api/consumption/trend?days=60`);
                 const data = await response.json();
                 
-                if (trendChart) trendChart.destroy();
-                
+                if (charts.trend) charts.trend.destroy();
                 const ctx = document.getElementById('trendChart').getContext('2d');
-                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                const isDark = getIsDark();
                 
-                trendChart = new Chart(ctx, {
+                charts.trend = new Chart(ctx, {
                     type: 'line',
                     data: {
                         labels: data.data.map(d => d.shamsi_date.substring(5)),
                         datasets: [{
-                            label: 'مصرف روزانه',
+                            label: 'مصرف',
                             data: data.data.map(d => d.consumption),
                             borderColor: isDark ? '#3b82f6' : '#2563eb',
                             backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(37, 99, 235, 0.1)',
-                            fill: true,
-                            tension: 0.3,
-                            borderWidth: 2,
-                            pointRadius: 2,
-                            pointHoverRadius: 6
+                            fill: true, tension: 0.3, borderWidth: 2, pointRadius: 2
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                rtl: true,
-                                titleFont: { family: 'Vazirmatn' },
-                                bodyFont: { family: 'Vazirmatn' },
-                                callbacks: { label: ctx => `مصرف: ${formatNumber(ctx.parsed.y, 0)}` }
-                            }
-                        },
+                        responsive: true, maintainAspectRatio: false,
+                        plugins: { legend: { display: false } },
                         scales: {
-                            y: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, callback: v => formatNumber(v, 0) },
-                                grid: { color: isDark ? '#334155' : '#e2e8f0' }
-                            },
-                            x: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, maxRotation: 45 },
-                                grid: { display: false }
-                            }
+                            y: { ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, callback: v => formatNumber(v, 0) } },
+                            x: { ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' } } }
                         }
                     }
                 });
-            } catch (err) {
-                console.error('خطا در نمودار روند:', err);
-            }
+            } catch (err) { console.error(err); }
         }
 
+        // === Load Province Chart ===
         async function loadProvinceChart() {
             try {
                 const response = await fetch(`${API_URL}/api/consumption/by-province`);
                 const data = await response.json();
                 
-                if (provinceChart) provinceChart.destroy();
-                
+                if (charts.province) charts.province.destroy();
                 const ctx = document.getElementById('provinceChart').getContext('2d');
-                const isDark = document.body.getAttribute('data-theme') === 'dark';
                 const top10 = data.data.slice(0, 10);
                 
-                provinceChart = new Chart(ctx, {
+                charts.province = new Chart(ctx, {
                     type: 'bar',
                     data: {
                         labels: top10.map(d => d.province),
                         datasets: [{
                             label: 'مصرف کل',
                             data: top10.map(d => d.total_consumption),
-                            backgroundColor: isDark ? '#3b82f6' : '#2563eb',
+                            backgroundColor: getIsDark() ? '#3b82f6' : '#2563eb',
                             borderRadius: 6
                         }]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        indexAxis: 'y',
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                rtl: true,
-                                titleFont: { family: 'Vazirmatn' },
-                                bodyFont: { family: 'Vazirmatn' },
-                                callbacks: { label: ctx => `مصرف: ${formatNumber(ctx.parsed.x, 0)}` }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, callback: v => formatNumber(v, 0) },
-                                grid: { color: isDark ? '#334155' : '#e2e8f0' }
-                            },
-                            y: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' } },
-                                grid: { display: false }
-                            }
-                        }
+                        responsive: true, maintainAspectRatio: false, indexAxis: 'y',
+                        plugins: { legend: { display: false } }
                     }
                 });
-            } catch (err) {
-                console.error('خطا در نمودار استان:', err);
-            }
+            } catch (err) { console.error(err); }
         }
 
+        // === Load Forecast ===
         async function loadForecastChart() {
             try {
                 const [forecastRes, benchmarkRes] = await Promise.all([
                     fetch(`${API_URL}/api/forecast/results`),
                     fetch(`${API_URL}/api/forecast/benchmarks`)
                 ]);
+                const forecast = await forecastRes.json();
+                const benchmark = await benchmarkRes.json();
                 
-                const forecastData = await forecastRes.json();
-                const benchmarkData = await benchmarkRes.json();
-                
-                if (forecastChart) forecastChart.destroy();
-                
-                if (benchmarkData.best_model) {
+                if (benchmark.best_model) {
                     document.getElementById('forecastModelInfo').textContent = 
-                        `مدل: ${benchmarkData.best_model.name} | MAE: ${formatNumber(benchmarkData.best_model.score, 0)}`;
+                        `مدل: ${benchmark.best_model.name} | MAE: ${formatNumber(benchmark.best_model.score, 0)}`;
                 }
                 
+                if (charts.forecast) charts.forecast.destroy();
                 const ctx = document.getElementById('forecastChart').getContext('2d');
-                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                const isDark = getIsDark();
                 
-                const labels = forecastData.data.map(d => `روز ${d.day}`);
-                const points = forecastData.data.map(d => d.point_forecast);
-                const upper95 = forecastData.data.map(d => d.upper_95);
-                const lower95 = forecastData.data.map(d => d.lower_95);
-                const upper80 = forecastData.data.map(d => d.upper_80);
-                const lower80 = forecastData.data.map(d => d.lower_80);
-                
-                forecastChart = new Chart(ctx, {
+                charts.forecast = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: labels,
+                        labels: forecast.data.map(d => `روز ${d.day}`),
                         datasets: [
-                            {
-                                label: 'بازه ۹۵٪ (بیشینه)',
-                                data: upper95,
-                                borderColor: 'transparent',
-                                backgroundColor: isDark ? 'rgba(239, 68, 68, 0.1)' : 'rgba(239, 68, 68, 0.1)',
-                                fill: '+1',
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'بازه ۹۵٪ (کمینه)',
-                                data: lower95,
-                                borderColor: 'transparent',
-                                backgroundColor: 'transparent',
-                                fill: false,
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'بازه ۸۰٪ (بیشینه)',
-                                data: upper80,
-                                borderColor: 'transparent',
-                                backgroundColor: isDark ? 'rgba(245, 158, 11, 0.2)' : 'rgba(245, 158, 11, 0.2)',
-                                fill: '+1',
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'بازه ۸۰٪ (کمینه)',
-                                data: lower80,
-                                borderColor: 'transparent',
-                                backgroundColor: 'transparent',
-                                fill: false,
-                                pointRadius: 0
-                            },
-                            {
-                                label: 'پیش‌بینی نقطه‌ای',
-                                data: points,
-                                borderColor: isDark ? '#10b981' : '#059669',
-                                backgroundColor: isDark ? '#10b981' : '#059669',
-                                borderWidth: 3,
-                                pointRadius: 4,
-                                pointHoverRadius: 7,
-                                tension: 0.3
-                            }
+                            { label: 'بازه ۹۵٪ بالا', data: forecast.data.map(d => d.upper_95), borderColor: 'transparent', backgroundColor: 'rgba(239, 68, 68, 0.1)', fill: '+1', pointRadius: 0 },
+                            { label: 'بازه ۹۵٪ پایین', data: forecast.data.map(d => d.lower_95), borderColor: 'transparent', fill: false, pointRadius: 0 },
+                            { label: 'بازه ۸۰٪ بالا', data: forecast.data.map(d => d.upper_80), borderColor: 'transparent', backgroundColor: 'rgba(245, 158, 11, 0.2)', fill: '+1', pointRadius: 0 },
+                            { label: 'بازه ۸۰٪ پایین', data: forecast.data.map(d => d.lower_80), borderColor: 'transparent', fill: false, pointRadius: 0 },
+                            { label: 'پیش‌بینی', data: forecast.data.map(d => d.point_forecast), borderColor: isDark ? '#10b981' : '#059669', borderWidth: 3, pointRadius: 4, tension: 0.3 }
                         ]
                     },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
+                        responsive: true, maintainAspectRatio: false,
                         plugins: {
                             legend: {
-                                display: true,
-                                position: 'top',
-                                labels: {
-                                    font: { family: 'Vazirmatn', size: 12 },
-                                    color: isDark ? '#cbd5e1' : '#4a5568',
-                                    filter: item => !item.text.includes('کمینه')
-                                }
-                            },
-                            tooltip: {
-                                rtl: true,
-                                mode: 'index',
-                                intersect: false,
-                                titleFont: { family: 'Vazirmatn' },
-                                bodyFont: { family: 'Vazirmatn' },
-                                callbacks: {
-                                    label: ctx => {
-                                        if (ctx.dataset.label.includes('کمینه')) return null;
-                                        return `${ctx.dataset.label}: ${formatNumber(ctx.parsed.y, 0)}`;
-                                    }
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, callback: v => formatNumber(v, 0) },
-                                grid: { color: isDark ? '#334155' : '#e2e8f0' }
-                            },
-                            x: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' } },
-                                grid: { display: false }
+                                display: true, position: 'top',
+                                labels: { font: { family: 'Vazirmatn' }, filter: item => !item.text.includes('پایین') }
                             }
                         }
                     }
                 });
-            } catch (err) {
-                console.error('خطا در نمودار پیش‌بینی:', err);
-            }
+            } catch (err) { console.error(err); }
         }
 
+        // === Load Benchmarks ===
         async function loadBenchmarks() {
             try {
                 const response = await fetch(`${API_URL}/api/forecast/benchmarks`);
                 const data = await response.json();
                 
-                const container = document.getElementById('benchmarkTable');
-                document.getElementById('benchmarkInfo').textContent = `${data.count} مدل مقایسه شده`;
+                document.getElementById('benchmarkInfo').textContent = `${data.count} مدل`;
                 
-                let html = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>رتبه</th>
-                                <th>مدل</th>
-                                <th>MAE</th>
-                                <th>RMSE</th>
-                                <th>sMAPE %</th>
-                                <th>پنجره‌ها</th>
-                                <th>وضعیت</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
+                let html = `<table><thead><tr>
+                    <th>رتبه</th><th>مدل</th><th>MAE</th><th>RMSE</th><th>sMAPE</th><th>وضعیت</th>
+                </tr></thead><tbody>`;
                 
                 data.data.forEach((m, idx) => {
-                    const isBest = m.is_best;
-                    const badge = isBest 
-                        ? '<span class="badge badge-success">🏆 بهترین</span>'
-                        : `<span style="color: var(--text-secondary);">#${idx + 1}</span>`;
-                    
-                    html += `
-                        <tr style="${isBest ? 'background: var(--bg-primary);' : ''}">
-                            <td>${badge}</td>
-                            <td><strong>${m.model_name}</strong></td>
-                            <td>${formatNumber(m.MAE, 0)}</td>
-                            <td>${formatNumber(m.RMSE, 0)}</td>
-                            <td>${formatNumber(m.sMAPE, 2)}</td>
-                            <td>${m.validation_windows}</td>
-                            <td>${isBest ? '✅' : '-'}</td>
-                        </tr>
-                    `;
+                    const badge = m.is_best ? '<span class="badge badge-success">🏆 بهترین</span>' : `#${idx + 1}`;
+                    html += `<tr style="${m.is_best ? 'background: var(--bg-primary);' : ''}">
+                        <td>${badge}</td>
+                        <td><strong>${m.model_name}</strong></td>
+                        <td>${formatNumber(m.MAE, 0)}</td>
+                        <td>${formatNumber(m.RMSE, 0)}</td>
+                        <td>${formatNumber(m.sMAPE, 2)}%</td>
+                        <td>${m.is_best ? '✅' : '-'}</td>
+                    </tr>`;
                 });
                 
                 html += '</tbody></table>';
-                container.innerHTML = html;
-            } catch (err) {
-                console.error('خطا در بنچمارک:', err);
-            }
+                document.getElementById('benchmarkTable').innerHTML = html;
+            } catch (err) { console.error(err); }
         }
 
+        // === Load Temperature Analysis ===
         async function loadTemperatureAnalysis() {
             try {
                 const [summaryRes, binsRes, provinceRes] = await Promise.all([
@@ -816,230 +567,242 @@
                 const bins = await binsRes.json();
                 const provinces = await provinceRes.json();
                 
-                // === Temperature KPIs ===
-                const tempKpiGrid = document.getElementById('tempKpiGrid');
-                
-                const corrDirection = summary.correlation.overall < 0 ? '↓ معکوس' : '↑ مستقیم';
-                const elasticityText = summary.elasticity 
-                    ? summary.elasticity.interpretation 
-                    : 'محاسبه نشده';
-                
-                tempKpiGrid.innerHTML = `
+                const corrDir = summary.correlation.overall < 0 ? '↓ معکوس' : '↑ مستقیم';
+                document.getElementById('tempKpiGrid').innerHTML = `
                     <div class="kpi-card info">
-                        <div class="kpi-label">همبستگی دما-مصرف</div>
+                        <div class="kpi-label">همبستگی</div>
                         <div class="kpi-value">${formatNumber(summary.correlation.overall, 3)}</div>
-                        <div class="kpi-sub">${summary.correlation.interpretation} - ${corrDirection}</div>
+                        <div class="kpi-sub">${corrDir}</div>
                     </div>
                     <div class="kpi-card">
                         <div class="kpi-label">کشش دمایی</div>
                         <div class="kpi-value">${summary.elasticity ? formatNumber(summary.elasticity.value, 3) : '-'}</div>
-                        <div class="kpi-sub" style="font-size: 11px;">${elasticityText}</div>
+                        <div class="kpi-sub">${summary.elasticity?.interpretation || ''}</div>
                     </div>
                     <div class="kpi-card warning">
-                        <div class="kpi-label">Outlierهای حذف‌شده</div>
+                        <div class="kpi-label">Outlier حذف‌شده</div>
                         <div class="kpi-value">${summary.outlier_stats ? formatNumber(summary.outlier_stats.outliers_count) : '-'}</div>
-                        <div class="kpi-sub">${summary.outlier_stats ? formatNumber(summary.outlier_stats.outliers_pct, 2) + '% از داده‌ها' : ''}</div>
+                        <div class="kpi-sub">${summary.outlier_stats ? formatNumber(summary.outlier_stats.outliers_pct, 2) + '%' : ''}</div>
                     </div>
                     <div class="kpi-card success">
                         <div class="kpi-label">رکوردهای معتبر</div>
                         <div class="kpi-value">${formatNumber(summary.correlation.total_records)}</div>
-                        <div class="kpi-sub">پس از فیلتر کیفیت</div>
                     </div>
                 `;
                 
-                // === Temperature Bins Chart ===
-                if (tempBinsChart) tempBinsChart.destroy();
-                
+                if (charts.tempBins) charts.tempBins.destroy();
                 const ctxBins = document.getElementById('tempBinsChart').getContext('2d');
-                const isDark = document.body.getAttribute('data-theme') === 'dark';
+                const maxCons = Math.max(...bins.data.map(b => b.avg_consumption));
+                const minCons = Math.min(...bins.data.map(b => b.avg_consumption));
                 
-                tempBinsChart = new Chart(ctxBins, {
+                charts.tempBins = new Chart(ctxBins, {
                     type: 'bar',
                     data: {
                         labels: bins.data.map(b => b.temp_range),
                         datasets: [{
-                            label: 'مصرف متوسط',
                             data: bins.data.map(b => b.avg_consumption),
                             backgroundColor: bins.data.map(b => {
-                                if (b.avg_consumption > bins.data.reduce((max, x) => Math.max(max, x.avg_consumption), 0) * 0.8) {
-                                    return isDark ? '#ef4444' : '#dc2626';
-                                } else if (b.avg_consumption < bins.data.reduce((min, x) => Math.min(min, x.avg_consumption), Infinity) * 1.2) {
-                                    return isDark ? '#3b82f6' : '#2563eb';
-                                }
-                                return isDark ? '#8b5cf6' : '#7c3aed';
+                                if (b.avg_consumption > maxCons * 0.8) return getIsDark() ? '#ef4444' : '#dc2626';
+                                if (b.avg_consumption < minCons * 1.2) return getIsDark() ? '#3b82f6' : '#2563eb';
+                                return getIsDark() ? '#8b5cf6' : '#7c3aed';
                             }),
                             borderRadius: 4
                         }]
                     },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                rtl: true,
-                                titleFont: { family: 'Vazirmatn' },
-                                bodyFont: { family: 'Vazirmatn' },
-                                callbacks: {
-                                    title: ctx => `بازه دما: ${ctx[0].label}°C`,
-                                    label: ctx => `مصرف متوسط: ${formatNumber(ctx.parsed.y, 0)}`,
-                                    afterLabel: ctx => `تعداد رکورد: ${formatNumber(bins.data[ctx[0].dataIndex].record_count)}`
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, callback: v => formatNumber(v, 0) },
-                                grid: { color: isDark ? '#334155' : '#e2e8f0' }
-                            },
-                            x: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' }, maxRotation: 45 },
-                                grid: { display: false }
-                            }
-                        }
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
                 });
                 
-                // === Province Correlation Chart ===
-                if (tempProvinceChart) tempProvinceChart.destroy();
-                
+                if (charts.tempProvince) charts.tempProvince.destroy();
                 const ctxProv = document.getElementById('tempProvinceChart').getContext('2d');
                 const top15 = provinces.data.slice(0, 15);
                 
-                tempProvinceChart = new Chart(ctxProv, {
+                charts.tempProvince = new Chart(ctxProv, {
                     type: 'bar',
                     data: {
                         labels: top15.map(p => p.province),
                         datasets: [{
-                            label: 'Correlation',
                             data: top15.map(p => p.correlation),
-                            backgroundColor: top15.map(p => {
-                                if (p.correlation > 0) return isDark ? '#ef4444' : '#dc2626';
-                                return isDark ? '#3b82f6' : '#2563eb';
-                            }),
+                            backgroundColor: top15.map(p => p.correlation > 0 ? (getIsDark() ? '#ef4444' : '#dc2626') : (getIsDark() ? '#3b82f6' : '#2563eb')),
                             borderRadius: 4
                         }]
                     },
+                    options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } } }
+                });
+            } catch (err) { console.error(err); }
+        }
+
+        // === Load Scenario Chart ===
+        async function loadScenarioChart() {
+            try {
+                const response = await fetch(`${API_URL}/api/scenarios/summary`);
+                const data = await response.json();
+                
+                if (charts.scenario) charts.scenario.destroy();
+                const ctx = document.getElementById('scenarioChart').getContext('2d');
+                
+                charts.scenario = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.data.map(s => s.scenario_name),
+                        datasets: [{
+                            label: 'تغییر درصد مصرف',
+                            data: data.data.map(s => s.change_pct),
+                            backgroundColor: data.data.map(s => {
+                                if (s.temp_change < 0) return getIsDark() ? '#3b82f6' : '#2563eb';
+                                if (s.temp_change > 0) return getIsDark() ? '#ef4444' : '#dc2626';
+                                return getIsDark() ? '#6b7280' : '#9ca3af';
+                            }),
+                            borderRadius: 6
+                        }]
+                    },
                     options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        indexAxis: 'y',
+                        responsive: true, maintainAspectRatio: false,
                         plugins: {
                             legend: { display: false },
                             tooltip: {
-                                rtl: true,
-                                titleFont: { family: 'Vazirmatn' },
-                                bodyFont: { family: 'Vazirmatn' },
                                 callbacks: {
-                                    label: ctx => `همبستگی: ${formatNumber(ctx.parsed.x, 3)}`,
-                                    afterLabel: ctx => `رکوردها: ${formatNumber(top15[ctx.dataIndex].record_count)}`
+                                    label: ctx => `تغییر: ${formatNumber(ctx.parsed.y, 2)}%`
                                 }
                             }
                         },
                         scales: {
-                            x: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn' } },
-                                grid: { color: isDark ? '#334155' : '#e2e8f0' }
-                            },
                             y: {
-                                ticks: { color: isDark ? '#cbd5e1' : '#4a5568', font: { family: 'Vazirmatn', size: 11 } },
-                                grid: { display: false }
+                                ticks: { callback: v => formatNumber(v, 0) + '%' },
+                                grid: { color: getIsDark() ? '#334155' : '#e2e8f0' }
                             }
                         }
                     }
                 });
-                
-            } catch (err) {
-                console.error('خطا در تحلیل دما:', err);
-                document.getElementById('tempKpiGrid').innerHTML = 
-                    '<div class="empty-state"><div class="icon">⚠️</div><p>خطا در بارگذاری تحلیل دما</p></div>';
-            }
+            } catch (err) { console.error(err); }
         }
 
-        async function loadAnomalies() {
+        // === Load Scenario Insights ===
+        async function loadInsights() {
             try {
-                const response = await fetch(`${API_URL}/api/anomalies?threshold=100&limit=20`);
+                const response = await fetch(`${API_URL}/api/scenarios/insights`);
                 const data = await response.json();
                 
-                const container = document.getElementById('anomaliesTable');
-                document.getElementById('anomalyCount').textContent = `${data.count} مورد کشف شده`;
+                const container = document.getElementById('insightsContainer');
                 
                 if (data.count === 0) {
-                    container.innerHTML = '<div class="empty-state"><div class="icon">✅</div><p>ناهنجاری کشف نشد</p></div>';
+                    container.innerHTML = '<div class="loading">💡 بینشی موجود نیست</div>';
                     return;
                 }
                 
-                let html = `
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>تاریخ</th>
-                                <th>شدت</th>
-                                <th>استان</th>
-                                <th>ایستگاه</th>
-                                <th>دمای نقطه ۱</th>
-                                <th>دمای نقطه ۲</th>
-                                <th>اختلاف</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
+                let html = '';
+                data.data.forEach(i => {
+                    html += `
+                        <div class="insight-card ${i.severity}">
+                            <strong>${i.severity === 'high' ? '🔴' : '🟡'}</strong>
+                            ${i.insight}
+                        </div>
+                    `;
+                });
+                
+                container.innerHTML = html;
+            } catch (err) { console.error(err); }
+        }
+
+        // === Real-time Scenario Simulation ===
+        async function simulateScenario(tempChange) {
+            try {
+                const response = await fetch(`${API_URL}/api/scenarios/simulate?temp_change=${tempChange}`);
+                const data = await response.json();
+                
+                const totalChangeEl = document.getElementById('scenarioTotalChange');
+                const absoluteEl = document.getElementById('scenarioAbsoluteChange');
+                const sliderValueEl = document.getElementById('sliderValue');
+                
+                const pct = data.total_change_pct;
+                const diff = data.total_diff;
+                
+                // Update slider value display
+                let tempClass = 'neutral';
+                if (tempChange < 0) tempClass = 'cold';
+                else if (tempChange > 0) tempClass = 'hot';
+                sliderValueEl.className = `slider-value ${tempClass}`;
+                sliderValueEl.textContent = `${tempChange > 0 ? '+' : ''}${tempChange}°C`;
+                
+                // Update result
+                let resultClass = 'neutral';
+                if (pct > 0) resultClass = 'positive';
+                else if (pct < 0) resultClass = 'negative';
+                
+                totalChangeEl.className = `scenario-result-value ${resultClass}`;
+                totalChangeEl.textContent = `${pct > 0 ? '+' : ''}${formatNumber(pct, 2)}٪`;
+                
+                absoluteEl.textContent = `تغییر: ${formatNumber(diff, 0)} واحد | استان‌های تحلیل‌شده: ${data.province_count}`;
+                
+            } catch (err) {
+                console.error('خطا در شبیه‌سازی:', err);
+            }
+        }
+
+        function setTemp(value) {
+            document.getElementById('tempSlider').value = value;
+            simulateScenario(value);
+        }
+
+        // === Load Anomalies ===
+        async function loadAnomalies() {
+            try {
+                const response = await fetch(`${API_URL}/api/anomalies?threshold=100&limit=15`);
+                const data = await response.json();
+                
+                document.getElementById('anomalyCount').textContent = `${data.count} مورد`;
+                const container = document.getElementById('anomaliesTable');
+                
+                if (data.count === 0) {
+                    container.innerHTML = '<div class="loading">✅ ناهنجاری کشف نشد</div>';
+                    return;
+                }
+                
+                let html = `<table><thead><tr>
+                    <th>تاریخ</th><th>شدت</th><th>استان</th><th>ایستگاه</th>
+                    <th>نقطه ۱</th><th>نقطه ۲</th><th>اختلاف</th>
+                </tr></thead><tbody>`;
                 
                 data.data.forEach(a => {
-                    const badgeClass = a.severity === 'Critical' ? 'badge-critical' :
-                                       a.severity === 'High' ? 'badge-high' : 'badge-medium';
-                    html += `
-                        <tr>
-                            <td>${a.shamsi_date}</td>
-                            <td><span class="badge ${badgeClass}">${a.severity}</span></td>
-                            <td>${a.province || '-'}</td>
-                            <td>${a.station || '-'}</td>
-                            <td>${formatNumber(a.temp_point_1, 1)}</td>
-                            <td>${formatNumber(a.temp_point_2, 1)}</td>
-                            <td><strong>${formatNumber(a.temperature_diff, 1)}</strong></td>
-                        </tr>
-                    `;
+                    const badge = a.severity === 'Critical' ? 'badge-critical' : a.severity === 'High' ? 'badge-high' : 'badge-medium';
+                    html += `<tr>
+                        <td>${a.shamsi_date}</td>
+                        <td><span class="badge ${badge}">${a.severity}</span></td>
+                        <td>${a.province || '-'}</td>
+                        <td>${a.station || '-'}</td>
+                        <td>${formatNumber(a.temp_point_1, 1)}</td>
+                        <td>${formatNumber(a.temp_point_2, 1)}</td>
+                        <td><strong>${formatNumber(a.temperature_diff, 1)}</strong></td>
+                    </tr>`;
                 });
                 
                 html += '</tbody></table>';
                 container.innerHTML = html;
-            } catch (err) {
-                console.error('خطا در ناهنجاری‌ها:', err);
-            }
+            } catch (err) { console.error(err); }
         }
 
-        function updateChartsTheme() {
-            loadTrendChart();
-            loadProvinceChart();
-            loadForecastChart();
-            loadTemperatureAnalysis();
-        }
-
-        function applyFilters() {
-            globalFilters.year = document.getElementById('yearFilter').value;
-            globalFilters.province = document.getElementById('provinceFilter').value;
-            globalFilters.type = document.getElementById('consumptionTypeFilter').value;
-            loadTrendChart();
-        }
-
-        function resetFilters() {
-            document.getElementById('yearFilter').value = '';
-            document.getElementById('provinceFilter').value = '';
-            document.getElementById('consumptionTypeFilter').value = '';
-            globalFilters = { year: '', province: '', type: '' };
-            loadTrendChart();
-        }
-
+        // === Init ===
         async function init() {
-            await loadFilters();
-            await loadKPIs();
-            await loadTrendChart();
-            await loadProvinceChart();
-            await loadForecastChart();
-            await loadBenchmarks();
-            await loadTemperatureAnalysis();
-            await loadAnomalies();
+            await Promise.all([
+                loadKPIs(),
+                loadTrendChart(),
+                loadProvinceChart(),
+                loadForecastChart(),
+                loadBenchmarks(),
+                loadTemperatureAnalysis(),
+                loadScenarioChart(),
+                loadInsights(),
+                loadAnomalies()
+            ]);
+            
+            simulateScenario(0);
         }
+
+        // === Slider Event ===
+        document.getElementById('tempSlider').addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => simulateScenario(value), 200);
+        });
 
         init();
     </script>
