@@ -3,40 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="پلتفرم هوشمند تحلیل و پایش گاز">
     <title>پلتفرم هوشمند گاز | Energy Intelligence</title>
     
-    <!-- Vazirmatn Font -->
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn-font@v33.003/Vazirmatn-font-face.css" rel="stylesheet">
-    
-    <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    
-    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     
     <style>
-        /* ================================================================
-           DESIGN TOKENS
-           ================================================================ */
         :root {
             --surface-base: #F8FAFC;
             --surface-elevated: #FFFFFF;
             --surface-sunken: #F1F5F9;
             --surface-hover: #F1F5F9;
-            
             --primary-50: #EFF6FF;
-            --primary-100: #DBEAFE;
             --primary-500: #0F4C81;
             --primary-600: #0C3F6B;
             --primary-700: #093154;
             --primary-900: #061E33;
-            
-            --accent-50: #FFFBEB;
             --accent-500: #D97706;
-            --accent-600: #B45309;
-            
             --success: #059669;
             --success-bg: #ECFDF5;
             --warning: #D97706;
@@ -45,16 +29,13 @@
             --danger-bg: #FEF2F2;
             --info: #0284C7;
             --info-bg: #F0F9FF;
-            
             --text-primary: #0F172A;
             --text-secondary: #475569;
             --text-muted: #94A3B8;
             --text-inverse: #FFFFFF;
-            
             --border-subtle: #E2E8F0;
             --border-default: #CBD5E1;
             --border-strong: #94A3B8;
-            
             --space-1: 4px;
             --space-2: 8px;
             --space-3: 12px;
@@ -62,25 +43,16 @@
             --space-5: 20px;
             --space-6: 24px;
             --space-8: 32px;
-            --space-10: 40px;
-            
             --radius-sm: 4px;
             --radius-md: 6px;
             --radius-lg: 8px;
             --radius-xl: 12px;
-            
-            --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
             --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
             --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.06);
-            --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08);
-            
             --transition-fast: 120ms cubic-bezier(0.4, 0, 0.2, 1);
             --transition-normal: 200ms cubic-bezier(0.4, 0, 0.2, 1);
-            
             --sidebar-width: 260px;
-            --sidebar-collapsed: 68px;
             --header-height: 56px;
-            
             --font-sans: 'Vazirmatn', system-ui, sans-serif;
         }
         
@@ -89,52 +61,20 @@
             --surface-elevated: #111827;
             --surface-sunken: #020617;
             --surface-hover: #1F2937;
-            
             --primary-50: #172554;
-            --primary-100: #1E3A8A;
             --primary-500: #3B82F6;
             --primary-600: #60A5FA;
             --primary-700: #93C5FD;
-            
-            --accent-50: #422006;
-            --accent-500: #F59E0B;
-            
-            --success: #10B981;
-            --success-bg: #064E3B;
-            --warning: #F59E0B;
-            --warning-bg: #78350F;
-            --danger: #EF4444;
-            --danger-bg: #7F1D1D;
-            --info: #0EA5E9;
-            --info-bg: #0C4A6E;
-            
             --text-primary: #F1F5F9;
             --text-secondary: #CBD5E1;
             --text-muted: #64748B;
-            
             --border-subtle: #1F2937;
             --border-default: #334155;
-            --border-strong: #475569;
-            
-            --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
-            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.4);
-            --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.4);
-            --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.5);
         }
         
-        /* ================================================================
-           RESET & BASE
-           ================================================================ */
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         
-        html {
-            font-size: 16px;
-            -webkit-font-smoothing: antialiased;
-        }
+        html { font-size: 16px; -webkit-font-smoothing: antialiased; }
         
         body {
             font-family: var(--font-sans);
@@ -143,70 +83,24 @@
             line-height: 1.6;
             font-size: 14px;
             min-height: 100vh;
-            overflow-x: hidden;
         }
         
-        button {
-            font-family: inherit;
-            cursor: pointer;
-            border: none;
-            background: none;
-            color: inherit;
-        }
-        
+        button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
         a { color: inherit; text-decoration: none; }
         
-        :focus-visible {
-            outline: 2px solid var(--primary-500);
-            outline-offset: 2px;
-        }
+        :focus-visible { outline: 2px solid var(--primary-500); outline-offset: 2px; }
         
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb {
-            background: var(--border-default);
-            border-radius: 8px;
-        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-thumb { background: var(--border-default); border-radius: 8px; }
         
-        @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
-                animation-duration: 0.01ms !important;
-                transition-duration: 0.01ms !important;
-            }
-        }
-        
-        /* ================================================================
-           TYPOGRAPHY
-           ================================================================ */
-        .text-display { font-size: 32px; font-weight: 700; line-height: 1.2; }
-        .text-h1 { font-size: 24px; font-weight: 700; line-height: 1.3; }
-        .text-h2 { font-size: 20px; font-weight: 600; line-height: 1.35; }
-        .text-h3 { font-size: 16px; font-weight: 600; line-height: 1.4; }
-        .text-body { font-size: 14px; font-weight: 400; line-height: 1.6; }
-        .text-small { font-size: 12px; font-weight: 400; line-height: 1.5; }
-        .text-num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
-        
-        .text-primary { color: var(--text-primary); }
-        .text-secondary { color: var(--text-secondary); }
-        .text-muted { color: var(--text-muted); }
-        
-        /* ================================================================
-           APP SHELL
-           ================================================================ */
         .app-shell {
             display: grid;
             grid-template-columns: var(--sidebar-width) 1fr;
             min-height: 100vh;
-            transition: grid-template-columns var(--transition-normal);
         }
         
-        .app-shell.collapsed {
-            grid-template-columns: var(--sidebar-collapsed) 1fr;
-        }
+        .app-shell.collapsed { grid-template-columns: 68px 1fr; }
         
-        /* ================================================================
-           SIDEBAR
-           ================================================================ */
         .sidebar {
             background: var(--surface-elevated);
             border-left: 1px solid var(--border-subtle);
@@ -226,7 +120,6 @@
             align-items: center;
             gap: var(--space-3);
             border-bottom: 1px solid var(--border-subtle);
-            flex-shrink: 0;
         }
         
         .sidebar-logo {
@@ -237,51 +130,25 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text-inverse);
-            flex-shrink: 0;
+            color: white;
         }
         
-        .sidebar-brand { overflow: hidden; }
-        
-        .sidebar-brand-name {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--text-primary);
-            white-space: nowrap;
-        }
-        
-        .sidebar-brand-tag {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            white-space: nowrap;
-        }
+        .sidebar-brand-name { font-size: 14px; font-weight: 700; }
+        .sidebar-brand-tag { font-size: 10px; color: var(--text-muted); text-transform: uppercase; }
         
         .app-shell.collapsed .sidebar-brand,
         .app-shell.collapsed .nav-label,
         .app-shell.collapsed .nav-group-title,
-        .app-shell.collapsed .sidebar-footer-text {
-            display: none;
-        }
+        .app-shell.collapsed .sidebar-footer-text { display: none; }
         
-        .sidebar-nav {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: var(--space-3) var(--space-2);
-        }
-        
+        .sidebar-nav { flex: 1; overflow-y: auto; padding: var(--space-3) var(--space-2); }
         .nav-group { margin-bottom: var(--space-5); }
-        
         .nav-group-title {
             font-size: 11px;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.05em;
             padding: var(--space-2) var(--space-3);
-            margin-bottom: var(--space-1);
         }
         
         .nav-item {
@@ -293,54 +160,15 @@
             color: var(--text-secondary);
             font-size: 13px;
             font-weight: 500;
-            cursor: pointer;
             transition: all var(--transition-fast);
-            position: relative;
             margin-bottom: 1px;
-            white-space: nowrap;
         }
         
-        .nav-item:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-        }
+        .nav-item:hover { background: var(--surface-hover); color: var(--text-primary); }
+        .nav-item.active { background: var(--primary-50); color: var(--primary-600); font-weight: 600; }
+        .nav-icon { width: 18px; height: 18px; }
         
-        .nav-item.active {
-            background: var(--primary-50);
-            color: var(--primary-600);
-            font-weight: 600;
-        }
-        
-        .nav-icon {
-            width: 18px;
-            height: 18px;
-            flex-shrink: 0;
-        }
-        
-        .nav-badge {
-            margin-right: auto;
-            background: var(--danger);
-            color: white;
-            font-size: 10px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 10px;
-            min-width: 18px;
-            text-align: center;
-        }
-        
-        .app-shell.collapsed .nav-item {
-            justify-content: center;
-            padding: var(--space-3);
-        }
-        
-        .app-shell.collapsed .nav-badge { display: none; }
-        
-        .sidebar-footer {
-            padding: var(--space-3) var(--space-2);
-            border-top: 1px solid var(--border-subtle);
-        }
-        
+        .sidebar-footer { padding: var(--space-3) var(--space-2); border-top: 1px solid var(--border-subtle); }
         .sidebar-collapse-btn {
             width: 100%;
             display: flex;
@@ -350,22 +178,10 @@
             border-radius: var(--radius-md);
             color: var(--text-secondary);
             font-size: 13px;
-            transition: all var(--transition-fast);
         }
+        .sidebar-collapse-btn:hover { background: var(--surface-hover); }
         
-        .sidebar-collapse-btn:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-        }
-        
-        /* ================================================================
-           MAIN CONTENT
-           ================================================================ */
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-        }
+        .main-content { display: flex; flex-direction: column; min-width: 0; }
         
         .top-header {
             height: var(--header-height);
@@ -375,39 +191,16 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: var(--space-4);
             position: sticky;
             top: 0;
             z-index: 30;
         }
         
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: var(--space-4);
-            min-width: 0;
-        }
-        
-        .breadcrumb {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-        
+        .breadcrumb { display: flex; align-items: center; gap: var(--space-2); font-size: 13px; color: var(--text-muted); }
         .breadcrumb-sep { color: var(--border-default); }
+        .breadcrumb-current { color: var(--text-primary); font-weight: 600; }
         
-        .breadcrumb-current {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-        
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
+        .header-right { display: flex; align-items: center; gap: var(--space-2); }
         
         .header-btn {
             width: 36px;
@@ -418,126 +211,88 @@
             justify-content: center;
             color: var(--text-secondary);
             transition: all var(--transition-fast);
-            position: relative;
         }
+        .header-btn:hover { background: var(--surface-hover); color: var(--text-primary); }
         
-        .header-btn:hover {
-            background: var(--surface-hover);
-            color: var(--text-primary);
-        }
+        .page { padding: var(--space-6); max-width: 1600px; margin: 0 auto; width: 100%; }
         
-        .header-btn .dot {
-            position: absolute;
-            top: 8px;
-            left: 10px;
-            width: 7px;
-            height: 7px;
-            background: var(--danger);
-            border-radius: 50%;
-            border: 2px solid var(--surface-elevated);
-        }
+        .page-header { margin-bottom: var(--space-6); }
+        .page-title { font-size: 24px; font-weight: 700; margin-bottom: var(--space-1); }
+        .page-subtitle { font-size: 14px; color: var(--text-secondary); }
         
-        .data-freshness {
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-            padding: var(--space-2) var(--space-3);
-            background: var(--surface-sunken);
-            border-radius: var(--radius-md);
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
+        .section { margin-bottom: var(--space-8); }
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--space-4); flex-wrap: wrap; gap: var(--space-3); }
+        .section-title { font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: var(--space-2); }
+        .section-subtitle { font-size: 13px; color: var(--text-secondary); }
         
-        .freshness-dot {
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 0 3px rgba(5, 150, 105, 0.15);
-        }
-        
-        /* Filter Bar */
-        .filter-bar {
-            height: 56px;
+        .card {
             background: var(--surface-elevated);
-            border-bottom: 1px solid var(--border-subtle);
-            padding: 0 var(--space-6);
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-            overflow-x: auto;
-        }
-        
-        .filter-bar-label {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        
-        .filter-chip {
-            display: inline-flex;
-            align-items: center;
-            gap: var(--space-2);
-            padding: var(--space-1) var(--space-3);
-            background: var(--surface-sunken);
             border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+        }
+        
+        .chart-container { position: relative; height: 350px; }
+        
+        .time-filter-group {
+            display: flex;
+            gap: var(--space-1);
+            background: var(--surface-sunken);
+            padding: var(--space-1);
             border-radius: var(--radius-md);
-            font-size: 12px;
+        }
+        
+        .time-filter-btn {
+            padding: var(--space-2) var(--space-4);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
             font-weight: 500;
             color: var(--text-secondary);
-            cursor: pointer;
             transition: all var(--transition-fast);
-            white-space: nowrap;
         }
         
-        .filter-chip:hover {
-            background: var(--surface-hover);
-            border-color: var(--border-default);
-        }
+        .time-filter-btn:hover { color: var(--text-primary); }
         
-        .filter-chip.active {
-            background: var(--primary-50);
-            border-color: var(--primary-500);
+        .time-filter-btn.active {
+            background: var(--surface-elevated);
             color: var(--primary-600);
+            box-shadow: var(--shadow-sm);
         }
         
-        .filter-chip-icon { width: 14px; height: 14px; }
-        
-        /* Page Content */
-        .page {
-            padding: var(--space-6);
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        
-        .page-header {
-            margin-bottom: var(--space-6);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: var(--space-4);
-            flex-wrap: wrap;
+            margin-bottom: var(--space-6);
         }
         
-        .page-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--text-primary);
-            margin-bottom: var(--space-1);
+        .kpi-card {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
         }
         
-        .page-subtitle {
-            font-size: 14px;
+        .kpi-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); margin-bottom: var(--space-2); }
+        .kpi-value { font-size: 24px; font-weight: 700; font-variant-numeric: tabular-nums; }
+        .kpi-unit { font-size: 12px; color: var(--text-muted); margin-right: var(--space-1); }
+        .kpi-context { font-size: 12px; color: var(--text-muted); margin-top: var(--space-2); }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { 
+            background: var(--surface-sunken);
+            padding: var(--space-3);
+            text-align: right;
+            font-size: 12px;
+            font-weight: 600;
             color: var(--text-secondary);
-            line-height: 1.5;
         }
-        
-        .page-actions {
-            display: flex;
-            gap: var(--space-2);
+        td {
+            padding: var(--space-3);
+            border-bottom: 1px solid var(--border-subtle);
+            font-size: 13px;
         }
+        tr:hover td { background: var(--surface-hover); }
         
         .btn {
             display: inline-flex;
@@ -548,464 +303,773 @@
             font-size: 13px;
             font-weight: 500;
             transition: all var(--transition-fast);
-            white-space: nowrap;
-            height: 36px;
         }
-        
-        .btn-primary {
-            background: var(--primary-600);
-            color: var(--text-inverse);
-        }
-        
+        .btn-primary { background: var(--primary-600); color: white; }
         .btn-primary:hover { background: var(--primary-700); }
-        
-        .btn-secondary {
-            background: var(--surface-elevated);
-            border: 1px solid var(--border-default);
-            color: var(--text-primary);
-        }
-        
+        .btn-secondary { background: var(--surface-elevated); border: 1px solid var(--border-default); }
         .btn-secondary:hover { background: var(--surface-hover); }
         
-        /* ================================================================
-           OVERVIEW HERO
-           ================================================================ */
-        .overview-hero {
-            background: linear-gradient(135deg, var(--primary-700) 0%, var(--primary-900) 100%);
-            border-radius: var(--radius-xl);
-            padding: var(--space-8);
-            color: white;
-            position: relative;
-            overflow: hidden;
-            margin-bottom: var(--space-6);
-        }
+        .hidden { display: none !important; }
         
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 1fr auto;
-            gap: var(--space-6);
+        /* Forecast Page Styles */
+        .forecast-controls {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
             align-items: center;
         }
         
-        .hero-greeting {
-            font-size: 13px;
-            opacity: 0.8;
-            margin-bottom: var(--space-2);
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-2);
+        }
+        
+        .control-label {
+            font-size: 12px;
             font-weight: 500;
+            color: var(--text-secondary);
         }
         
-        .hero-headline {
-            font-size: 26px;
-            font-weight: 700;
-            line-height: 1.25;
-            margin-bottom: var(--space-3);
+        .select-control {
+            padding: var(--space-2) var(--space-3);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 13px;
+            cursor: pointer;
         }
         
-        .hero-summary {
-            font-size: 14px;
-            opacity: 0.85;
-            line-height: 1.6;
-            max-width: 560px;
+        .select-control:focus {
+            outline: none;
+            border-color: var(--primary-500);
         }
         
-        .hero-stats {
+        .forecast-legend {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+            margin-top: var(--space-4);
+            padding-top: var(--space-4);
+            border-top: 1px solid var(--border-subtle);
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .legend-line {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+        }
+        
+        .legend-band {
+            width: 20px;
+            height: 12px;
+            border-radius: 2px;
+        }
+        
+        .drivers-grid {
             display: grid;
-            grid-template-columns: 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: var(--space-3);
         }
         
-        .hero-stat {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: var(--radius-lg);
+        .driver-card {
+            background: var(--surface-sunken);
+            border-radius: var(--radius-md);
             padding: var(--space-4);
         }
         
-        .hero-stat-label {
+        .driver-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .driver-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        
+        .driver-description {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: var(--space-1);
+        }
+        
+        .model-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            background: var(--success-bg);
+            color: var(--success);
+            border-radius: var(--radius-sm);
             font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            opacity: 0.75;
+            font-weight: 600;
+        }
+        
+        /* Temperature Page Styles */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-4);
+        }
+        
+        @media (max-width: 1200px) {
+            .chart-grid { grid-template-columns: 1fr; }
+        }
+        
+        .note-box {
+            background: var(--info-bg);
+            border: 1px solid var(--info);
+            border-radius: var(--radius-md);
+            padding: var(--space-4);
+            margin-top: var(--space-4);
+            display: flex;
+            align-items: flex-start;
+            gap: var(--space-3);
+        }
+        
+        .note-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--info);
+            flex-shrink: 0;
+        }
+        
+        .note-content {
+            font-size: 13px;
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        .note-title {
+            font-weight: 600;
             margin-bottom: var(--space-1);
         }
         
-        .hero-stat-value {
-            font-size: 24px;
-            font-weight: 700;
-            font-variant-numeric: tabular-nums;
+        /* Scenario Page Styles */
+        .scenario-builder {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
         }
         
-        .hero-stat-delta {
-            display: inline-block;
-            font-size: 11px;
-            font-weight: 600;
-            margin-top: var(--space-1);
-            padding: 2px 8px;
-            border-radius: var(--radius-sm);
-            background: rgba(255,255,255,0.15);
-        }
-        
-        /* ================================================================
-           SECTIONS
-           ================================================================ */
-        .section { margin-bottom: var(--space-8); }
-        
-        .section-header {
+        .slider-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: var(--space-4);
         }
         
-        .section-title-group { display: flex; flex-direction: column; gap: 2px; }
-        
-        .section-title {
-            font-size: 16px;
+        .slider-label {
+            font-size: 14px;
             font-weight: 600;
             color: var(--text-primary);
+        }
+        
+        .slider-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-600);
+            font-variant-numeric: tabular-nums;
+        }
+        
+        .slider-value.cold { color: var(--info); }
+        .slider-value.hot { color: var(--danger); }
+        .slider-value.neutral { color: var(--text-muted); }
+        
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: linear-gradient(to left, #DC2626, #E2E8F0 50%, #0284C7);
+            outline: none;
+            margin: var(--space-4) 0;
+        }
+        
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary-600);
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        input[type="range"]::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            border: 3px solid var(--primary-600);
+            cursor: pointer;
+        }
+        
+        .slider-scale {
             display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: var(--space-2);
+        }
+        
+        .scenario-presets {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: var(--space-2);
+            margin-top: var(--space-5);
+        }
+        
+        .preset-btn {
+            padding: var(--space-3);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            text-align: center;
+        }
+        
+        .preset-btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-strong);
+        }
+        
+        .preset-btn.active {
+            background: var(--primary-50);
+            border-color: var(--primary-500);
+            color: var(--primary-600);
+        }
+        
+        .scenario-result {
+            background: var(--surface-sunken);
+            border-radius: var(--radius-lg);
+            padding: var(--space-6);
+            margin-top: var(--space-5);
+            text-align: center;
+        }
+        
+        .scenario-result-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
+        }
+        
+        .scenario-result-value {
+            font-size: 36px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: var(--space-2);
+        }
+        
+        .scenario-result-value.positive { color: var(--danger); }
+        .scenario-result-value.negative { color: var(--success); }
+        .scenario-result-value.neutral { color: var(--text-muted); }
+        
+        .scenario-result-detail {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+        
+        .insight-card {
+            background: linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%);
+            border-right: 4px solid var(--primary-500);
+            padding: var(--space-4);
+            border-radius: var(--radius-md);
+            margin-bottom: var(--space-3);
+            color: #0C4A6E;
+        }
+        
+        [data-theme="dark"] .insight-card {
+            background: linear-gradient(135deg, #1E293B 0%, #334155 100%);
+            color: #BAE6FD;
+        }
+        
+        .insight-card.high { border-right-color: var(--danger); }
+        
+        /* Anomalies Page Styles */
+        .severity-filter {
+            display: flex;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+        }
+        
+        .severity-btn {
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            background: var(--surface-elevated);
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+            display: inline-flex;
             align-items: center;
             gap: var(--space-2);
         }
         
-        .section-subtitle {
-            font-size: 13px;
-            color: var(--text-secondary);
+        .severity-btn:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-strong);
         }
         
-        /* ================================================================
-           KPI CARDS
-           ================================================================ */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-            gap: var(--space-4);
+        .severity-btn.active {
+            background: var(--primary-50);
+            border-color: var(--primary-500);
+            color: var(--primary-600);
         }
         
-        .kpi-card {
+        .severity-btn.critical.active {
+            background: var(--danger-bg);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+        
+        .severity-btn.warning.active {
+            background: var(--warning-bg);
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+        
+        .severity-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        
+        .severity-dot.critical { background: var(--danger); }
+        .severity-dot.warning { background: var(--warning); }
+        .severity-dot.attention { background: var(--info); }
+        
+        .anomaly-list {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-3);
+        }
+        
+        .anomaly-item {
             background: var(--surface-elevated);
             border: 1px solid var(--border-subtle);
             border-radius: var(--radius-lg);
-            padding: var(--space-5);
+            padding: var(--space-4);
+            display: flex;
+            gap: var(--space-4);
             transition: all var(--transition-fast);
         }
         
-        .kpi-card:hover {
+        .anomaly-item:hover {
             border-color: var(--border-default);
             box-shadow: var(--shadow-sm);
         }
         
-        .kpi-card.primary { grid-column: span 2; }
-        
-        .kpi-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: var(--space-3);
-        }
-        
-        .kpi-label {
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-        
-        .kpi-label-icon { width: 14px; height: 14px; color: var(--text-muted); }
-        
-        .kpi-trend {
-            display: inline-flex;
-            align-items: center;
-            gap: 2px;
-            padding: 2px 8px;
-            border-radius: var(--radius-sm);
-            font-size: 11px;
-            font-weight: 600;
-            font-variant-numeric: tabular-nums;
-        }
-        
-        .kpi-trend.up { background: var(--danger-bg); color: var(--danger); }
-        .kpi-trend.down { background: var(--success-bg); color: var(--success); }
-        .kpi-trend.neutral { background: var(--surface-sunken); color: var(--text-muted); }
-        
-        .kpi-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-primary);
-            font-variant-numeric: tabular-nums;
-            line-height: 1.1;
-            margin-bottom: var(--space-1);
-            display: flex;
-            align-items: baseline;
-            gap: var(--space-1);
-        }
-        
-        .kpi-card.primary .kpi-value { font-size: 36px; }
-        
-        .kpi-unit {
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-muted);
-        }
-        
-        .kpi-context {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: var(--space-2);
-        }
-        
-        .kpi-card.success-state { border-right: 3px solid var(--success); }
-        .kpi-card.warning-state { border-right: 3px solid var(--warning); }
-        .kpi-card.risk-state { border-right: 3px solid var(--danger); }
-        
-        /* ================================================================
-           INSIGHTS
-           ================================================================ */
-        .insights-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: var(--space-3);
-        }
-        
-        .insight-item {
-            display: flex;
-            gap: var(--space-3);
-            padding: var(--space-4);
-            background: var(--surface-elevated);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            transition: all var(--transition-fast);
-        }
-        
-        .insight-item:hover {
-            border-color: var(--border-default);
-            background: var(--surface-hover);
-        }
-        
-        .insight-icon {
-            width: 36px;
-            height: 36px;
-            border-radius: var(--radius-md);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        
-        .insight-icon.positive { background: var(--danger-bg); color: var(--danger); }
-        .insight-icon.negative { background: var(--success-bg); color: var(--success); }
-        .insight-icon.neutral { background: var(--info-bg); color: var(--info); }
-        .insight-icon.alert { background: var(--warning-bg); color: var(--warning); }
-        
-        .insight-content { flex: 1; min-width: 0; }
-        
-        .insight-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-            display: flex;
-            align-items: center;
-            gap: var(--space-2);
-        }
-        
-        .insight-metric {
-            font-variant-numeric: tabular-nums;
-            font-weight: 700;
-        }
-        
-        .insight-description {
-            font-size: 12px;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
-        
-        .insight-action {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--primary-600);
-            margin-top: var(--space-2);
-            cursor: pointer;
-        }
-        
-        .insight-action:hover { text-decoration: underline; }
-        
-        /* ================================================================
-           ATTENTION PANEL
-           ================================================================ */
-        .attention-panel {
-            background: var(--surface-elevated);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            overflow: hidden;
-        }
-        
-        .attention-item {
-            display: flex;
-            align-items: center;
-            gap: var(--space-3);
-            padding: var(--space-3) var(--space-4);
-            border-bottom: 1px solid var(--border-subtle);
-            transition: background var(--transition-fast);
-        }
-        
-        .attention-item:last-child { border-bottom: none; }
-        
-        .attention-item:hover { background: var(--surface-hover); }
-        
-        .severity-indicator {
+        .anomaly-severity-indicator {
             width: 6px;
-            height: 32px;
             border-radius: 3px;
             flex-shrink: 0;
         }
         
-        .severity-indicator.normal { background: var(--border-default); }
-        .severity-indicator.attention { background: var(--info); }
-        .severity-indicator.warning { background: var(--warning); }
-        .severity-indicator.critical { background: var(--danger); }
+        .anomaly-severity-indicator.critical { background: var(--danger); }
+        .anomaly-severity-indicator.warning { background: var(--warning); }
+        .anomaly-severity-indicator.attention { background: var(--info); }
         
-        .attention-content { flex: 1; min-width: 0; }
+        .anomaly-content { flex: 1; }
         
-        .attention-title {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-primary);
-            margin-bottom: 2px;
-        }
-        
-        .attention-meta { font-size: 11px; color: var(--text-muted); }
-        
-        .attention-time {
-            font-size: 11px;
-            color: var(--text-muted);
-            white-space: nowrap;
-        }
-        
-        /* ================================================================
-           CHARTS
-           ================================================================ */
-        .chart-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: var(--space-4);
-        }
-        
-        .chart-card {
-            background: var(--surface-elevated);
-            border: 1px solid var(--border-subtle);
-            border-radius: var(--radius-lg);
-            padding: var(--space-5);
-        }
-        
-        .chart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: var(--space-4);
-        }
-        
-        .chart-title {
+        .anomaly-title {
             font-size: 14px;
             font-weight: 600;
             color: var(--text-primary);
-            margin-bottom: 2px;
+            margin-bottom: var(--space-1);
         }
         
-        .chart-subtitle { font-size: 12px; color: var(--text-secondary); }
-        
-        .chart-container { position: relative; height: 280px; }
-        
-        /* ================================================================
-           STATES
-           ================================================================ */
-        .skeleton {
-            background: linear-gradient(90deg, 
-                var(--surface-sunken) 25%, 
-                var(--surface-hover) 50%, 
-                var(--surface-sunken) 75%);
-            background-size: 200% 100%;
-            animation: skeleton-shimmer 1.5s infinite;
-            border-radius: var(--radius-sm);
+        .anomaly-details {
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-2);
         }
         
-        @keyframes skeleton-shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+        .anomaly-detail {
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
         }
         
-        .skeleton-text { height: 14px; margin-bottom: var(--space-2); }
-        .skeleton-text-sm { height: 10px; width: 60%; }
-        .skeleton-kpi { height: 28px; width: 80%; margin-bottom: var(--space-2); }
+        .anomaly-value {
+            font-variant-numeric: tabular-nums;
+            font-weight: 600;
+        }
         
-        .state-container {
-            padding: var(--space-10);
-            text-align: center;
+        .anomaly-date {
+            font-size: 12px;
             color: var(--text-muted);
         }
         
-        .state-icon {
+        .severity-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-1) var(--space-2);
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .severity-badge.critical {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+        
+        .severity-badge.warning {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+        
+        .severity-badge.attention {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: var(--space-10);
+            color: var(--text-muted);
+        }
+        
+        .empty-state-icon {
             width: 48px;
             height: 48px;
             margin: 0 auto var(--space-4);
             opacity: 0.4;
         }
         
-        .state-title {
+        /* AI Assistant Page Styles */
+        .ai-workspace {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: var(--space-5);
+            height: calc(100vh - 180px);
+            min-height: 600px;
+        }
+        
+        @media (max-width: 1200px) {
+            .ai-workspace {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+        
+        .ai-sidebar-panel {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .ai-chat-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+        }
+        
+        .ai-chat-header {
+            padding: var(--space-4) var(--space-5);
+            border-bottom: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .ai-chat-title {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            font-size: 15px;
+            font-weight: 600;
+        }
+        
+        .ai-status {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-2);
+            font-size: 12px;
+            color: var(--success);
+        }
+        
+        .ai-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .ai-chat-history {
+            flex: 1;
+            overflow-y: auto;
+            padding: var(--space-5);
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-4);
+        }
+        
+        .ai-message {
+            display: flex;
+            gap: var(--space-3);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .ai-message.user {
+            flex-direction: row-reverse;
+        }
+        
+        .ai-message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        
+        .ai-message.assistant .ai-message-avatar {
+            background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
+            color: white;
+        }
+        
+        .ai-message.user .ai-message-avatar {
+            background: var(--surface-sunken);
+            color: var(--text-secondary);
+        }
+        
+        .ai-message-content {
+            max-width: 80%;
+            background: var(--surface-sunken);
+            border-radius: var(--radius-lg);
+            padding: var(--space-4);
+        }
+        
+        .ai-message.user .ai-message-content {
+            background: var(--primary-50);
+        }
+        
+        .ai-message-text {
+            font-size: 14px;
+            line-height: 1.7;
+            white-space: pre-wrap;
+        }
+        
+        .ai-message-text strong {
+            font-weight: 600;
+            color: var(--primary-600);
+        }
+        
+        .ai-message-time {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: var(--space-2);
+        }
+        
+        .ai-analysis-progress {
+            display: flex;
+            align-items: center;
+            gap: var(--space-3);
+            padding: var(--space-3);
+            background: var(--info-bg);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            color: var(--info);
+        }
+        
+        .ai-analysis-progress .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--info);
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .ai-input-area {
+            padding: var(--space-4) var(--space-5);
+            border-top: 1px solid var(--border-subtle);
+            background: var(--surface-sunken);
+        }
+        
+        .ai-input-container {
+            display: flex;
+            gap: var(--space-3);
+            align-items: flex-end;
+        }
+        
+        .ai-input {
+            flex: 1;
+            padding: var(--space-3) var(--space-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-lg);
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 14px;
+            resize: none;
+            min-height: 48px;
+            max-height: 120px;
+        }
+        
+        .ai-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+        }
+        
+        .ai-send-btn {
+            width: 48px;
+            height: 48px;
+            border-radius: var(--radius-lg);
+            background: var(--primary-600);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+        }
+        
+        .ai-send-btn:hover {
+            background: var(--primary-700);
+        }
+        
+        .ai-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .ai-suggestions-panel {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            overflow-y: auto;
+        }
+        
+        .ai-suggestions-title {
             font-size: 14px;
             font-weight: 600;
-            color: var(--text-secondary);
+            margin-bottom: var(--space-4);
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+        
+        .ai-suggestion-group {
+            margin-bottom: var(--space-4);
+        }
+        
+        .ai-suggestion-group-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
             margin-bottom: var(--space-2);
         }
         
-        .state-description { font-size: 13px; margin-bottom: var(--space-4); }
+        .ai-suggestion-btn {
+            width: 100%;
+            padding: var(--space-3);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            background: var(--surface-sunken);
+            color: var(--text-primary);
+            font-size: 13px;
+            text-align: right;
+            transition: all var(--transition-fast);
+            margin-bottom: var(--space-2);
+        }
         
-        /* ================================================================
-           RESPONSIVE
-           ================================================================ */
-        @media (max-width: 1200px) {
-            .kpi-card.primary { grid-column: span 1; }
-            .chart-grid { grid-template-columns: 1fr; }
-            .hero-stats { grid-template-columns: 1fr; }
-            .hero-content { grid-template-columns: 1fr; }
+        .ai-suggestion-btn:hover {
+            background: var(--primary-50);
+            border-color: var(--primary-500);
+            color: var(--primary-600);
+        }
+        
+        .ai-response-actions {
+            display: flex;
+            gap: var(--space-2);
+            margin-top: var(--space-3);
+            flex-wrap: wrap;
+        }
+        
+        .ai-action-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: var(--space-1);
+            padding: var(--space-2) var(--space-3);
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-sm);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            transition: all var(--transition-fast);
+        }
+        
+        .ai-action-btn:hover {
+            background: var(--primary-50);
+            border-color: var(--primary-500);
+            color: var(--primary-600);
+        }
+        
+        .ai-response-table {
+            margin-top: var(--space-3);
+            overflow-x: auto;
+        }
+        
+        .ai-response-table table {
+            min-width: 400px;
         }
         
         @media (max-width: 1024px) {
             .app-shell { grid-template-columns: 1fr; }
-            .sidebar {
-                position: fixed;
-                right: -280px;
-                width: 280px;
-                transition: right var(--transition-normal);
-                box-shadow: var(--shadow-lg);
-            }
+            .sidebar { position: fixed; right: -280px; width: 280px; transition: right var(--transition-normal); }
             .sidebar.open { right: 0; }
             .mobile-menu-btn { display: flex !important; }
-            .data-freshness { display: none; }
-        }
-        
-        @media (max-width: 768px) {
-            .page { padding: var(--space-4); }
-            .overview-hero { padding: var(--space-5); }
-            .hero-headline { font-size: 20px; }
-            .top-header, .filter-bar { padding: 0 var(--space-4); }
-            .kpi-grid { grid-template-columns: 1fr; }
-            .insights-list { grid-template-columns: 1fr; }
         }
         
         .mobile-menu-btn { display: none !important; }
-        
-        @media (max-width: 1024px) {
-            .mobile-menu-btn { display: flex !important; }
-        }
         
         .sidebar-overlay {
             position: fixed;
@@ -1016,11 +1080,7 @@
             pointer-events: none;
             transition: opacity var(--transition-normal);
         }
-        
-        .sidebar-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
+        .sidebar-overlay.active { opacity: 1; pointer-events: all; }
     </style>
 </head>
 <body data-theme="light">
@@ -1075,7 +1135,6 @@
                     <a href="#/anomalies" class="nav-item" data-route="anomalies">
                         <i data-lucide="alert-triangle" class="nav-icon"></i>
                         <span class="nav-label">ناهنجاری‌ها</span>
-                        <span class="nav-badge" id="anomalyCount">—</span>
                     </a>
                     <a href="#/stations" class="nav-item" data-route="stations">
                         <i data-lucide="map-pin" class="nav-icon"></i>
@@ -1108,10 +1167,9 @@
         
         <!-- Main Content -->
         <div class="main-content">
-            <!-- Top Header -->
             <header class="top-header">
-                <div class="header-left">
-                    <button class="header-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="باز کردن منو">
+                <div style="display:flex;align-items:center;gap:var(--space-4);">
+                    <button class="header-btn mobile-menu-btn" id="mobileMenuBtn" aria-label="منو">
                         <i data-lucide="menu" style="width:20px;height:20px;"></i>
                     </button>
                     <div class="breadcrumb">
@@ -1122,184 +1180,494 @@
                 </div>
                 
                 <div class="header-right">
-                    <div class="data-freshness" id="dataFreshness">
-                        <span class="freshness-dot"></span>
-                        <span>آخرین به‌روزرسانی: <span class="text-num" id="freshnessTime">—</span></span>
-                    </div>
-                    <button class="header-btn" aria-label="اعلان‌ها">
-                        <i data-lucide="bell" style="width:18px;height:18px;"></i>
-                        <span class="dot"></span>
-                    </button>
                     <button class="header-btn" id="themeToggle" aria-label="تغییر تم">
                         <i data-lucide="moon" style="width:18px;height:18px;" id="themeIcon"></i>
                     </button>
                 </div>
             </header>
             
-            <!-- Filter Bar -->
-            <div class="filter-bar">
-                <span class="filter-bar-label">فیلترهای فعال:</span>
-                <div class="filter-chip active">
-                    <i data-lucide="calendar" class="filter-chip-icon"></i>
-                    <span>۳۰ روز اخیر</span>
-                </div>
-                <div class="filter-chip active">
-                    <i data-lucide="map" class="filter-chip-icon"></i>
-                    <span>همه استان‌ها</span>
-                </div>
-                <div class="filter-chip active">
-                    <i data-lucide="layers" class="filter-chip-icon"></i>
-                    <span>همه انواع مصرف</span>
-                </div>
-                <button class="filter-chip" style="border-style: dashed;">
-                    <i data-lucide="x" class="filter-chip-icon"></i>
-                    <span>پاک کردن</span>
-                </button>
-            </div>
-            
-            <!-- Page Content -->
-            <main class="page">
+            <!-- Overview Page -->
+            <main class="page" id="page-overview">
                 <div class="page-header">
-                    <div>
-                        <h1 class="page-title">نمای کلی عملکرد</h1>
-                        <p class="page-subtitle">
-                            خلاصه وضعیت فعلی شبکه گاز، پیش‌بینی کوتاه‌مدت و مواردی که نیاز به توجه دارند
-                        </p>
-                    </div>
-                    <div class="page-actions">
-                        <button class="btn btn-secondary">
-                            <i data-lucide="download" style="width:16px;height:16px;"></i>
-                            <span>خروجی گزارش</span>
-                        </button>
-                    </div>
+                    <h1 class="page-title">نمای کلی عملکرد</h1>
+                    <p class="page-subtitle">خلاصه وضعیت فعلی شبکه گاز و پیش‌بینی کوتاه‌مدت</p>
                 </div>
                 
-                <!-- Hero Section -->
-                <section class="overview-hero">
-                    <div class="hero-content">
-                        <div>
-                            <div class="hero-greeting" id="heroGreeting">سلام، خوش آمدید</div>
-                            <h2 class="hero-headline" id="heroHeadline">
-                                مصرف گاز امروز در مقایسه با روز قبل 
-                                <span class="text-num" id="heroDelta" style="color: #FCD34D;">—</span>
-                                تغییر داشته است
-                            </h2>
-                            <p class="hero-summary" id="heroSummary">
-                                در حال بارگذاری اطلاعات عملیاتی شبکه گاز...
-                            </p>
-                        </div>
-                        <div class="hero-stats">
-                            <div class="hero-stat">
-                                <div class="hero-stat-label">مصرف امروز</div>
-                                <div class="hero-stat-value text-num" id="heroToday">—</div>
-                                <div class="hero-stat-delta" id="heroTodayDelta">—</div>
-                            </div>
-                            <div class="hero-stat">
-                                <div class="hero-stat-label">پیش‌بینی فردا</div>
-                                <div class="hero-stat-value text-num" id="heroTomorrow">—</div>
-                                <div class="hero-stat-delta" id="heroTomorrowDelta">—</div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                
-                <!-- Key KPIs -->
                 <section class="section">
                     <div class="section-header">
-                        <div class="section-title-group">
-                            <h3 class="section-title">
-                                <i data-lucide="activity" style="width:18px;height:18px;color:var(--text-muted);"></i>
-                                شاخص‌های کلیدی
-                            </h3>
+                        <div>
+                            <h3 class="section-title">شاخص‌های کلیدی</h3>
                             <p class="section-subtitle">مهم‌ترین اعداد برای تصمیم‌گیری سریع</p>
                         </div>
                     </div>
-                    
-                    <div class="kpi-grid" id="kpiGrid">
-                        <!-- KPI cards rendered by JS -->
+                    <div class="kpi-grid" id="overviewKpis"></div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">روند مصرف روزانه</h3>
+                            <p class="section-subtitle">۳۰ روز اخیر</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="chart-container">
+                            <canvas id="overviewTrendChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Consumption Page -->
+            <main class="page hidden" id="page-consumption">
+                <div class="page-header">
+                    <h1 class="page-title">تحلیل مصرف</h1>
+                    <p class="page-subtitle">تحلیل جامع مصرف گاز به تفکیک زمان، استان و نوع مصرف</p>
+                </div>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">فیلتر زمانی</h3>
+                        </div>
+                        <div class="time-filter-group">
+                            <button class="time-filter-btn active" data-days="7">۷ روز</button>
+                            <button class="time-filter-btn" data-days="30">۳۰ روز</button>
+                            <button class="time-filter-btn" data-days="90">۹۰ روز</button>
+                        </div>
                     </div>
                 </section>
                 
-                <!-- What Changed -->
+                <section class="section">
+                    <div class="kpi-grid" id="consumptionKpis"></div>
+                </section>
+                
                 <section class="section">
                     <div class="section-header">
-                        <div class="section-title-group">
-                            <h3 class="section-title">
-                                <i data-lucide="git-compare" style="width:18px;height:18px;color:var(--text-muted);"></i>
-                                چه چیزی تغییر کرده است؟
-                            </h3>
-                            <p class="section-subtitle">مهم‌ترین تغییرات در مقایسه با دوره قبل</p>
+                        <div>
+                            <h3 class="section-title">روند مصرف روزانه</h3>
+                            <p class="section-subtitle">مقایسه با دوره مشابه قبل</p>
                         </div>
                     </div>
-                    
-                    <div class="insights-list" id="insightsList">
-                        <!-- Insights rendered by JS -->
+                    <div class="card">
+                        <div class="chart-container">
+                            <canvas id="consumptionTrendChart"></canvas>
+                        </div>
                     </div>
                 </section>
                 
-                <!-- Risk & Attention -->
                 <section class="section">
                     <div class="section-header">
-                        <div class="section-title-group">
-                            <h3 class="section-title">
-                                <i data-lucide="alert-circle" style="width:18px;height:18px;color:var(--text-muted);"></i>
-                                نیازمند توجه
-                            </h3>
-                            <p class="section-subtitle">موارد عملیاتی که نیاز به بررسی دارند</p>
+                        <div>
+                            <h3 class="section-title">مصرف به تفکیک استان</h3>
+                            <p class="section-subtitle">رتبه‌بندی بر اساس مجموع مصرف</p>
                         </div>
                     </div>
-                    
-                    <div class="attention-panel" id="attentionPanel">
-                        <!-- Attention items rendered by JS -->
+                    <div class="card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>رتبه</th>
+                                    <th>استان</th>
+                                    <th>مجموع مصرف</th>
+                                    <th>تعداد ایستگاه</th>
+                                    <th>سهم از کل</th>
+                                </tr>
+                            </thead>
+                            <tbody id="provinceTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Forecast Page -->
+            <main class="page hidden" id="page-forecast">
+                <div class="page-header">
+                    <h1 class="page-title">مرکز پیش‌بینی</h1>
+                    <p class="page-subtitle">پیش‌بینی مصرف گاز با مدل‌های یادگیری ماشین و بازه اطمینان</p>
+                </div>
+                
+                <section class="section">
+                    <div class="card">
+                        <div class="forecast-controls">
+                            <div class="control-group">
+                                <label class="control-label">افق پیش‌بینی</label>
+                                <select class="select-control" id="forecastHorizon">
+                                    <option value="7">۷ روز</option>
+                                    <option value="14">۱۴ روز</option>
+                                    <option value="30" selected>۳۰ روز</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">سطح اطمینان</label>
+                                <select class="select-control" id="confidenceLevel">
+                                    <option value="80">۸۰٪</option>
+                                    <option value="95" selected>۹۵٪</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">مدل انتخاب‌شده</label>
+                                <div id="selectedModel" class="model-badge">
+                                    <i data-lucide="brain" style="width:14px;height:14px;"></i>
+                                    <span>در حال بارگذاری...</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </section>
                 
-                <!-- Charts Grid -->
+                <section class="section">
+                    <div class="kpi-grid" id="forecastKpis"></div>
+                </section>
+                
                 <section class="section">
                     <div class="section-header">
-                        <div class="section-title-group">
-                            <h3 class="section-title">
-                                <i data-lucide="bar-chart-3" style="width:18px;height:18px;color:var(--text-muted);"></i>
-                                روند و تحلیل
-                            </h3>
-                            <p class="section-subtitle">تحلیل بصری مصرف و پیش‌بینی</p>
+                        <div>
+                            <h3 class="section-title">پیش‌بینی مصرف با بازه اطمینان</h3>
+                            <p class="section-subtitle">مقایسه داده واقعی با پیش‌بینی مدل</p>
                         </div>
                     </div>
-                    
+                    <div class="card">
+                        <div class="chart-container" style="height: 400px;">
+                            <canvas id="forecastChart"></canvas>
+                        </div>
+                        <div class="forecast-legend">
+                            <div class="legend-item">
+                                <div class="legend-line" style="background: var(--primary-500);"></div>
+                                <span>داده واقعی</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-line" style="background: var(--success);"></div>
+                                <span>پیش‌بینی</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-band" style="background: rgba(220, 38, 38, 0.1);"></div>
+                                <span>بازه ۹۵٪</span>
+                            </div>
+                            <div class="legend-item">
+                                <div class="legend-band" style="background: rgba(217, 119, 6, 0.15);"></div>
+                                <span>بازه ۸۰٪</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">چرا این پیش‌بینی؟</h3>
+                            <p class="section-subtitle">عوامل مؤثر بر پیش‌بینی مدل</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="drivers-grid" id="forecastDrivers"></div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">مقایسه عملکرد مدل‌ها</h3>
+                            <p class="section-subtitle">نتایج اعتبارسنجی مدل‌های مختلف</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>مدل</th>
+                                    <th>MAE</th>
+                                    <th>RMSE</th>
+                                    <th>sMAPE</th>
+                                    <th>وضعیت</th>
+                                </tr>
+                            </thead>
+                            <tbody id="benchmarkTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Temperature Page -->
+            <main class="page hidden" id="page-temperature">
+                <div class="page-header">
+                    <h1 class="page-title">تحلیل دما</h1>
+                    <p class="page-subtitle">بررسی رابطه بین دما و مصرف گاز در شبکه</p>
+                </div>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">شاخص‌های کلیدی</h3>
+                            <p class="section-subtitle">خلاصه تحلیل همبستگی و کشش دمایی</p>
+                        </div>
+                    </div>
+                    <div class="kpi-grid" id="temperatureKpis"></div>
+                </section>
+                
+                <section class="section">
                     <div class="chart-grid">
-                        <div class="chart-card">
-                            <div class="chart-header">
+                        <div class="card">
+                            <div class="section-header">
                                 <div>
-                                    <div class="chart-title">روند مصرف روزانه و تغییرات آن</div>
-                                    <div class="chart-subtitle">مقایسه ۳۰ روز اخیر با دوره مشابه قبل</div>
+                                    <h3 class="section-title">مصرف در بازه‌های دمایی</h3>
+                                    <p class="section-subtitle">میانگین مصرف در هر بازه دمایی</p>
                                 </div>
                             </div>
                             <div class="chart-container">
-                                <canvas id="trendChart"></canvas>
+                                <canvas id="tempBinsChart"></canvas>
                             </div>
                         </div>
                         
-                        <div class="chart-card">
-                            <div class="chart-header">
+                        <div class="card">
+                            <div class="section-header">
                                 <div>
-                                    <div class="chart-title">سهم استان‌ها از مصرف کل</div>
-                                    <div class="chart-subtitle">توزیع جغرافیایی مصرف</div>
+                                    <h3 class="section-title">حساسیت استان‌ها به دما</h3>
+                                    <p class="section-subtitle">همبستگی دما و مصرف به تفکیک استان</p>
                                 </div>
                             </div>
                             <div class="chart-container">
-                                <canvas id="provinceChart"></canvas>
+                                <canvas id="tempProvinceChart"></canvas>
                             </div>
                         </div>
                     </div>
                 </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">تحلیل به تفکیک استان</h3>
+                            <p class="section-subtitle">رتبه‌بندی بر اساس شدت همبستگی</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>رتبه</th>
+                                    <th>استان</th>
+                                    <th>همبستگی</th>
+                                    <th>رکوردها</th>
+                                    <th>میانگین دما</th>
+                                    <th>میانگین مصرف</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tempProvinceTableBody"></tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <div class="note-box">
+                    <i data-lucide="info" class="note-icon"></i>
+                    <div class="note-content">
+                        <div class="note-title">همبستگی در برابر علّیت</div>
+                        همبستگی بالا بین دما و مصرف به معنای رابطه علّی مستقیم نیست. 
+                        عوامل دیگری مانند فصل، روزهای هفته، و فعالیت‌های صنعتی نیز بر مصرف تأثیر می‌گذارند. 
+                        برای تحلیل دقیق‌تر، استفاده از مدل‌های پیش‌بینی با متغیرهای متعدد توصیه می‌شود.
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Scenarios Page -->
+            <main class="page hidden" id="page-scenarios">
+                <div class="page-header">
+                    <h1 class="page-title">تحلیل سناریو</h1>
+                    <p class="page-subtitle">شبیه‌سازی اثر تغییرات دمایی بر مصرف گاز</p>
+                </div>
+                
+                <section class="section">
+                    <div class="scenario-builder">
+                        <div class="slider-header">
+                            <span class="slider-label">تغییر دما نسبت به معمول:</span>
+                            <span class="slider-value neutral" id="scenarioSliderValue">۰ درجه</span>
+                        </div>
+                        
+                        <input type="range" id="scenarioSlider" min="-15" max="15" value="0" step="1">
+                        
+                        <div class="slider-scale">
+                            <span>۱۵ درجه گرم‌تر</span>
+                            <span>بدون تغییر</span>
+                            <span>۱۵ درجه سردتر</span>
+                        </div>
+                        
+                        <div class="scenario-presets">
+                            <button class="preset-btn" data-temp="-10">
+                                <div>❄️</div>
+                                <div>سرمای شدید</div>
+                                <div style="font-size:11px;color:var(--text-muted);">-۱۰ درجه</div>
+                            </button>
+                            <button class="preset-btn" data-temp="-5">
+                                <div>🌡️</div>
+                                <div>سرمای معمول</div>
+                                <div style="font-size:11px;color:var(--text-muted);">-۵ درجه</div>
+                            </button>
+                            <button class="preset-btn active" data-temp="0">
+                                <div>✅</div>
+                                <div>عادی</div>
+                                <div style="font-size:11px;color:var(--text-muted);">۰ درجه</div>
+                            </button>
+                            <button class="preset-btn" data-temp="5">
+                                <div>🔥</div>
+                                <div>گرمای معمول</div>
+                                <div style="font-size:11px;color:var(--text-muted);">+۵ درجه</div>
+                            </button>
+                            <button class="preset-btn" data-temp="10">
+                                <div>☀️</div>
+                                <div>گرمای شدید</div>
+                                <div style="font-size:11px;color:var(--text-muted);">+۱۰ درجه</div>
+                            </button>
+                        </div>
+                        
+                        <div class="scenario-result">
+                            <div class="scenario-result-label">تغییر پیش‌بینی‌شده مصرف کل کشور:</div>
+                            <div class="scenario-result-value neutral" id="scenarioResultValue">۰٪</div>
+                            <div class="scenario-result-detail" id="scenarioResultDetail">
+                                در حال محاسبه...
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">مقایسه سناریوهای اصلی</h3>
+                            <p class="section-subtitle">اثر هر سناریو بر مصرف کل</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="chart-container">
+                            <canvas id="scenarioChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">بینش‌های کلیدی</h3>
+                            <p class="section-subtitle">نکات مهم حاصل از تحلیل سناریوها</p>
+                        </div>
+                    </div>
+                    <div id="scenarioInsights"></div>
+                </section>
+            </main>
+            
+            <!-- Anomalies Page -->
+            <main class="page hidden" id="page-anomalies">
+                <div class="page-header">
+                    <h1 class="page-title">ناهنجاری‌ها</h1>
+                    <p class="page-subtitle">شناسایی و پایش موارد غیرعادی در داده‌های شبکه</p>
+                </div>
+                
+                <section class="section">
+                    <div class="kpi-grid" id="anomalyKpis"></div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">فیلتر بر اساس شدت</h3>
+                        </div>
+                        <div class="severity-filter">
+                            <button class="severity-btn active" data-severity="all">
+                                همه موارد
+                            </button>
+                            <button class="severity-btn critical" data-severity="critical">
+                                <span class="severity-dot critical"></span>
+                                بحرانی
+                            </button>
+                            <button class="severity-btn warning" data-severity="warning">
+                                <span class="severity-dot warning"></span>
+                                هشدار
+                            </button>
+                            <button class="severity-btn attention" data-severity="attention">
+                                <span class="severity-dot attention"></span>
+                                توجه
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">لیست ناهنجاری‌ها</h3>
+                            <p class="section-subtitle" id="anomalyCountLabel">در حال بارگذاری...</p>
+                        </div>
+                    </div>
+                    <div class="anomaly-list" id="anomalyList"></div>
+                </section>
+            </main>
+            
+            <!-- AI Assistant Page -->
+            <main class="page hidden" id="page-ai">
+                <div class="page-header">
+                    <h1 class="page-title">دستیار هوشمند</h1>
+                    <p class="page-subtitle">با دستیار تحلیلی گفتگو کنید و پاسخ‌های ساختاریافته دریافت کنید</p>
+                </div>
+                
+                <div class="ai-workspace">
+                    <!-- Suggestions Panel -->
+                    <div class="ai-sidebar-panel">
+                        <div class="ai-suggestions-panel">
+                            <div class="ai-suggestions-title">
+                                <i data-lucide="lightbulb" style="width:18px;height:18px;"></i>
+                                سؤالات پیشنهادی
+                            </div>
+                            <div id="aiSuggestionsGroups"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chat Panel -->
+                    <div class="ai-chat-panel">
+                        <div class="ai-chat-header">
+                            <div class="ai-chat-title">
+                                <i data-lucide="sparkles" style="width:18px;height:18px;"></i>
+                                دستیار تحلیلی
+                            </div>
+                            <div class="ai-status">
+                                <span class="ai-status-dot"></span>
+                                <span>آنلاین</span>
+                            </div>
+                        </div>
+                        
+                        <div class="ai-chat-history" id="aiChatHistory"></div>
+                        
+                        <div class="ai-input-area">
+                            <div class="ai-input-container">
+                                <textarea 
+                                    class="ai-input" 
+                                    id="aiInput" 
+                                    placeholder="سؤال خود را بنویسید... (مثال: کدام استان بیشترین مصرف را دارد؟)"
+                                    rows="1"
+                                ></textarea>
+                                <button class="ai-send-btn" id="aiSendBtn">
+                                    <i data-lucide="send" style="width:18px;height:18px;"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            
+            <!-- Placeholder for other pages -->
+            <main class="page hidden" id="page-placeholder">
+                <div class="page-header">
+                    <h1 class="page-title" id="placeholderTitle">صفحه در حال توسعه</h1>
+                    <p class="page-subtitle">این بخش در فازهای بعدی پیاده‌سازی خواهد شد</p>
+                </div>
+                <div class="card" style="text-align:center;padding:var(--space-8);">
+                    <i data-lucide="construction" style="width:48px;height:48px;color:var(--text-muted);margin:0 auto var(--space-4);"></i>
+                    <p style="color:var(--text-secondary);">این صفحه در حال توسعه است و به زودی در دسترس قرار خواهد گرفت.</p>
+                </div>
             </main>
         </div>
     </div>
     
     <script>
-        /* ================================================================
-           CORE: API CLIENT
-           ================================================================ */
         const API_URL = 'http://127.0.0.1:8000';
         
         const api = {
@@ -1312,12 +1680,23 @@
                     console.error(`API Error [${endpoint}]:`, err);
                     return null;
                 }
+            },
+            async post(endpoint, data) {
+                try {
+                    const res = await fetch(`${API_URL}${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                    return await res.json();
+                } catch (err) {
+                    console.error(`API Error [${endpoint}]:`, err);
+                    return null;
+                }
             }
         };
         
-        /* ================================================================
-           CORE: UTILS
-           ================================================================ */
         const formatNumber = (num, decimals = 0) => {
             if (num === null || num === undefined || isNaN(num)) return '—';
             return new Intl.NumberFormat('fa-IR', {
@@ -1326,37 +1705,25 @@
             }).format(num);
         };
         
-        const formatDelta = (pct) => {
-            if (pct === null || pct === undefined || isNaN(pct)) return { text: '—', direction: 'neutral' };
-            const abs = Math.abs(pct).toFixed(1);
-            if (pct > 0.5) return { text: `+${abs}٪`, direction: 'up' };
-            if (pct < -0.5) return { text: `-${abs}٪`, direction: 'down' };
-            return { text: `${abs}٪`, direction: 'neutral' };
-        };
-        
-        const getGreeting = () => {
-            const h = new Date().getHours();
-            if (h < 12) return 'صبح بخیر';
-            if (h < 17) return 'ظهر بخیر';
-            return 'عصر بخیر';
-        };
-        
-        /* ================================================================
-           CORE: STATE
-           ================================================================ */
         const state = {
             theme: localStorage.getItem('theme') || 'light',
-            sidebarCollapsed: localStorage.getItem('sidebarCollapsed') === 'true',
+            currentRoute: 'overview',
             summary: null,
             trend: null,
             provinces: null,
             forecast: null,
+            benchmarks: null,
+            temperature: null,
+            tempBins: null,
+            tempProvinces: null,
+            scenarios: null,
+            scenarioInsights: null,
             anomalies: null,
+            aiChatHistory: [],
+            aiSuggestions: null,
         };
         
-        /* ================================================================
-           UI: THEME
-           ================================================================ */
+        // ===== Theme =====
         const applyTheme = () => {
             document.body.setAttribute('data-theme', state.theme);
             const icon = document.getElementById('themeIcon');
@@ -1370,483 +1737,1161 @@
             state.theme = state.theme === 'dark' ? 'light' : 'dark';
             localStorage.setItem('theme', state.theme);
             applyTheme();
-            renderCharts();
+            renderCurrentPage();
         });
         
-        /* ================================================================
-           UI: SIDEBAR
-           ================================================================ */
-        const appShell = document.getElementById('appShell');
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('sidebarOverlay');
-        
-        if (state.sidebarCollapsed && window.innerWidth > 1024) {
-            appShell.classList.add('collapsed');
-        }
-        
+        // ===== Sidebar =====
         document.getElementById('collapseBtn').addEventListener('click', () => {
-            if (window.innerWidth <= 1024) {
-                sidebar.classList.remove('open');
-                overlay.classList.remove('active');
-            } else {
-                state.sidebarCollapsed = !state.sidebarCollapsed;
-                appShell.classList.toggle('collapsed', state.sidebarCollapsed);
-                localStorage.setItem('sidebarCollapsed', state.sidebarCollapsed);
-            }
+            document.getElementById('appShell').classList.toggle('collapsed');
         });
         
         document.getElementById('mobileMenuBtn').addEventListener('click', () => {
-            sidebar.classList.add('open');
-            overlay.classList.add('active');
+            document.getElementById('sidebar').classList.add('open');
+            document.getElementById('sidebarOverlay').classList.add('active');
         });
         
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
+        document.getElementById('sidebarOverlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
         });
         
-        /* ================================================================
-           RENDER: KPI SKELETONS
-           ================================================================ */
-        const renderKpiSkeletons = () => {
-            const grid = document.getElementById('kpiGrid');
-            grid.innerHTML = Array(4).fill(0).map((_, i) => `
-                <div class="kpi-card ${i === 0 ? 'primary' : ''}">
-                    <div class="kpi-top">
-                        <div class="skeleton" style="width:60%;height:12px;"></div>
-                        <div class="skeleton" style="width:50px;height:20px;border-radius:4px;"></div>
-                    </div>
-                    <div class="skeleton skeleton-kpi"></div>
-                    <div class="skeleton skeleton-text-sm"></div>
-                </div>
-            `).join('');
+        // ===== Router =====
+        const routes = {
+            'overview': { title: 'نمای کلی', render: renderOverview },
+            'consumption': { title: 'تحلیل مصرف', render: renderConsumption },
+            'forecast': { title: 'مرکز پیش‌بینی', render: renderForecast },
+            'temperature': { title: 'تحلیل دما', render: renderTemperature },
+            'scenarios': { title: 'تحلیل سناریو', render: renderScenarios },
+            'anomalies': { title: 'ناهنجاری‌ها', render: renderAnomalies },
+            'ai': { title: 'دستیار هوشمند', render: renderAIAssistant },
+            'production': { title: 'تولید و پالایش', placeholder: true },
+            'stations': { title: 'ایستگاه‌ها', placeholder: true },
+            'quality': { title: 'کیفیت داده', placeholder: true },
         };
         
-        /* ================================================================
-           RENDER: KPIs
-           ================================================================ */
-        const renderKpis = () => {
-            const grid = document.getElementById('kpiGrid');
+        function navigate(route) {
+            state.currentRoute = route;
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.route === route);
+            });
+            
+            document.getElementById('breadcrumbCurrent').textContent = routes[route]?.title || route;
+            
+            document.getElementById('page-overview').classList.toggle('hidden', route !== 'overview');
+            document.getElementById('page-consumption').classList.toggle('hidden', route !== 'consumption');
+            document.getElementById('page-forecast').classList.toggle('hidden', route !== 'forecast');
+            document.getElementById('page-temperature').classList.toggle('hidden', route !== 'temperature');
+            document.getElementById('page-scenarios').classList.toggle('hidden', route !== 'scenarios');
+            document.getElementById('page-anomalies').classList.toggle('hidden', route !== 'anomalies');
+            document.getElementById('page-ai').classList.toggle('hidden', route !== 'ai');
+            document.getElementById('page-placeholder').classList.toggle('hidden', !routes[route]?.placeholder);
+            
+            if (routes[route]?.placeholder) {
+                document.getElementById('placeholderTitle').textContent = routes[route].title;
+            }
+            
+            if (routes[route]?.render) {
+                routes[route].render();
+            }
+            
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('active');
+        }
+        
+        window.addEventListener('hashchange', () => {
+            const route = window.location.hash.replace('#/', '') || 'overview';
+            navigate(route);
+        });
+        
+        // ===== Render: Overview =====
+        async function renderOverview() {
+            const kpisEl = document.getElementById('overviewKpis');
             
             if (!state.summary) {
-                grid.innerHTML = `
-                    <div class="state-container" style="grid-column: 1/-1;">
-                        <i data-lucide="alert-circle" class="state-icon"></i>
-                        <div class="state-title">عدم دسترسی به داده‌ها</div>
-                        <div class="state-description">لطفاً از فعال بودن سرور بک‌اند اطمینان حاصل کنید.</div>
-                    </div>
-                `;
-                lucide.createIcons();
-                return;
+                const summary = await api.get('/api/summary');
+                state.summary = summary;
+            }
+            
+            if (!state.trend) {
+                const trend = await api.get('/api/consumption/trend?days=30');
+                state.trend = trend;
             }
             
             const s = state.summary;
-            const kpis = [
-                {
-                    label: 'مصرف کل تجمعی',
-                    icon: 'flame',
-                    value: formatNumber(s.total_consumption, 0),
-                    unit: 'واحد',
-                    context: `از ${formatNumber(s.data_counts?.station_consumption_daily || 0)} رکورد`,
-                    variant: 'primary',
-                    trend: { text: 'فعال', direction: 'neutral' }
-                },
-                {
-                    label: 'ایستگاه‌های فعال',
-                    icon: 'map-pin',
-                    value: formatNumber(s.unique_stations),
-                    unit: 'ایستگاه',
-                    context: `در ${formatNumber(s.unique_provinces)} استان`,
-                    variant: 'success-state',
-                    trend: { text: 'پایدار', direction: 'neutral' }
-                },
-                {
-                    label: 'بهترین مدل پیش‌بینی',
-                    icon: 'brain',
-                    value: s.best_model?.model || '—',
-                    unit: '',
-                    context: s.best_model ? `MAE: ${formatNumber(s.best_model.mae, 0)}` : 'نامشخص',
-                    variant: '',
-                    trend: { text: 'فعال', direction: 'neutral' }
-                },
-                {
-                    label: 'رکوردهای پالایشگاه',
-                    icon: 'factory',
-                    value: formatNumber(s.data_counts?.production_daily || 0),
-                    unit: 'رکورد',
-                    context: 'داده‌های تولید',
-                    variant: '',
-                    trend: { text: 'پایدار', direction: 'neutral' }
-                },
-            ];
             
-            grid.innerHTML = kpis.map(k => `
-                <div class="kpi-card ${k.variant}">
-                    <div class="kpi-top">
-                        <div class="kpi-label">
-                            <i data-lucide="${k.icon}" class="kpi-label-icon"></i>
-                            ${k.label}
-                        </div>
-                        <div class="kpi-trend ${k.trend.direction}">
-                            ${k.trend.text}
-                        </div>
+            if (s) {
+                kpisEl.innerHTML = `
+                    <div class="kpi-card">
+                        <div class="kpi-label">مصرف کل</div>
+                        <div class="kpi-value text-num">${formatNumber(s.total_consumption, 0)}<span class="kpi-unit">واحد</span></div>
+                        <div class="kpi-context">از ${formatNumber(s.data_counts?.station_consumption_daily || 0)} رکورد</div>
                     </div>
-                    <div class="kpi-value text-num">
-                        ${k.value}
-                        ${k.unit ? `<span class="kpi-unit">${k.unit}</span>` : ''}
+                    <div class="kpi-card">
+                        <div class="kpi-label">ایستگاه‌های فعال</div>
+                        <div class="kpi-value text-num">${formatNumber(s.unique_stations)}</div>
+                        <div class="kpi-context">در ${formatNumber(s.unique_provinces)} استان</div>
                     </div>
-                    <div class="kpi-context">${k.context}</div>
-                </div>
-            `).join('');
-            
-            lucide.createIcons();
-        };
-        
-        /* ================================================================
-           RENDER: HERO
-           ================================================================ */
-        const renderHero = () => {
-            document.getElementById('heroGreeting').textContent = `${getGreeting()}، تحلیل‌گر`;
-            
-            if (!state.summary) {
-                document.getElementById('heroHeadline').textContent = 'در حال بارگذاری اطلاعات عملیاتی...';
-                document.getElementById('heroSummary').textContent = 'لطفاً منتظر بمانید.';
-                return;
-            }
-            
-            const today = state.trend?.data?.[state.trend.data.length - 1];
-            const yesterday = state.trend?.data?.[state.trend.data.length - 2];
-            
-            if (today && yesterday) {
-                const delta = ((today.consumption - yesterday.consumption) / yesterday.consumption * 100);
-                const deltaInfo = formatDelta(delta);
-                
-                document.getElementById('heroDelta').textContent = deltaInfo.text;
-                document.getElementById('heroDelta').style.color = 
-                    deltaInfo.direction === 'up' ? '#FCD34D' : 
-                    deltaInfo.direction === 'down' ? '#86EFAC' : '#CBD5E1';
-                
-                document.getElementById('heroToday').textContent = formatNumber(today.consumption, 0);
-                document.getElementById('heroTodayDelta').textContent = deltaInfo.text;
-                
-                const action = delta > 0 ? 'افزایش' : 'کاهش';
-                document.getElementById('heroSummary').textContent = 
-                    `مصرف گاز شبکه امروز ${formatNumber(today.consumption, 0)} واحد بوده که نسبت به دیروز ${Math.abs(delta).toFixed(1)}٪ ${action} داشته است. ${formatNumber(state.summary.unique_stations)} ایستگاه فعال در ${formatNumber(state.summary.unique_provinces)} استان در حال گزارش‌دهی هستند.`;
-            }
-            
-            if (state.forecast?.data?.[0]) {
-                document.getElementById('heroTomorrow').textContent = formatNumber(state.forecast.data[0].point_forecast, 0);
-                document.getElementById('heroTomorrowDelta').textContent = 'پیش‌بینی مدل';
-            }
-        };
-        
-        /* ================================================================
-           RENDER: INSIGHTS
-           ================================================================ */
-        const renderInsights = () => {
-            const list = document.getElementById('insightsList');
-            
-            if (!state.trend?.data || state.trend.data.length < 7) {
-                list.innerHTML = `
-                    <div class="state-container" style="grid-column: 1/-1;">
-                        <i data-lucide="trending-up" class="state-icon"></i>
-                        <div class="state-title">داده کافی برای تحلیل تغییرات وجود ندارد</div>
-                        <div class="state-description">حداقل ۷ روز داده برای تولید بینش مورد نیاز است.</div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">بهترین مدل</div>
+                        <div class="kpi-value" style="font-size:16px;">${s.best_model?.model || '—'}</div>
+                        <div class="kpi-context">${s.best_model ? `MAE: ${formatNumber(s.best_model.mae, 0)}` : ''}</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">آخرین داده</div>
+                        <div class="kpi-value text-num" style="font-size:16px;">${s.last_date || '—'}</div>
                     </div>
                 `;
-                lucide.createIcons();
+            }
+            
+            renderOverviewChart();
+        }
+        
+        let overviewChart = null;
+        function renderOverviewChart() {
+            const ctx = document.getElementById('overviewTrendChart');
+            if (overviewChart) overviewChart.destroy();
+            
+            if (!state.trend?.data?.length) return;
+            
+            const isDark = state.theme === 'dark';
+            const data = state.trend.data;
+            
+            overviewChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.shamsi_date.substring(5)),
+                    datasets: [{
+                        label: 'مصرف',
+                        data: data.map(d => d.consumption),
+                        borderColor: isDark ? '#3B82F6' : '#0F4C81',
+                        backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(15, 76, 129, 0.08)',
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2,
+                        pointRadius: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            rtl: true,
+                            callbacks: { label: ctx => `${formatNumber(ctx.parsed.y, 0)} واحد` }
+                        }
+                    },
+                    scales: {
+                        y: { ticks: { callback: v => formatNumber(v, 0) } },
+                        x: { ticks: { maxTicksLimit: 8 } }
+                    }
+                }
+            });
+        }
+        
+        // ===== Render: Consumption =====
+        async function renderConsumption() {
+            const days = document.querySelector('.time-filter-btn.active')?.dataset.days || 30;
+            
+            if (!state.trend || state.trend.days !== days) {
+                const trend = await api.get(`/api/consumption/trend?days=${days}`);
+                state.trend = trend;
+                state.trend.days = days;
+            }
+            
+            if (!state.provinces) {
+                const provinces = await api.get('/api/consumption/by-province');
+                state.provinces = provinces;
+            }
+            
+            renderConsumptionKpis();
+            renderConsumptionChart();
+            renderProvinceTable();
+        }
+        
+        function renderConsumptionKpis() {
+            const kpisEl = document.getElementById('consumptionKpis');
+            
+            if (!state.trend?.data?.length) {
+                kpisEl.innerHTML = '<div class="card">داده‌ای موجود نیست</div>';
                 return;
             }
             
             const data = state.trend.data;
-            const last7 = data.slice(-7);
-            const prev7 = data.slice(-14, -7);
+            const total = data.reduce((s, d) => s + d.consumption, 0);
+            const avg = total / data.length;
+            const max = Math.max(...data.map(d => d.consumption));
+            const min = Math.min(...data.map(d => d.consumption));
             
-            const last7Avg = last7.reduce((s, d) => s + d.consumption, 0) / last7.length;
-            const prev7Avg = prev7.length ? prev7.reduce((s, d) => s + d.consumption, 0) / prev7.length : last7Avg;
-            const weekDelta = ((last7Avg - prev7Avg) / prev7Avg * 100);
-            
-            const insights = [];
-            
-            if (Math.abs(weekDelta) > 2) {
-                insights.push({
-                    type: weekDelta > 0 ? 'positive' : 'negative',
-                    icon: weekDelta > 0 ? 'trending-up' : 'trending-down',
-                    title: `${weekDelta > 0 ? 'افزایش' : 'کاهش'} مصرف هفتگی`,
-                    metric: formatDelta(weekDelta).text,
-                    description: `میانگین مصرف ۷ روز اخیر در مقایسه با هفته قبل ${Math.abs(weekDelta).toFixed(1)}٪ تغییر داشته است.`,
-                    action: 'مشاهده جزئیات'
-                });
-            }
-            
-            const maxDay = last7.reduce((max, d) => d.consumption > max.consumption ? d : max, last7[0]);
-            insights.push({
-                type: 'alert',
-                icon: 'zap',
-                title: 'بیشینه مصرف هفته',
-                metric: formatNumber(maxDay.consumption, 0),
-                description: `بالاترین مصرف در ${maxDay.shamsi_date} ثبت شده است.`,
-                action: 'تحلیل روز'
-            });
-            
-            if (state.provinces?.data?.[0]) {
-                const top = state.provinces.data[0];
-                insights.push({
-                    type: 'neutral',
-                    icon: 'map',
-                    title: 'پرمصرف‌ترین استان',
-                    metric: top.province,
-                    description: `استان ${top.province} با ${formatNumber(top.total_consumption, 0)} واحد مصرف در صدر قرار دارد.`,
-                    action: 'نمایش استان'
-                });
-            }
-            
-            if (state.forecast?.data?.length > 0) {
-                const total = state.forecast.data.reduce((s, d) => s + d.point_forecast, 0);
-                insights.push({
-                    type: 'neutral',
-                    icon: 'line-chart',
-                    title: 'پیش‌بینی ۳۰ روز آینده',
-                    metric: formatNumber(total, 0),
-                    description: `مجموع مصرف پیش‌بینی‌شده برای ۳۰ روز آینده.`,
-                    action: 'مشاهده پیش‌بینی'
-                });
-            }
-            
-            list.innerHTML = insights.map(i => `
-                <div class="insight-item">
-                    <div class="insight-icon ${i.type}">
-                        <i data-lucide="${i.icon}" style="width:18px;height:18px;"></i>
-                    </div>
-                    <div class="insight-content">
-                        <div class="insight-title">
-                            ${i.title}
-                            <span class="insight-metric">${i.metric}</span>
-                        </div>
-                        <div class="insight-description">${i.description}</div>
-                        <a class="insight-action">
-                            ${i.action}
-                            <i data-lucide="arrow-left" style="width:12px;height:12px;"></i>
-                        </a>
-                    </div>
+            kpisEl.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-label">مجموع مصرف</div>
+                    <div class="kpi-value text-num">${formatNumber(total, 0)}<span class="kpi-unit">واحد</span></div>
                 </div>
-            `).join('');
+                <div class="kpi-card">
+                    <div class="kpi-label">میانگین روزانه</div>
+                    <div class="kpi-value text-num">${formatNumber(avg, 0)}<span class="kpi-unit">واحد</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">بیشینه</div>
+                    <div class="kpi-value text-num">${formatNumber(max, 0)}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">کمینه</div>
+                    <div class="kpi-value text-num">${formatNumber(min, 0)}</div>
+                </div>
+            `;
+        }
+        
+        let consumptionChart = null;
+        function renderConsumptionChart() {
+            const ctx = document.getElementById('consumptionTrendChart');
+            if (consumptionChart) consumptionChart.destroy();
+            
+            if (!state.trend?.data?.length) return;
+            
+            const isDark = state.theme === 'dark';
+            const data = state.trend.data;
+            const values = data.map(d => d.consumption);
+            const avg = values.reduce((s, v) => s + v, 0) / values.length;
+            
+            consumptionChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.map(d => d.shamsi_date.substring(5)),
+                    datasets: [
+                        {
+                            label: 'مصرف روزانه',
+                            data: values,
+                            borderColor: isDark ? '#3B82F6' : '#0F4C81',
+                            backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(15, 76, 129, 0.08)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                        },
+                        {
+                            label: 'میانگین',
+                            data: values.map(() => avg),
+                            borderColor: isDark ? '#475569' : '#CBD5E1',
+                            borderDash: [4, 4],
+                            borderWidth: 1.5,
+                            pointRadius: 0,
+                            fill: false,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        tooltip: {
+                            rtl: true,
+                            callbacks: { label: ctx => `${ctx.dataset.label}: ${formatNumber(ctx.parsed.y, 0)}` }
+                        }
+                    },
+                    scales: {
+                        y: { ticks: { callback: v => formatNumber(v, 0) } },
+                        x: { ticks: { maxTicksLimit: 10 } }
+                    }
+                }
+            });
+        }
+        
+        function renderProvinceTable() {
+            const tbody = document.getElementById('provinceTableBody');
+            
+            if (!state.provinces?.data?.length) {
+                tbody.innerHTML = '<tr><td colspan="5">داده‌ای موجود نیست</td></tr>';
+                return;
+            }
+            
+            const total = state.provinces.data.reduce((s, p) => s + p.total_consumption, 0);
+            
+            tbody.innerHTML = state.provinces.data.slice(0, 15).map((p, i) => {
+                const share = (p.total_consumption / total * 100).toFixed(1);
+                return `
+                    <tr>
+                        <td class="text-num">${i + 1}</td>
+                        <td>${p.province}</td>
+                        <td class="text-num">${formatNumber(p.total_consumption, 0)}</td>
+                        <td class="text-num">${formatNumber(p.station_count)}</td>
+                        <td class="text-num">${share}٪</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        document.querySelectorAll('.time-filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.time-filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.trend = null;
+                renderConsumption();
+            });
+        });
+        
+        // ===== Render: Forecast =====
+        async function renderForecast() {
+            const horizon = document.getElementById('forecastHorizon').value;
+            const confidence = document.getElementById('confidenceLevel').value;
+            
+            if (!state.forecast) {
+                const forecast = await api.get('/api/forecast/results');
+                state.forecast = forecast;
+            }
+            
+            if (!state.benchmarks) {
+                const benchmarks = await api.get('/api/forecast/benchmarks');
+                state.benchmarks = benchmarks;
+            }
+            
+            renderSelectedModel();
+            renderForecastKpis(horizon);
+            renderForecastChart(horizon, confidence);
+            renderForecastDrivers();
+            renderBenchmarkTable();
+        }
+        
+        function renderSelectedModel() {
+            const modelEl = document.getElementById('selectedModel');
+            
+            if (state.benchmarks?.best_model?.name) {
+                modelEl.innerHTML = `
+                    <i data-lucide="brain" style="width:14px;height:14px;"></i>
+                    <span>${state.benchmarks.best_model.name}</span>
+                `;
+            } else {
+                modelEl.innerHTML = '<span>نامشخص</span>';
+            }
             
             lucide.createIcons();
-        };
+        }
         
-        /* ================================================================
-           RENDER: ATTENTION PANEL
-           ================================================================ */
-        const renderAttention = () => {
-            const panel = document.getElementById('attentionPanel');
-            const countEl = document.getElementById('anomalyCount');
+        function renderForecastKpis(horizon) {
+            const kpisEl = document.getElementById('forecastKpis');
+            
+            if (!state.forecast?.data?.length) {
+                kpisEl.innerHTML = '<div class="card">داده‌ای موجود نیست</div>';
+                return;
+            }
+            
+            const data = state.forecast.data.slice(0, parseInt(horizon));
+            const total = data.reduce((s, d) => s + d.point_forecast, 0);
+            const avg = total / data.length;
+            const max = Math.max(...data.map(d => d.point_forecast));
+            const min = Math.min(...data.map(d => d.point_forecast));
+            
+            kpisEl.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-label">مجموع پیش‌بینی ${horizon} روز</div>
+                    <div class="kpi-value text-num">${formatNumber(total, 0)}<span class="kpi-unit">واحد</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">میانگین روزانه</div>
+                    <div class="kpi-value text-num">${formatNumber(avg, 0)}<span class="kpi-unit">واحد</span></div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">بیشینه پیش‌بینی</div>
+                    <div class="kpi-value text-num">${formatNumber(max, 0)}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">کمینه پیش‌بینی</div>
+                    <div class="kpi-value text-num">${formatNumber(min, 0)}</div>
+                </div>
+            `;
+        }
+        
+        let forecastChartInstance = null;
+        function renderForecastChart(horizon, confidence) {
+            const ctx = document.getElementById('forecastChart');
+            if (forecastChartInstance) forecastChartInstance.destroy();
+            
+            if (!state.forecast?.data?.length) return;
+            
+            const isDark = state.theme === 'dark';
+            const data = state.forecast.data.slice(0, parseInt(horizon));
+            
+            const labels = data.map(d => `روز ${d.day}`);
+            const pointForecasts = data.map(d => d.point_forecast);
+            
+            const upperKey = `upper_${confidence}`;
+            const lowerKey = `lower_${confidence}`;
+            const upperBand = data.map(d => d[upperKey] || d.upper_95);
+            const lowerBand = data.map(d => d[lowerKey] || d.lower_95);
+            
+            forecastChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [
+                        {
+                            label: 'بازه اطمینان (بالا)',
+                            data: upperBand,
+                            borderColor: 'transparent',
+                            backgroundColor: confidence === '95' ? 'rgba(220, 38, 38, 0.1)' : 'rgba(217, 119, 6, 0.15)',
+                            fill: '+1',
+                            pointRadius: 0,
+                        },
+                        {
+                            label: 'بازه اطمینان (پایین)',
+                            data: lowerBand,
+                            borderColor: 'transparent',
+                            fill: false,
+                            pointRadius: 0,
+                        },
+                        {
+                            label: 'پیش‌بینی',
+                            data: pointForecasts,
+                            borderColor: isDark ? '#10B981' : '#059669',
+                            backgroundColor: isDark ? 'rgba(16, 185, 129, 0.1)' : 'rgba(5, 150, 105, 0.08)',
+                            fill: false,
+                            tension: 0.3,
+                            borderWidth: 2.5,
+                            pointRadius: 3,
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            rtl: true,
+                            callbacks: {
+                                label: ctx => {
+                                    if (ctx.dataset.label.includes('پایین')) return null;
+                                    return `${ctx.dataset.label}: ${formatNumber(ctx.parsed.y, 0)} واحد`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { ticks: { callback: v => formatNumber(v, 0) } },
+                        x: { grid: { display: false }, ticks: { maxTicksLimit: 10 } }
+                    }
+                }
+            });
+        }
+        
+        function renderForecastDrivers() {
+            const driversEl = document.getElementById('forecastDrivers');
+            
+            const drivers = [
+                { title: 'روند اخیر', value: 'نزولی', description: 'مصرف در ۷ روز اخیر روند نزولی داشته است' },
+                { title: 'فصل', value: 'پاییز', description: 'مصرف در فصل پاییز معمولاً کمتر از زمستان است' },
+                { title: 'الگوی هفتگی', value: 'پیک شنبه', description: 'معمولاً شنبه‌ها بیشترین مصرف هفته است' },
+                { title: 'مدل', value: state.benchmarks?.best_model?.name || 'Random Forest', description: 'مدل انتخاب‌شده بر اساس کمترین خطای پیش‌بینی' }
+            ];
+            
+            driversEl.innerHTML = drivers.map(d => `
+                <div class="driver-card">
+                    <div class="driver-title">${d.title}</div>
+                    <div class="driver-value">${d.value}</div>
+                    <div class="driver-description">${d.description}</div>
+                </div>
+            `).join('');
+        }
+        
+        function renderBenchmarkTable() {
+            const tbody = document.getElementById('benchmarkTableBody');
+            
+            if (!state.benchmarks?.data?.length) {
+                tbody.innerHTML = '<tr><td colspan="5">داده‌ای موجود نیست</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = state.benchmarks.data.map(m => `
+                <tr>
+                    <td>
+                        <strong>${m.model_name}</strong>
+                        ${m.is_best ? '<span class="model-badge" style="margin-right:8px;">🏆 بهترین</span>' : ''}
+                    </td>
+                    <td class="text-num">${formatNumber(m.MAE, 0)}</td>
+                    <td class="text-num">${formatNumber(m.RMSE, 0)}</td>
+                    <td class="text-num">${formatNumber(m.sMAPE, 2)}٪</td>
+                    <td>
+                        ${m.is_best ? '<span class="model-badge">فعال</span>' : '<span style="color:var(--text-muted);">غیرفعال</span>'}
+                    </td>
+                </tr>
+            `).join('');
+        }
+        
+        document.getElementById('forecastHorizon').addEventListener('change', () => renderForecast());
+        document.getElementById('confidenceLevel').addEventListener('change', () => renderForecast());
+        
+        // ===== Render: Temperature =====
+        async function renderTemperature() {
+            if (!state.temperature) {
+                const temp = await api.get('/api/temperature/summary');
+                state.temperature = temp;
+            }
+            
+            if (!state.tempBins) {
+                const bins = await api.get('/api/temperature/bins');
+                state.tempBins = bins;
+            }
+            
+            if (!state.tempProvinces) {
+                const provs = await api.get('/api/temperature/by-province');
+                state.tempProvinces = provs;
+            }
+            
+            renderTemperatureKpis();
+            renderTempBinsChart();
+            renderTempProvinceChart();
+            renderTempProvinceTable();
+        }
+        
+        function renderTemperatureKpis() {
+            const kpisEl = document.getElementById('temperatureKpis');
+            
+            const t = state.temperature;
+            
+            if (!t) {
+                kpisEl.innerHTML = '<div class="card">داده‌ای موجود نیست</div>';
+                return;
+            }
+            
+            const corr = t.correlation?.overall;
+            const elasticity = t.elasticity?.value;
+            const outliers = t.outlier_stats?.outliers_count;
+            const records = t.correlation?.total_records;
+            
+            kpisEl.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-label">همبستگی دما و مصرف</div>
+                    <div class="kpi-value text-num">${corr !== null ? corr.toFixed(3) : '—'}</div>
+                    <div class="kpi-context">${t.correlation?.interpretation || '—'} • ${t.correlation?.direction || '—'}</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">کشش دمایی</div>
+                    <div class="kpi-value text-num">${elasticity !== null ? elasticity.toFixed(3) : '—'}</div>
+                    <div class="kpi-context">درصد تغییر مصرف به ازای ۱٪ تغییر دما</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">رکوردهای معتبر</div>
+                    <div class="kpi-value text-num">${formatNumber(records)}</div>
+                    <div class="kpi-context">پس از فیلتر کیفیت</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">داده‌های پرت حذف‌شده</div>
+                    <div class="kpi-value text-num">${formatNumber(outliers)}</div>
+                    <div class="kpi-context">در فرآیند پاکسازی داده</div>
+                </div>
+            `;
+        }
+        
+        let tempBinsChartInstance = null;
+        function renderTempBinsChart() {
+            const ctx = document.getElementById('tempBinsChart');
+            if (tempBinsChartInstance) tempBinsChartInstance.destroy();
+            
+            if (!state.tempBins?.data?.length) return;
+            
+            const isDark = state.theme === 'dark';
+            const data = state.tempBins.data;
+            
+            tempBinsChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(b => b.temp_range),
+                    datasets: [{
+                        label: 'میانگین مصرف',
+                        data: data.map(b => b.avg_consumption),
+                        backgroundColor: isDark ? '#3B82F6' : '#0F4C81',
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            rtl: true,
+                            callbacks: {
+                                title: ctx => `بازه دما: ${ctx[0].label}°C`,
+                                label: ctx => `مصرف: ${formatNumber(ctx.parsed.y, 0)} واحد`,
+                                afterLabel: ctx => `رکوردها: ${formatNumber(data[ctx[0].dataIndex].record_count)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { ticks: { callback: v => formatNumber(v, 0) } },
+                        x: { ticks: { maxTicksLimit: 8 } }
+                    }
+                }
+            });
+        }
+        
+        let tempProvinceChartInstance = null;
+        function renderTempProvinceChart() {
+            const ctx = document.getElementById('tempProvinceChart');
+            if (tempProvinceChartInstance) tempProvinceChartInstance.destroy();
+            
+            if (!state.tempProvinces?.data?.length) return;
+            
+            const isDark = state.theme === 'dark';
+            const data = state.tempProvinces.data.slice(0, 15);
+            
+            tempProvinceChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(p => p.province),
+                    datasets: [{
+                        label: 'همبستگی',
+                        data: data.map(p => p.correlation),
+                        backgroundColor: data.map(p => p.correlation > 0 ? '#DC2626' : '#059669'),
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            rtl: true,
+                            callbacks: {
+                                label: ctx => `همبستگی: ${ctx.parsed.x.toFixed(3)}`,
+                                afterLabel: ctx => `رکوردها: ${formatNumber(data[ctx.dataIndex].record_count)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { 
+                            grid: { color: isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(226, 232, 240, 1)' },
+                            ticks: { callback: v => v.toFixed(2) }
+                        },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+        
+        function renderTempProvinceTable() {
+            const tbody = document.getElementById('tempProvinceTableBody');
+            
+            if (!state.tempProvinces?.data?.length) {
+                tbody.innerHTML = '<tr><td colspan="6">داده‌ای موجود نیست</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = state.tempProvinces.data.slice(0, 15).map((p, i) => `
+                <tr>
+                    <td class="text-num">${i + 1}</td>
+                    <td>${p.province}</td>
+                    <td class="text-num" style="color: ${p.correlation > 0 ? 'var(--danger)' : 'var(--success)'};">
+                        ${p.correlation.toFixed(3)}
+                    </td>
+                    <td class="text-num">${formatNumber(p.record_count)}</td>
+                    <td class="text-num">${formatNumber(p.avg_temperature, 1)}°C</td>
+                    <td class="text-num">${formatNumber(p.avg_consumption, 0)}</td>
+                </tr>
+            `).join('');
+        }
+        
+        // ===== Render: Scenarios =====
+        async function renderScenarios() {
+            if (!state.scenarios) {
+                const scenarios = await api.get('/api/scenarios/summary');
+                state.scenarios = scenarios;
+            }
+            
+            if (!state.scenarioInsights) {
+                const insights = await api.get('/api/scenarios/insights');
+                state.scenarioInsights = insights;
+            }
+            
+            simulateScenario(0);
+            renderScenarioChart();
+            renderScenarioInsights();
+        }
+        
+        async function simulateScenario(tempChange) {
+            const result = await api.get(`/api/scenarios/simulate?temp_change=${tempChange}`);
+            
+            if (result) {
+                const pct = result.total_change_pct;
+                const diff = result.total_diff;
+                const provinces = result.province_count;
+                
+                const valueEl = document.getElementById('scenarioResultValue');
+                const detailEl = document.getElementById('scenarioResultDetail');
+                const sliderValueEl = document.getElementById('scenarioSliderValue');
+                
+                let valueClass = 'neutral';
+                let sliderClass = 'neutral';
+                
+                if (pct > 0.5) {
+                    valueClass = 'positive';
+                    sliderClass = 'hot';
+                } else if (pct < -0.5) {
+                    valueClass = 'negative';
+                    sliderClass = 'cold';
+                }
+                
+                valueEl.className = `scenario-result-value ${valueClass}`;
+                sliderValueEl.className = `slider-value ${sliderClass}`;
+                
+                valueEl.textContent = `${pct > 0 ? '+' : ''}${formatNumber(pct, 2)}٪`;
+                sliderValueEl.textContent = `${tempChange > 0 ? '+' : ''}${formatNumber(tempChange)} درجه`;
+                detailEl.textContent = `تغییر: ${formatNumber(diff, 0)} واحد | ${formatNumber(provinces)} استان تحلیل شد`;
+            }
+        }
+        
+        let scenarioChartInstance = null;
+        function renderScenarioChart() {
+            const ctx = document.getElementById('scenarioChart');
+            if (scenarioChartInstance) scenarioChartInstance.destroy();
+            
+            if (!state.scenarios?.data?.length) return;
+            
+            const isDark = state.theme === 'dark';
+            const data = state.scenarios.data;
+            
+            scenarioChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(s => s.scenario_name),
+                    datasets: [{
+                        label: 'تغییر مصرف',
+                        data: data.map(s => s.change_pct),
+                        backgroundColor: data.map(s => {
+                            if (s.temp_change < 0) return '#0284C7';
+                            if (s.temp_change > 0) return '#DC2626';
+                            return '#94A3B8';
+                        }),
+                        borderRadius: 4,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            rtl: true,
+                            callbacks: {
+                                label: ctx => `تغییر: ${ctx.parsed.y.toFixed(2)}٪`,
+                                afterLabel: ctx => `دما: ${data[ctx.dataIndex].temp_change > 0 ? '+' : ''}${data[ctx.dataIndex].temp_change}°C`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: { ticks: { callback: v => v + '٪' } },
+                        x: { ticks: { maxTicksLimit: 7 } }
+                    }
+                }
+            });
+        }
+        
+        function renderScenarioInsights() {
+            const container = document.getElementById('scenarioInsights');
+            
+            if (!state.scenarioInsights?.data?.length) {
+                container.innerHTML = '<div class="card">بینشی موجود نیست</div>';
+                return;
+            }
+            
+            container.innerHTML = state.scenarioInsights.data.map(i => `
+                <div class="insight-card ${i.severity === 'high' ? 'high' : ''}">
+                    <strong>${i.severity === 'high' ? '🔴' : '🟡'}</strong>
+                    ${i.insight}
+                </div>
+            `).join('');
+        }
+        
+        let scenarioDebounceTimer = null;
+        document.getElementById('scenarioSlider').addEventListener('input', (e) => {
+            const value = parseInt(e.target.value);
+            clearTimeout(scenarioDebounceTimer);
+            scenarioDebounceTimer = setTimeout(() => simulateScenario(value), 200);
+        });
+        
+        document.querySelectorAll('.preset-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const temp = parseInt(btn.dataset.temp);
+                document.getElementById('scenarioSlider').value = temp;
+                simulateScenario(temp);
+            });
+        });
+        
+        // ===== Render: Anomalies =====
+        async function renderAnomalies() {
+            if (!state.anomalies) {
+                const anomalies = await api.get('/api/anomalies?threshold=100&limit=50');
+                state.anomalies = anomalies;
+            }
+            
+            renderAnomalyKpis();
+            renderAnomalyList('all');
+        }
+        
+        function renderAnomalyKpis() {
+            const kpisEl = document.getElementById('anomalyKpis');
             
             if (!state.anomalies?.data?.length) {
-                panel.innerHTML = `
-                    <div class="state-container">
-                        <i data-lucide="check-circle" class="state-icon" style="color: var(--success);"></i>
-                        <div class="state-title">وضعیت عملیاتی پایدار است</div>
-                        <div class="state-description">هیچ ناهنجاری یا هشدار فعالی در حال حاضر وجود ندارد.</div>
+                kpisEl.innerHTML = '<div class="card">ناهنجاری یافت نشد</div>';
+                return;
+            }
+            
+            const data = state.anomalies.data;
+            const total = data.length;
+            const critical = data.filter(a => a.severity === 'Critical').length;
+            const warning = data.filter(a => a.severity === 'High').length;
+            const attention = data.filter(a => a.severity === 'Medium').length;
+            
+            kpisEl.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-label">مجموع ناهنجاری‌ها</div>
+                    <div class="kpi-value text-num">${formatNumber(total)}</div>
+                    <div class="kpi-context">با آستانه ۱۰۰ درجه</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">موارد بحرانی</div>
+                    <div class="kpi-value text-num" style="color: var(--danger);">${formatNumber(critical)}</div>
+                    <div class="kpi-context">نیازمند اقدام فوری</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">موارد هشدار</div>
+                    <div class="kpi-value text-num" style="color: var(--warning);">${formatNumber(warning)}</div>
+                    <div class="kpi-context">نیازمند بررسی</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">موارد توجه</div>
+                    <div class="kpi-value text-num" style="color: var(--info);">${formatNumber(attention)}</div>
+                    <div class="kpi-context">پایش مداوم</div>
+                </div>
+            `;
+        }
+        
+        function renderAnomalyList(severityFilter) {
+            const listEl = document.getElementById('anomalyList');
+            const countLabel = document.getElementById('anomalyCountLabel');
+            
+            if (!state.anomalies?.data?.length) {
+                listEl.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="check-circle" class="empty-state-icon"></i>
+                        <div>هیچ ناهنجاری یافت نشد</div>
                     </div>
                 `;
-                countEl.textContent = '0';
                 lucide.createIcons();
                 return;
             }
             
-            countEl.textContent = formatNumber(state.anomalies.data.length);
+            let data = state.anomalies.data;
             
-            panel.innerHTML = state.anomalies.data.slice(0, 5).map(a => {
-                const severity = Math.abs(a.temperature_diff) > 500 ? 'critical' :
-                                 Math.abs(a.temperature_diff) > 200 ? 'warning' : 'attention';
+            if (severityFilter !== 'all') {
+                data = data.filter(a => {
+                    if (severityFilter === 'critical') return a.severity === 'Critical';
+                    if (severityFilter === 'warning') return a.severity === 'High';
+                    if (severityFilter === 'attention') return a.severity === 'Medium';
+                    return true;
+                });
+            }
+            
+            countLabel.textContent = `${formatNumber(data.length)} مورد یافت شد`;
+            
+            if (data.length === 0) {
+                listEl.innerHTML = `
+                    <div class="empty-state">
+                        <i data-lucide="filter" class="empty-state-icon"></i>
+                        <div>موردی با این فیلتر یافت نشد</div>
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+            
+            listEl.innerHTML = data.slice(0, 20).map(a => {
+                const severity = a.severity === 'Critical' ? 'critical' : 
+                                 a.severity === 'High' ? 'warning' : 'attention';
+                const severityLabel = a.severity === 'Critical' ? 'بحرانی' : 
+                                      a.severity === 'High' ? 'هشدار' : 'توجه';
+                
                 return `
-                    <div class="attention-item">
-                        <div class="severity-indicator ${severity}"></div>
-                        <div class="attention-content">
-                            <div class="attention-title">
+                    <div class="anomaly-item">
+                        <div class="anomaly-severity-indicator ${severity}"></div>
+                        <div class="anomaly-content">
+                            <div class="anomaly-title">
                                 اختلاف دمای غیرعادی در ایستگاه ${a.station || 'نامشخص'}
                             </div>
-                            <div class="attention-meta">
-                                ${a.province || '—'} • اختلاف ${formatNumber(Math.abs(a.temperature_diff), 1)} درجه
+                            <div class="anomaly-details">
+                                <div class="anomaly-detail">
+                                    <i data-lucide="map-pin" style="width:12px;height:12px;"></i>
+                                    <span>${a.province || '—'}</span>
+                                </div>
+                                <div class="anomaly-detail">
+                                    <i data-lucide="thermometer" style="width:12px;height:12px;"></i>
+                                    <span>اختلاف: <span class="anomaly-value">${formatNumber(Math.abs(a.temperature_diff), 1)} درجه</span></span>
+                                </div>
+                                <div class="anomaly-detail">
+                                    <span class="severity-badge ${severity}">${severityLabel}</span>
+                                </div>
                             </div>
+                            <div class="anomaly-date">${a.shamsi_date}</div>
                         </div>
-                        <div class="attention-time">${a.shamsi_date}</div>
                     </div>
                 `;
             }).join('');
-        };
+            
+            lucide.createIcons();
+        }
         
-        /* ================================================================
-           RENDER: CHARTS
-           ================================================================ */
-        let trendChartInstance = null;
-        let provinceChartInstance = null;
+        document.querySelectorAll('.severity-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.severity-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderAnomalyList(btn.dataset.severity);
+            });
+        });
         
-        const renderCharts = () => {
-            const isDark = state.theme === 'dark';
-            const gridColor = isDark ? 'rgba(148, 163, 184, 0.1)' : 'rgba(226, 232, 240, 1)';
-            const textColor = isDark ? '#CBD5E1' : '#475569';
+        // ===== Render: AI Assistant =====
+        async function renderAIAssistant() {
+            if (!state.aiSuggestions) {
+                const suggestions = await api.get('/api/ai/suggestions');
+                state.aiSuggestions = suggestions;
+            }
             
-            Chart.defaults.font.family = "'Vazirmatn', sans-serif";
-            Chart.defaults.color = textColor;
+            renderAISuggestions();
             
-            const trendCtx = document.getElementById('trendChart');
-            if (trendChartInstance) trendChartInstance.destroy();
+            if (state.aiChatHistory.length === 0) {
+                addAIMessage('assistant', '👋 سلام! من دستیار هوشمند تحلیل گاز هستم. می‌توانم در تحلیل مصرف، پیش‌بینی، سناریوها و ناهنجاری‌ها کمک کنم. یکی از سؤالات پیشنهادی را انتخاب کنید یا سؤال خود را بنویسید.');
+            }
+        }
+        
+        function renderAISuggestions() {
+            const container = document.getElementById('aiSuggestionsGroups');
             
-            if (state.trend?.data?.length) {
-                const data = state.trend.data;
-                const labels = data.map(d => d.shamsi_date.substring(5));
-                const values = data.map(d => d.consumption);
-                const prevValues = [...values.slice(1), values[values.length - 1] * 0.95];
+            if (!state.aiSuggestions?.suggestions?.length) {
+                container.innerHTML = '<div class="card">پیشنهادی موجود نیست</div>';
+                return;
+            }
+            
+            // Group suggestions by category
+            const groups = {};
+            state.aiSuggestions.suggestions.forEach(s => {
+                const category = s.category || 'عمومی';
+                if (!groups[category]) groups[category] = [];
+                groups[category].push(s);
+            });
+            
+            container.innerHTML = Object.entries(groups).map(([category, items]) => `
+                <div class="ai-suggestion-group">
+                    <div class="ai-suggestion-group-label">${category}</div>
+                    ${items.map(item => `
+                        <button class="ai-suggestion-btn" onclick="useAISuggestion('${item.text}')">
+                            ${item.text}
+                        </button>
+                    `).join('')}
+                </div>
+            `).join('');
+        }
+        
+        function useAISuggestion(text) {
+            document.getElementById('aiInput').value = text;
+            sendAIMessage();
+        }
+        
+        function addAIMessage(role, content, extra = null) {
+            const historyEl = document.getElementById('aiChatHistory');
+            
+            const messageEl = document.createElement('div');
+            messageEl.className = `ai-message ${role}`;
+            
+            const time = new Date().toLocaleTimeString('fa-IR', { hour: '2-digit', minute: '2-digit' });
+            
+            messageEl.innerHTML = `
+                <div class="ai-message-avatar">
+                    <i data-lucide="${role === 'assistant' ? 'sparkles' : 'user'}" style="width:16px;height:16px;"></i>
+                </div>
+                <div class="ai-message-content">
+                    <div class="ai-message-text">${content}</div>
+                    ${extra || ''}
+                    <div class="ai-message-time">${time}</div>
+                </div>
+            `;
+            
+            historyEl.appendChild(messageEl);
+            historyEl.scrollTop = historyEl.scrollHeight;
+            
+            lucide.createIcons();
+            
+            state.aiChatHistory.push({ role, content });
+        }
+        
+        function addAIAnalysisProgress() {
+            const historyEl = document.getElementById('aiChatHistory');
+            
+            const progressEl = document.createElement('div');
+            progressEl.className = 'ai-message assistant';
+            progressEl.id = 'aiAnalysisProgress';
+            
+            progressEl.innerHTML = `
+                <div class="ai-message-avatar">
+                    <i data-lucide="sparkles" style="width:16px;height:16px;"></i>
+                </div>
+                <div class="ai-message-content">
+                    <div class="ai-analysis-progress">
+                        <div class="spinner"></div>
+                        <span>در حال تحلیل داده‌ها...</span>
+                    </div>
+                </div>
+            `;
+            
+            historyEl.appendChild(progressEl);
+            historyEl.scrollTop = historyEl.scrollHeight;
+            
+            lucide.createIcons();
+        }
+        
+        function removeAIAnalysisProgress() {
+            const progressEl = document.getElementById('aiAnalysisProgress');
+            if (progressEl) progressEl.remove();
+        }
+        
+        function renderAIResponseContent(response) {
+            let content = response.text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+            
+            let extraHtml = '';
+            
+            // Add action buttons based on intent
+            const actions = [];
+            
+            if (response.intent === 'top_consumption_provinces' || response.intent === 'top_stations') {
+                actions.push({ icon: 'bar-chart-3', label: 'نمایش نمودار', action: 'showChart' });
+                actions.push({ icon: 'map-pin', label: 'مشاهده جزئیات', action: 'showDetails' });
+            } else if (response.intent === 'forecast') {
+                actions.push({ icon: 'line-chart', label: 'مرکز پیش‌بینی', action: 'goToForecast' });
+                actions.push({ icon: 'git-compare', label: 'مقایسه با دوره قبل', action: 'compare' });
+            } else if (response.intent === 'temperature_scenario') {
+                actions.push({ icon: 'git-branch', label: 'تحلیل سناریو', action: 'goToScenarios' });
+            } else if (response.intent === 'anomalies') {
+                actions.push({ icon: 'alert-triangle', label: 'مشاهده ناهنجاری‌ها', action: 'goToAnomalies' });
+            }
+            
+            if (actions.length > 0) {
+                extraHtml += `
+                    <div class="ai-response-actions">
+                        ${actions.map(a => `
+                            <button class="ai-action-btn" onclick="handleAIAction('${a.action}')">
+                                <i data-lucide="${a.icon}" style="width:12px;height:12px;"></i>
+                                ${a.label}
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            return { content, extraHtml };
+        }
+        
+        function handleAIAction(action) {
+            switch (action) {
+                case 'goToForecast':
+                    window.location.hash = '#/forecast';
+                    break;
+                case 'goToScenarios':
+                    window.location.hash = '#/scenarios';
+                    break;
+                case 'goToAnomalies':
+                    window.location.hash = '#/anomalies';
+                    break;
+                case 'showChart':
+                case 'showDetails':
+                case 'compare':
+                    // These would open modals or drill-down views in future versions
+                    break;
+            }
+        }
+        
+        async function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const sendBtn = document.getElementById('aiSendBtn');
+            const question = input.value.trim();
+            
+            if (!question) return;
+            
+            // Add user message
+            addAIMessage('user', question);
+            input.value = '';
+            input.focus();
+            
+            // Disable input
+            sendBtn.disabled = true;
+            
+            // Show analysis progress
+            addAIAnalysisProgress();
+            
+            try {
+                const response = await api.post('/api/ai/chat', { question });
                 
-                trendChartInstance = new Chart(trendCtx, {
-                    type: 'line',
-                    data: {
-                        labels,
-                        datasets: [
-                            {
-                                label: 'دوره فعلی',
-                                data: values,
-                                borderColor: isDark ? '#3B82F6' : '#0F4C81',
-                                backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(15, 76, 129, 0.08)',
-                                fill: true,
-                                tension: 0.4,
-                                borderWidth: 2,
-                                pointRadius: 0,
-                                pointHoverRadius: 5,
-                            },
-                            {
-                                label: 'دوره قبل',
-                                data: prevValues,
-                                borderColor: isDark ? '#475569' : '#CBD5E1',
-                                borderDash: [4, 4],
-                                tension: 0.4,
-                                borderWidth: 1.5,
-                                pointRadius: 0,
-                                fill: false,
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: { mode: 'index', intersect: false },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                rtl: true,
-                                backgroundColor: isDark ? '#1E293B' : '#0F172A',
-                                padding: 12,
-                                callbacks: {
-                                    label: ctx => `${ctx.dataset.label}: ${formatNumber(ctx.parsed.y, 0)}`
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                grid: { color: gridColor, drawBorder: false },
-                                ticks: { 
-                                    color: textColor, 
-                                    font: { size: 11 },
-                                    callback: v => formatNumber(v, 0)
-                                }
-                            },
-                            x: {
-                                grid: { display: false },
-                                ticks: { color: textColor, font: { size: 11 }, maxTicksLimit: 8 }
-                            }
-                        }
-                    }
-                });
-            }
-            
-            const provCtx = document.getElementById('provinceChart');
-            if (provinceChartInstance) provinceChartInstance.destroy();
-            
-            if (state.provinces?.data?.length) {
-                const top8 = state.provinces.data.slice(0, 8);
+                removeAIAnalysisProgress();
                 
-                provinceChartInstance = new Chart(provCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: top8.map(p => p.province),
-                        datasets: [{
-                            label: 'مصرف کل',
-                            data: top8.map(p => p.total_consumption),
-                            backgroundColor: isDark ? '#3B82F6' : '#0F4C81',
-                            borderRadius: 4,
-                            barThickness: 20,
-                        }]
-                    },
-                    options: {
-                        indexAxis: 'y',
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                rtl: true,
-                                backgroundColor: isDark ? '#1E293B' : '#0F172A',
-                                callbacks: {
-                                    label: ctx => `مصرف: ${formatNumber(ctx.parsed.x, 0)}`
-                                }
-                            }
-                        },
-                        scales: {
-                            x: {
-                                grid: { color: gridColor, drawBorder: false },
-                                ticks: { color: textColor, font: { size: 11 } }
-                            },
-                            y: {
-                                grid: { display: false },
-                                ticks: { color: textColor, font: { size: 11 } }
-                            }
-                        }
-                    }
-                });
+                if (response) {
+                    const { content, extraHtml } = renderAIResponseContent(response);
+                    addAIMessage('assistant', content, extraHtml);
+                } else {
+                    addAIMessage('assistant', 'متأسفانه در پردازش سؤال شما مشکلی پیش آمد. لطفاً دوباره تلاش کنید.');
+                }
+            } catch (err) {
+                removeAIAnalysisProgress();
+                addAIMessage('assistant', 'خطا در ارتباط با سرور. لطفاً از فعال بودن بک‌اند اطمینان حاصل کنید.');
+            } finally {
+                sendBtn.disabled = false;
             }
-        };
+        }
         
-        /* ================================================================
-           DATA LOADING
-           ================================================================ */
-        const loadData = async () => {
-            renderKpiSkeletons();
-            
-            const [summary, trend, provinces, forecast, anomalies] = await Promise.all([
-                api.get('/api/summary'),
-                api.get('/api/consumption/trend?days=30'),
-                api.get('/api/consumption/by-province'),
-                api.get('/api/forecast/results'),
-                api.get('/api/anomalies?threshold=100&limit=20'),
-            ]);
-            
-            state.summary = summary;
-            state.trend = trend;
-            state.provinces = provinces;
-            state.forecast = forecast;
-            state.anomalies = anomalies;
-            
-            if (summary?.last_date) {
-                document.getElementById('freshnessTime').textContent = 'امروز';
+        // AI input events
+        document.getElementById('aiSendBtn').addEventListener('click', sendAIMessage);
+        document.getElementById('aiInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendAIMessage();
             }
-            
-            renderKpis();
-            renderHero();
-            renderInsights();
-            renderAttention();
-            renderCharts();
-        };
+        });
         
-        /* ================================================================
-           INIT
-           ================================================================ */
-        const init = () => {
+        // Auto-resize textarea
+        document.getElementById('aiInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+        
+        // ===== Render Current Page =====
+        function renderCurrentPage() {
+            if (state.currentRoute === 'overview') {
+                renderOverviewChart();
+            } else if (state.currentRoute === 'consumption') {
+                renderConsumptionChart();
+            } else if (state.currentRoute === 'forecast') {
+                renderForecast();
+            } else if (state.currentRoute === 'temperature') {
+                renderTemperature();
+            } else if (state.currentRoute === 'scenarios') {
+                renderScenarioChart();
+            } else if (state.currentRoute === 'anomalies') {
+                renderAnomalies();
+            } else if (state.currentRoute === 'ai') {
+                renderAIAssistant();
+            }
+        }
+        
+        // ===== Init =====
+        async function init() {
             applyTheme();
             lucide.createIcons();
-            loadData();
-        };
+            
+            const route = window.location.hash.replace('#/', '') || 'overview';
+            navigate(route);
+        }
         
         init();
     </script>
