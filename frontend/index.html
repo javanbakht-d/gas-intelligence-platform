@@ -1053,14 +1053,154 @@
             color: var(--primary-600);
         }
         
-        .ai-response-table {
-            margin-top: var(--space-3);
+        /* Stations Page Styles */
+        .stations-controls {
+            display: flex;
+            gap: var(--space-3);
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        
+        .search-input {
+            padding: var(--space-2) var(--space-4);
+            border: 1px solid var(--border-default);
+            border-radius: var(--radius-md);
+            background: var(--surface-elevated);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 13px;
+            min-width: 250px;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+        }
+        
+        .stations-table-container {
             overflow-x: auto;
         }
         
-        .ai-response-table table {
-            min-width: 400px;
+        .station-name {
+            font-weight: 600;
+            color: var(--text-primary);
         }
+        
+        .station-location {
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: var(--space-1);
+        }
+        
+        .station-stats {
+            display: flex;
+            gap: var(--space-4);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        
+        .station-stat {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .station-stat-label {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+        
+        .station-stat-value {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+        
+        /* Quality Page Styles */
+        .quality-score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        
+        .quality-score-card {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            text-align: center;
+        }
+        
+        .quality-score-value {
+            font-size: 36px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: var(--space-1);
+        }
+        
+        .quality-score-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-3);
+        }
+        
+        .quality-bar {
+            height: 8px;
+            background: var(--surface-sunken);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .quality-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .quality-status {
+            display: inline-block;
+            margin-top: var(--space-3);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .quality-status.good { background: var(--success-bg); color: var(--success); }
+        .quality-status.warn { background: var(--warning-bg); color: var(--warning); }
+        .quality-status.bad { background: var(--danger-bg); color: var(--danger); }
+        
+        .rec-list { display: flex; flex-direction: column; gap: var(--space-3); }
+        
+        .rec-item {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+        }
+        
+        .rec-priority {
+            flex-shrink: 0;
+            width: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .rec-priority.critical { background: var(--danger-bg); color: var(--danger); }
+        .rec-priority.high { background: var(--warning-bg); color: var(--warning); }
+        .rec-priority.medium { background: var(--info-bg); color: var(--info); }
+        
+        .rec-content { flex: 1; }
+        .rec-issue { font-size: 14px; font-weight: 600; margin-bottom: var(--space-1); }
+        .rec-action { font-size: 13px; color: var(--text-secondary); }
+        .rec-category { font-size: 11px; color: var(--text-muted); margin-top: var(--space-2); }
         
         @media (max-width: 1024px) {
             .app-shell { grid-template-columns: 1fr; }
@@ -1610,7 +1750,6 @@
                 </div>
                 
                 <div class="ai-workspace">
-                    <!-- Suggestions Panel -->
                     <div class="ai-sidebar-panel">
                         <div class="ai-suggestions-panel">
                             <div class="ai-suggestions-title">
@@ -1621,7 +1760,6 @@
                         </div>
                     </div>
                     
-                    <!-- Chat Panel -->
                     <div class="ai-chat-panel">
                         <div class="ai-chat-header">
                             <div class="ai-chat-title">
@@ -1651,6 +1789,79 @@
                         </div>
                     </div>
                 </div>
+            </main>
+            
+            <!-- Stations Page -->
+            <main class="page hidden" id="page-stations">
+                <div class="page-header">
+                    <h1 class="page-title">ایستگاه‌ها</h1>
+                    <p class="page-subtitle">مدیریت و پایش ایستگاه‌های اندازه‌گیری مصرف گاز</p>
+                </div>
+                
+                <!-- KPIs -->
+                <section class="section">
+                    <div class="kpi-grid" id="stationKpis"></div>
+                </section>
+                
+                <!-- Controls -->
+                <section class="section">
+                    <div class="card">
+                        <div class="stations-controls">
+                            <div class="control-group">
+                                <label class="control-label">جستجو</label>
+                                <input 
+                                    type="text" 
+                                    class="search-input" 
+                                    id="stationSearch"
+                                    placeholder="نام ایستگاه، استان یا شهر..."
+                                >
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">استان</label>
+                                <select class="select-control" id="stationProvinceFilter">
+                                    <option value="">همه استان‌ها</option>
+                                </select>
+                            </div>
+                            
+                            <div class="control-group">
+                                <label class="control-label">مرتب‌سازی بر اساس</label>
+                                <select class="select-control" id="stationSort">
+                                    <option value="total_consumption">مجموع مصرف</option>
+                                    <option value="record_count">تعداد رکورد</option>
+                                    <option value="station">نام ایستگاه</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Stations Table -->
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">لیست ایستگاه‌ها</h3>
+                            <p class="section-subtitle" id="stationCountLabel">در حال بارگذاری...</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="stations-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ایستگاه</th>
+                                        <th>موقعیت</th>
+                                        <th>رکوردها</th>
+                                        <th>مجموع مصرف</th>
+                                        <th>میانگین مصرف</th>
+                                        <th>انواع مصرف</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="stationTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
             </main>
             
             <!-- Placeholder for other pages -->
@@ -1721,6 +1932,8 @@
             anomalies: null,
             aiChatHistory: [],
             aiSuggestions: null,
+            stations: null,
+            stationFilters: { search: '', province: '', sort: 'total_consumption' },
         };
         
         // ===== Theme =====
@@ -1764,8 +1977,8 @@
             'scenarios': { title: 'تحلیل سناریو', render: renderScenarios },
             'anomalies': { title: 'ناهنجاری‌ها', render: renderAnomalies },
             'ai': { title: 'دستیار هوشمند', render: renderAIAssistant },
+            'stations': { title: 'ایستگاه‌ها', render: renderStations },
             'production': { title: 'تولید و پالایش', placeholder: true },
-            'stations': { title: 'ایستگاه‌ها', placeholder: true },
             'quality': { title: 'کیفیت داده', placeholder: true },
         };
         
@@ -1785,6 +1998,7 @@
             document.getElementById('page-scenarios').classList.toggle('hidden', route !== 'scenarios');
             document.getElementById('page-anomalies').classList.toggle('hidden', route !== 'anomalies');
             document.getElementById('page-ai').classList.toggle('hidden', route !== 'ai');
+            document.getElementById('page-stations').classList.toggle('hidden', route !== 'stations');
             document.getElementById('page-placeholder').classList.toggle('hidden', !routes[route]?.placeholder);
             
             if (routes[route]?.placeholder) {
@@ -2676,7 +2890,6 @@
                 return;
             }
             
-            // Group suggestions by category
             const groups = {};
             state.aiSuggestions.suggestions.forEach(s => {
                 const category = s.category || 'عمومی';
@@ -2763,7 +2976,6 @@
             
             let extraHtml = '';
             
-            // Add action buttons based on intent
             const actions = [];
             
             if (response.intent === 'top_consumption_provinces' || response.intent === 'top_stations') {
@@ -2808,7 +3020,6 @@
                 case 'showChart':
                 case 'showDetails':
                 case 'compare':
-                    // These would open modals or drill-down views in future versions
                     break;
             }
         }
@@ -2820,15 +3031,12 @@
             
             if (!question) return;
             
-            // Add user message
             addAIMessage('user', question);
             input.value = '';
             input.focus();
             
-            // Disable input
             sendBtn.disabled = true;
             
-            // Show analysis progress
             addAIAnalysisProgress();
             
             try {
@@ -2850,7 +3058,6 @@
             }
         }
         
-        // AI input events
         document.getElementById('aiSendBtn').addEventListener('click', sendAIMessage);
         document.getElementById('aiInput').addEventListener('keypress', (e) => {
             if (e.key === 'Enter' && !e.shiftKey) {
@@ -2859,10 +3066,146 @@
             }
         });
         
-        // Auto-resize textarea
         document.getElementById('aiInput').addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+        });
+        
+        // ===== Render: Stations =====
+        async function renderStations() {
+            if (!state.stations) {
+                const stations = await api.get('/api/stations/list?limit=500');
+                state.stations = stations;
+            }
+            
+            renderStationKpis();
+            renderStationProvinceFilter();
+            renderStationTable();
+        }
+        
+        function renderStationKpis() {
+            const kpisEl = document.getElementById('stationKpis');
+            
+            if (!state.stations?.data?.length) {
+                kpisEl.innerHTML = '<div class="card">داده‌ای موجود نیست</div>';
+                return;
+            }
+            
+            const data = state.stations.data;
+            const totalStations = data.length;
+            const provinces = new Set(data.map(s => s.province)).size;
+            const totalConsumption = data.reduce((s, st) => s + (st.total_consumption || 0), 0);
+            const totalRecords = data.reduce((s, st) => s + (st.record_count || 0), 0);
+            
+            kpisEl.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-label">تعداد ایستگاه‌ها</div>
+                    <div class="kpi-value text-num">${formatNumber(totalStations)}</div>
+                    <div class="kpi-context">در ${formatNumber(provinces)} استان</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">مجموع مصرف</div>
+                    <div class="kpi-value text-num">${formatNumber(totalConsumption, 0)}</div>
+                    <div class="kpi-context">واحد اندازه‌گیری</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">مجموع رکوردها</div>
+                    <div class="kpi-value text-num">${formatNumber(totalRecords)}</div>
+                    <div class="kpi-context">رکورد ثبت شده</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">میانگین مصرف هر ایستگاه</div>
+                    <div class="kpi-value text-num">${formatNumber(totalConsumption / totalStations, 0)}</div>
+                    <div class="kpi-context">واحد اندازه‌گیری</div>
+                </div>
+            `;
+        }
+        
+        function renderStationProvinceFilter() {
+            const selectEl = document.getElementById('stationProvinceFilter');
+            
+            if (!state.stations?.data?.length) return;
+            
+            const provinces = [...new Set(state.stations.data.map(s => s.province).filter(Boolean))].sort();
+            
+            selectEl.innerHTML = '<option value="">همه استان‌ها</option>' + 
+                provinces.map(p => `<option value="${p}">${p}</option>`).join('');
+        }
+        
+        function renderStationTable() {
+            const tbody = document.getElementById('stationTableBody');
+            const countLabel = document.getElementById('stationCountLabel');
+            
+            if (!state.stations?.data?.length) {
+                tbody.innerHTML = '<tr><td colspan="6">داده‌ای موجود نیست</td></tr>';
+                countLabel.textContent = '۰ ایستگاه';
+                return;
+            }
+            
+            let data = [...state.stations.data];
+            
+            // Apply search filter
+            const search = state.stationFilters.search.toLowerCase();
+            if (search) {
+                data = data.filter(s => 
+                    (s.station || '').toLowerCase().includes(search) ||
+                    (s.province || '').toLowerCase().includes(search) ||
+                    (s.city || '').toLowerCase().includes(search)
+                );
+            }
+            
+            // Apply province filter
+            if (state.stationFilters.province) {
+                data = data.filter(s => s.province === state.stationFilters.province);
+            }
+            
+            // Apply sort
+            const sort = state.stationFilters.sort;
+            if (sort === 'total_consumption') {
+                data.sort((a, b) => (b.total_consumption || 0) - (a.total_consumption || 0));
+            } else if (sort === 'record_count') {
+                data.sort((a, b) => (b.record_count || 0) - (a.record_count || 0));
+            } else if (sort === 'station') {
+                data.sort((a, b) => (a.station || '').localeCompare(b.station || '', 'fa'));
+            }
+            
+            countLabel.textContent = `${formatNumber(data.length)} ایستگاه یافت شد`;
+            
+            tbody.innerHTML = data.slice(0, 100).map(s => `
+                <tr>
+                    <td>
+                        <div class="station-name">${s.station || 'نامشخص'}</div>
+                    </td>
+                    <td>
+                        <div class="station-location">
+                            <i data-lucide="map-pin" style="width:12px;height:12px;"></i>
+                            <span>${s.province || '—'}${s.city ? '، ' + s.city : ''}</span>
+                        </div>
+                    </td>
+                    <td class="text-num">${formatNumber(s.record_count)}</td>
+                    <td class="text-num">${formatNumber(s.total_consumption, 0)}</td>
+                    <td class="text-num">${formatNumber(s.avg_consumption, 0)}</td>
+                    <td class="text-num">${formatNumber(s.consumption_types)}</td>
+                </tr>
+            `).join('');
+            
+            lucide.createIcons();
+        }
+        
+        // Station filter events
+        document.getElementById('stationSearch').addEventListener('input', (e) => {
+            state.stationFilters.search = e.target.value;
+            renderStationTable();
+        });
+        
+        document.getElementById('stationProvinceFilter').addEventListener('change', (e) => {
+            state.stationFilters.province = e.target.value;
+            renderStationTable();
+        });
+        
+        document.getElementById('stationSort').addEventListener('change', (e) => {
+            state.stationFilters.sort = e.target.value;
+            renderStationTable();
         });
         
         // ===== Render Current Page =====
@@ -2881,6 +3224,8 @@
                 renderAnomalies();
             } else if (state.currentRoute === 'ai') {
                 renderAIAssistant();
+            } else if (state.currentRoute === 'stations') {
+                renderStations();
             }
         }
         

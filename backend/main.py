@@ -459,7 +459,57 @@ def get_filters():
     finally:
         conn.close()
 
+# ===== Stations Endpoint =====
+@app.get("/api/stations/list")
+def get_stations_list(province: Optional[str] = None, limit: int = Query(500, le=2000)):
+    conn = get_db_connection()
+    try:
+        query = """
+            SELECT نام_ایستگاه, استان, شهر, COUNT(*) as record_count,
+                   AVG(میزان_مصرف) as avg_consumption, SUM(میزان_مصرف) as total_consumption,
+                   MIN(میزان_مصرف) as min_consumption, MAX(میزان_مصرف) as max_consumption,
+                   COUNT(DISTINCT نوع_مصرف) as consumption_types
+            FROM station_consumption_daily
+        """
+        params = []
+        if province:
+            query += " WHERE استان = ?"
+            params.append(province)
+        query += " GROUP BY نام_ایستگاه, استان, شهر ORDER BY total_consumption DESC LIMIT ?"
+        params.append(limit)
+        
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        
+        stations = []
+        for row in cursor.fetchall():
+            stations.append({
+                "station": row[0], "province": row[1], "city": row[2],
+                "record_count": row[3], "avg_consumption": safe_float(row[4]),
+                "total_consumption": safe_float(row[5]), "min_consumption": safe_float(row[6]),
+                "max_consumption": safe_float(row[7]), "consumption_types": row[8]
+            })
+        
+        return {"count": len(stations), "data": stations}
+    finally:
+        conn.close()
 
-if __name__ == "__main__":
-    import uvicorn
+# ===== Data Quality Endpoint =====
+@app.get("/api/quality/report")
+def get_quality_report():
+    import json as _json
+    from pathlib import Path as _Path
+    report_file = _Path(__file__).resolve().parent.parent / "data_quality_metrics.json"
+    if not report_file.exists():
+        return {"available": False, "message": "گزارش کیفیت داده هنوز تولید نشده است."}
+    try:
+        with open(report_file, 'r', encoding='utf-8') as f:
+            data = _json.load(f)
+        data["available"] = True
+        return data
+    except Exception:
+        return {"available": False, "message": "خطا در خواندن گزارش کیفیت داده"}
+
+
+if __name__ == "__main__":    import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)
