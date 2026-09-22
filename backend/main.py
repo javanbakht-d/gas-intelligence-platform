@@ -509,7 +509,71 @@ def get_quality_report():
         return data
     except Exception:
         return {"available": False, "message": "خطا در خواندن گزارش کیفیت داده"}
+# ===== Production Endpoint =====
+@app.get("/api/production/summary")
+def get_production_summary():
+    conn = get_db_connection()
+    try:
+        cur = conn.cursor()
+        
+        cur.execute("""
+            SELECT COUNT(*), COUNT(DISTINCT نام_پالایشگاه), COUNT(DISTINCT نام_محصول),
+                   SUM(میزان_تولید), MIN(تاریخ_شمسی), MAX(تاریخ_شمسی)
+            FROM production_daily
+        """)
+        row = cur.fetchone()
+        overall = {
+            "records": row[0], "refineries": row[1], "products": row[2],
+            "total_production": safe_float(row[3]),
+            "min_date": row[4], "max_date": row[5]
+        }
+        
+        cur.execute("""
+            SELECT نام_پالایشگاه, SUM(میزان_تولید), COUNT(*), COUNT(DISTINCT نام_محصول)
+            FROM production_daily
+            GROUP BY نام_پالایشگاه
+            ORDER BY SUM(میزان_تولید) DESC
+        """)
+        by_refinery = [
+            {"refinery": r[0], "total": safe_float(r[1]), "records": r[2], "product_count": r[3]}
+            for r in cur.fetchall()
+        ]
+        
+        cur.execute("""
+            SELECT نام_محصول, SUM(میزان_تولید), COUNT(*)
+            FROM production_daily
+            GROUP BY نام_محصول
+            ORDER BY SUM(میزان_تولید) DESC
+        """)
+        by_product = [
+            {"product": r[0], "total": safe_float(r[1]), "records": r[2]}
+            for r in cur.fetchall()
+        ]
+        
+        cur.execute("""
+            SELECT gregorian_date, shamsi_year, shamsi_month, shamsi_day, SUM(میزان_تولید)
+            FROM production_daily
+            WHERE gregorian_date IS NOT NULL
+            GROUP BY gregorian_date, shamsi_year, shamsi_month, shamsi_day
+            ORDER BY gregorian_date DESC
+            LIMIT 30
+        """)
+        trend = [
+            {"gregorian_date": r[0], "shamsi_date": f"{r[1]}/{r[2]:02d}/{r[3]:02d}", "total": safe_float(r[4])}
+            for r in cur.fetchall()
+        ]
+        trend.reverse()
+        
+        return {
+            "available": True,
+            "overall": overall,
+            "by_refinery": by_refinery,
+            "by_product": by_product,
+            "trend": trend
+        }
+    finally:
+        conn.close()
 
-
-if __name__ == "__main__":    import uvicorn
+if __name__ == "__main__":
+    import uvicorn
     uvicorn.run(app, host="127.0.0.1", port=8000)

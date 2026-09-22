@@ -1202,6 +1202,92 @@
         .rec-action { font-size: 13px; color: var(--text-secondary); }
         .rec-category { font-size: 11px; color: var(--text-muted); margin-top: var(--space-2); }
         
+        /* Quality Page Styles */
+        .quality-score-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+        }
+        
+        .quality-score-card {
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: var(--space-5);
+            text-align: center;
+        }
+        
+        .quality-score-value {
+            font-size: 36px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            margin-bottom: var(--space-1);
+        }
+        
+        .quality-score-label {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: var(--space-3);
+        }
+        
+        .quality-bar {
+            height: 8px;
+            background: var(--surface-sunken);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        
+        .quality-bar-fill {
+            height: 100%;
+            border-radius: 4px;
+        }
+        
+        .quality-status {
+            display: inline-block;
+            margin-top: var(--space-3);
+            padding: var(--space-1) var(--space-3);
+            border-radius: var(--radius-sm);
+            font-size: 11px;
+            font-weight: 600;
+        }
+        
+        .quality-status.good { background: var(--success-bg); color: var(--success); }
+        .quality-status.warn { background: var(--warning-bg); color: var(--warning); }
+        .quality-status.bad { background: var(--danger-bg); color: var(--danger); }
+        
+        .rec-list { display: flex; flex-direction: column; gap: var(--space-3); }
+        
+        .rec-item {
+            display: flex;
+            gap: var(--space-4);
+            padding: var(--space-4);
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+        }
+        
+        .rec-priority {
+            flex-shrink: 0;
+            width: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-2);
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            font-weight: 700;
+        }
+        
+        .rec-priority.critical { background: var(--danger-bg); color: var(--danger); }
+        .rec-priority.high { background: var(--warning-bg); color: var(--warning); }
+        .rec-priority.medium { background: var(--info-bg); color: var(--info); }
+        
+        .rec-content { flex: 1; }
+        .rec-issue { font-size: 14px; font-weight: 600; margin-bottom: var(--space-1); }
+        .rec-action { font-size: 13px; color: var(--text-secondary); }
+        .rec-category { font-size: 11px; color: var(--text-muted); margin-top: var(--space-2); }
+        
         @media (max-width: 1024px) {
             .app-shell { grid-template-columns: 1fr; }
             .sidebar { position: fixed; right: -280px; width: 280px; transition: right var(--transition-normal); }
@@ -1864,6 +1950,169 @@
                 </section>
             </main>
             
+            <!-- Quality Page -->
+            <main class="page hidden" id="page-quality">
+                <div class="page-header">
+                    <h1 class="page-title">کیفیت داده</h1>
+                    <p class="page-subtitle">گزارش جامع کیفیت داده‌های خام برای بهبود فرآیند تأمین داده</p>
+                </div>
+                
+                <section class="section">
+                    <div class="kpi-grid" id="qualityKpis"></div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">امتیاز کیفیت به تفکیک شیت</h3>
+                            <p class="section-subtitle">امتیاز از ۱۰۰ بر اساس کامل بودن، اعتبار دامنه و پرت‌ها</p>
+                        </div>
+                    </div>
+                    <div class="quality-score-grid" id="qualityScoreGrid"></div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">پیشنهادات بهبود (اولویت‌بندی شده)</h3>
+                            <p class="section-subtitle">اقدامات پیشنهادی برای بخش تأمین‌کننده داده</p>
+                        </div>
+                    </div>
+                    <div class="rec-list" id="qualityRecList"></div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">حوزه‌های داده‌ای مفقود</h3>
+                            <p class="section-subtitle">داده‌هایی که در صورت فراهم شدن، قابلیت‌های سامانه را گسترش می‌دهند</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="stations-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>حوزه داده‌ای</th>
+                                        <th>توضیح</th>
+                                        <th>اثرگذاری</th>
+                                        <th>اولویت</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="qualityDomainsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">کیفیت ستون‌ها</h3>
+                            <p class="section-subtitle">جزئیات کیفیت هر ستون در شیت انتخاب‌شده</p>
+                        </div>
+                        <select class="select-control" id="qualitySheetSelect"></select>
+                    </div>
+                    <div class="card">
+                        <div class="stations-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>ستون</th>
+                                        <th>نوع</th>
+                                        <th>مفقود٪</th>
+                                        <th>صفر٪</th>
+                                        <th>پرت٪</th>
+                                        <th>امتیاز</th>
+                                        <th>وضعیت</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="qualityColumnsBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
+            <!-- Production Page -->
+            <main class="page hidden" id="page-production">
+                <div class="page-header">
+                    <h1 class="page-title">تولید و پالایش</h1>
+                    <p class="page-subtitle">پایش تولید میعانات گازی و سایر محصولات پالایشگاه‌ها</p>
+                </div>
+                
+                <section class="section">
+                    <div class="kpi-grid" id="productionKpis"></div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">روند تولید روزانه</h3>
+                            <p class="section-subtitle">مجموع تولید همه پالایشگاه‌ها در ۳۰ روز اخیر</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="chart-container">
+                            <canvas id="productionTrendChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="chart-grid">
+                        <div class="card">
+                            <div class="section-header">
+                                <div>
+                                    <h3 class="section-title">تولید به تفکیک پالایشگاه</h3>
+                                    <p class="section-subtitle">رتبه‌بندی بر اساس مجموع تولید</p>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="productionRefineryChart"></canvas>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="section-header">
+                                <div>
+                                    <h3 class="section-title">تولید به تفکیک محصول</h3>
+                                    <p class="section-subtitle">سهم هر محصول از تولید کل</p>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="productionProductChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <section class="section">
+                    <div class="section-header">
+                        <div>
+                            <h3 class="section-title">جزئیات پالایشگاه‌ها</h3>
+                            <p class="section-subtitle">آمار کامل هر پالایشگاه</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="stations-table-container">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>رتبه</th>
+                                        <th>پالایشگاه</th>
+                                        <th>مجموع تولید</th>
+                                        <th>رکوردها</th>
+                                        <th>تنوع محصول</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="productionRefineryTable"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </main>
+            
             <!-- Placeholder for other pages -->
             <main class="page hidden" id="page-placeholder">
                 <div class="page-header">
@@ -1933,6 +2182,8 @@
             aiChatHistory: [],
             aiSuggestions: null,
             stations: null,
+            quality: null,
+            production: null,
             stationFilters: { search: '', province: '', sort: 'total_consumption' },
         };
         
@@ -1978,9 +2229,8 @@
             'anomalies': { title: 'ناهنجاری‌ها', render: renderAnomalies },
             'ai': { title: 'دستیار هوشمند', render: renderAIAssistant },
             'stations': { title: 'ایستگاه‌ها', render: renderStations },
-            'production': { title: 'تولید و پالایش', placeholder: true },
-            'quality': { title: 'کیفیت داده', placeholder: true },
-        };
+            'production': { title: 'تولید و پالایش', render: renderProduction },
+            'quality': { title: 'کیفیت داده', render: renderQuality },        };
         
         function navigate(route) {
             state.currentRoute = route;
@@ -1999,6 +2249,8 @@
             document.getElementById('page-anomalies').classList.toggle('hidden', route !== 'anomalies');
             document.getElementById('page-ai').classList.toggle('hidden', route !== 'ai');
             document.getElementById('page-stations').classList.toggle('hidden', route !== 'stations');
+            document.getElementById('page-quality').classList.toggle('hidden', route !== 'quality');
+            document.getElementById('page-production').classList.toggle('hidden', route !== 'production');
             document.getElementById('page-placeholder').classList.toggle('hidden', !routes[route]?.placeholder);
             
             if (routes[route]?.placeholder) {
@@ -3207,6 +3459,322 @@
             state.stationFilters.sort = e.target.value;
             renderStationTable();
         });
+        
+        // ===== Render: Quality =====
+        function scoreColor(score) {
+            if (score >= 80) return 'var(--success)';
+            if (score >= 60) return 'var(--warning)';
+            return 'var(--danger)';
+        }
+        
+        function scoreStatusClass(score) {
+            if (score >= 70) return 'good';
+            if (score >= 50) return 'warn';
+            return 'bad';
+        }
+        
+        function scoreLabel(score) {
+            if (score >= 80) return 'عالی';
+            if (score >= 70) return 'خوب';
+            if (score >= 50) return 'متوسط';
+            return 'بحرانی';
+        }
+        
+        async function renderQuality() {
+            if (!state.quality) {
+                const q = await api.get('/api/quality/report');
+                state.quality = q;
+            }
+            
+            const q = state.quality;
+            const kpisEl = document.getElementById('qualityKpis');
+            
+            if (!q || !q.available) {
+                kpisEl.innerHTML = `<div class="card">گزارش کیفیت داده موجود نیست. ابتدا اسکریپت data_quality_assessment.py را اجرا کنید.</div>`;
+                return;
+            }
+            
+            const scores = q.overall_scores || {};
+            const sheetNames = Object.keys(scores);
+            const avgScore = sheetNames.length
+                ? sheetNames.reduce((s, k) => s + scores[k], 0) / sheetNames.length
+                : 0;
+            const recs = q.recommendations || [];
+            const criticalCount = recs.filter(r => (r.priority || '').includes('بحرانی')).length;
+            const domainCount = Object.keys(q.expected_domains || {}).length;
+            
+            kpisEl.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-label">امتیاز کیفیت کلی</div>
+                    <div class="kpi-value text-num" style="color: ${scoreColor(avgScore)};">${avgScore.toFixed(1)}</div>
+                    <div class="kpi-context">از ۱۰۰ — میانگین همه شیت‌ها</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">مجموع رکوردها</div>
+                    <div class="kpi-value text-num">${formatNumber(q.total_records)}</div>
+                    <div class="kpi-context">در ${formatNumber(sheetNames.length)} شیت</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">پیشنهادات بهبود</div>
+                    <div class="kpi-value text-num">${formatNumber(recs.length)}</div>
+                    <div class="kpi-context">${formatNumber(criticalCount)} مورد بحرانی</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">حوزه‌های داده‌ای مفقود</div>
+                    <div class="kpi-value text-num">${formatNumber(domainCount)}</div>
+                    <div class="kpi-context">فرصت‌های توسعه سامانه</div>
+                </div>
+            `;
+            
+            document.getElementById('qualityScoreGrid').innerHTML = sheetNames.map(name => {
+                const score = scores[name];
+                const color = scoreColor(score);
+                return `
+                    <div class="quality-score-card">
+                        <div class="quality-score-value" style="color: ${color};">${score}</div>
+                        <div class="quality-score-label">${name}</div>
+                        <div class="quality-bar">
+                            <div class="quality-bar-fill" style="width: ${score}%; background: ${color};"></div>
+                        </div>
+                        <span class="quality-status ${scoreStatusClass(score)}">${scoreLabel(score)}</span>
+                    </div>
+                `;
+            }).join('');
+            
+            const order = p => (p || '').includes('بحرانی') ? 0 : (p || '').includes('بالا') ? 1 : 2;
+            const sortedRecs = [...recs].sort((a, b) => order(a.priority) - order(b.priority));
+            
+            document.getElementById('qualityRecList').innerHTML = sortedRecs.map((r, i) => {
+                const cls = order(r.priority) === 0 ? 'critical' : order(r.priority) === 1 ? 'high' : 'medium';
+                return `
+                    <div class="rec-item">
+                        <div class="rec-priority ${cls}">${r.priority || '—'}</div>
+                        <div class="rec-content">
+                            <div class="rec-issue">${i + 1}. ${r.issue || ''}</div>
+                            <div class="rec-action">اقدام: ${r.action || ''}</div>
+                            <div class="rec-category">دسته: ${r.category || '—'}</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            const domains = q.expected_domains || {};
+            document.getElementById('qualityDomainsBody').innerHTML = Object.entries(domains).map(([name, d]) => `
+                <tr>
+                    <td><strong>${name}</strong></td>
+                    <td>${d.description || ''}</td>
+                    <td>${d.impact || ''}</td>
+                    <td>${d.priority || ''}</td>
+                </tr>
+            `).join('');
+            
+            const selectEl = document.getElementById('qualitySheetSelect');
+            const profiles = q.column_profiles || {};
+            selectEl.innerHTML = Object.keys(profiles).map(s => `<option value="${s}">${s}</option>`).join('');
+            renderQualityColumns();
+        }
+        
+        function renderQualityColumns() {
+            const q = state.quality;
+            if (!q) return;
+            
+            const sheet = document.getElementById('qualitySheetSelect').value;
+            const cols = (q.column_profiles || {})[sheet] || [];
+            const tbody = document.getElementById('qualityColumnsBody');
+            
+            tbody.innerHTML = cols.map(c => {
+                const score = c.quality_score || 0;
+                const color = scoreColor(score);
+                const zero = c.zero_pct !== undefined ? c.zero_pct + '٪' : '—';
+                const outlier = c.extreme_outliers_pct !== undefined ? c.extreme_outliers_pct + '٪' : '—';
+                return `
+                    <tr>
+                        <td><strong>${c.column}</strong></td>
+                        <td>${c.dtype || '—'}</td>
+                        <td class="text-num">${c.missing_pct !== undefined ? c.missing_pct + '٪' : '—'}</td>
+                        <td class="text-num">${zero}</td>
+                        <td class="text-num">${outlier}</td>
+                        <td class="text-num" style="color: ${color}; font-weight: 700;">${score}</td>
+                        <td>${c.status || '—'}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        document.getElementById('qualitySheetSelect').addEventListener('change', renderQualityColumns);
+        
+        // ===== Render: Production =====
+        let productionTrendChart = null;
+        let productionRefineryChart = null;
+        let productionProductChart = null;
+        
+        async function renderProduction() {
+            if (!state.production) {
+                const p = await api.get('/api/production/summary');
+                state.production = p;
+            }
+            
+            const p = state.production;
+            const kpisEl = document.getElementById('productionKpis');
+            
+            if (!p || !p.available) {
+                kpisEl.innerHTML = '<div class="card">داده تولید موجود نیست.</div>';
+                return;
+            }
+            
+            const o = p.overall;
+            
+            kpisEl.innerHTML = `
+                <div class="kpi-card">
+                    <div class="kpi-label">مجموع تولید</div>
+                    <div class="kpi-value text-num">${formatNumber(o.total_production, 0)}</div>
+                    <div class="kpi-context">واحد تولید ثبت‌شده</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">پالایشگاه‌های فعال</div>
+                    <div class="kpi-value text-num">${formatNumber(o.refineries)}</div>
+                    <div class="kpi-context">در حال گزارش‌دهی</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">انواع محصول</div>
+                    <div class="kpi-value text-num">${formatNumber(o.products)}</div>
+                    <div class="kpi-context">محصول ثبت‌شده</div>
+                </div>
+                <div class="kpi-card">
+                    <div class="kpi-label">بازه داده</div>
+                    <div class="kpi-value text-num" style="font-size:16px;">${o.min_date || '—'} تا ${o.max_date || '—'}</div>
+                    <div class="kpi-context">${formatNumber(o.records)} رکورد</div>
+                </div>
+            `;
+            
+            renderProductionCharts(p);
+            renderProductionTable(p);
+        }
+        
+        function renderProductionCharts(p) {
+            const isDark = state.theme === 'dark';
+            const lineColor = isDark ? '#3B82F6' : '#0F4C81';
+            
+            const trendCtx = document.getElementById('productionTrendChart');
+            if (productionTrendChart) productionTrendChart.destroy();
+            
+            if (p.trend?.length) {
+                productionTrendChart = new Chart(trendCtx, {
+                    type: 'line',
+                    data: {
+                        labels: p.trend.map(d => d.shamsi_date.substring(5)),
+                        datasets: [{
+                            label: 'تولید روزانه',
+                            data: p.trend.map(d => d.total),
+                            borderColor: lineColor,
+                            backgroundColor: isDark ? 'rgba(59, 130, 246, 0.1)' : 'rgba(15, 76, 129, 0.08)',
+                            fill: true,
+                            tension: 0.4,
+                            borderWidth: 2,
+                            pointRadius: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                rtl: true,
+                                callbacks: { label: ctx => `تولید: ${formatNumber(ctx.parsed.y, 0)}` }
+                            }
+                        },
+                        scales: {
+                            y: { ticks: { callback: v => formatNumber(v, 0) } },
+                            x: { ticks: { maxTicksLimit: 8 } }
+                        }
+                    }
+                });
+            }
+            
+            const refCtx = document.getElementById('productionRefineryChart');
+            if (productionRefineryChart) productionRefineryChart.destroy();
+            
+            if (p.by_refinery?.length) {
+                const top = p.by_refinery.slice(0, 10);
+                productionRefineryChart = new Chart(refCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: top.map(r => (r.refinery || '').replace('شرکت پالایش گاز ', '')),
+                        datasets: [{
+                            label: 'مجموع تولید',
+                            data: top.map(r => r.total),
+                            backgroundColor: isDark ? '#3B82F6' : '#0F4C81',
+                            borderRadius: 4,
+                        }]
+                    },
+                    options: {
+                        indexAxis: 'y',
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                rtl: true,
+                                callbacks: { label: ctx => `تولید: ${formatNumber(ctx.parsed.x, 0)}` }
+                            }
+                        },
+                        scales: {
+                            x: { ticks: { callback: v => formatNumber(v, 0) } },
+                            y: { grid: { display: false } }
+                        }
+                    }
+                });
+            }
+            
+            const prodCtx = document.getElementById('productionProductChart');
+            if (productionProductChart) productionProductChart.destroy();
+            
+            if (p.by_product?.length) {
+                const top = p.by_product.slice(0, 6);
+                productionProductChart = new Chart(prodCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: top.map(x => x.product),
+                        datasets: [{
+                            data: top.map(x => x.total),
+                            backgroundColor: ['#0F4C81', '#D97706', '#059669', '#DC2626', '#0284C7', '#8B5CF6'],
+                            borderWidth: 0,
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { position: 'bottom', rtl: true },
+                            tooltip: {
+                                rtl: true,
+                                callbacks: { label: ctx => `${ctx.label}: ${formatNumber(ctx.parsed, 0)}` }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+        
+        function renderProductionTable(p) {
+            const tbody = document.getElementById('productionRefineryTable');
+            
+            if (!p.by_refinery?.length) {
+                tbody.innerHTML = '<tr><td colspan="5">داده‌ای موجود نیست</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = p.by_refinery.map((r, i) => `
+                <tr>
+                    <td class="text-num">${i + 1}</td>
+                    <td><strong>${r.refinery}</strong></td>
+                    <td class="text-num">${formatNumber(r.total, 0)}</td>
+                    <td class="text-num">${formatNumber(r.records)}</td>
+                    <td class="text-num">${formatNumber(r.product_count)}</td>
+                </tr>
+            `).join('');
+        }
         
         // ===== Render Current Page =====
         function renderCurrentPage() {
